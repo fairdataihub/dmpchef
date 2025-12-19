@@ -34,4 +34,4 @@ git commit -m "<write your commit message>"
 git push
 
 # Cloning the repository
-git clone https://github.com/fairdataihub/DMP_Chef_Phase-1.git
+git clone https://github.com/fairdataihub/dmpchef.git
