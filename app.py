@@ -9,7 +9,7 @@ from pathlib import Path
 # Ensure src is importable from project root
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from core_pipeline_web import DMPPipeline
+from core_pipeline_UI import DMPPipeline
 
 app = FastAPI()
 pipeline = DMPPipeline()
