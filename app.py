@@ -1,18 +1,22 @@
 # ===============================================================
-# web_app.py — Inline NIH DMP Generator (FastAPI)
+# app.py — NIH DMP Generator (FastAPI) [Fixed + Clean Imports]
+# - Uses the fixed core_pipeline_UI.py (DMPPipeline)
+# - Removes fragile sys.path hacks (recommended)
+# - Escapes HTML in output to avoid breaking the page
 # ===============================================================
+
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
-import sys
-from pathlib import Path
+from html import escape
 
-# Ensure src is importable from project root
-sys.path.append(str(Path(__file__).parent / "src"))
-
-from core_pipeline_UI import DMPPipeline
+# ✅ If app.py is in project root and core_pipeline_UI.py is inside /src
+# Make sure you have: src/__init__.py
+from src.core_pipeline_UI import DMPPipeline
 
 app = FastAPI()
-pipeline = DMPPipeline()
+
+# Build pipeline once at startup (fast UI)
+pipeline = DMPPipeline(config_path="config/config.yaml", force_rebuild_index=False)
 
 
 # ---------------------------------------------------------------
@@ -54,13 +58,20 @@ async def generate_dmp(
 # ---------------------------------------------------------------
 def render_form(result: str = "", title: str = ""):
     """Helper to render the HTML form + result (if any)."""
+
+    # ✅ escape output so markdown doesn't break HTML and avoids injection
     result_html = ""
     if result:
         result_html = f"""
         <hr style="margin: 40px 0;">
-        <h2>✅ NIH DMP Generated for: <i>{title}</i></h2>
-        <pre style="white-space: pre-wrap; background:#f8f8f8; padding:15px; border-radius:8px;">{result}</pre>
+        <h2>✅ NIH DMP Generated for: <i>{escape(title)}</i></h2>
+        <pre style="white-space: pre-wrap; background:#f8f8f8; padding:15px; border-radius:8px; border:1px solid #eee;">
+{escape(result)}
+        </pre>
         """
+
+    # ✅ keep form values after submit (nice UX)
+    t = escape(title or "")
 
     return f"""
     <html>
@@ -77,9 +88,10 @@ def render_form(result: str = "", title: str = ""):
     </head>
     <body>
         <h1>🧠 NIH Data Management Plan Generator</h1>
+
         <form action="/" method="post">
             <label><b>Project Title:</b></label>
-            <input type="text" name="title" required><br>
+            <input type="text" name="title" required value="{t}"><br>
 
             <label><b>Brief summary of the research context:</b></label>
             <textarea name="research_context" placeholder="Describe the scientific goals and objectives..."></textarea><br>
