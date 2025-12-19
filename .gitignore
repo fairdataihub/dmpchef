@@ -7,8 +7,6 @@ __pycache__/
 *.pyd
 *.pyo
 env/
-ven3.11/
-.ven3.11/
 venv/
 .venv/
 *.egg-info/
