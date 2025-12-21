@@ -17,3 +17,5 @@ pip install -e .
 
 uvicorn app:app --reload
 
+Open this link in your browser: http://127.0.0.1:8000/ and test app!
+
