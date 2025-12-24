@@ -1,6 +1,17 @@
 # AI_DMP_RAG — NIH Data Management Plan (DMP) Generator
 
-This project generates an NIH-style **Data Management & Sharing Plan (DMP)** using a pipeline that can ingest documents, build/search an index, and produce a final draft through a **FastAPI** web UI.
+AI_DMP_RAG generates an NIH-style **Data Management & Sharing Plan (DMP)**.  
+It uses a pipeline to **ingest documents**, **build/search an index**, and **draft a DMP** through a **FastAPI** web UI.
+
+---
+
+## Quick Start (Most Common)
+
+1) Create + activate a virtual environment  
+2) Install requirements  
+3) Add your `.env` (API keys)  
+4) Run the app with Uvicorn  
+5) Open the browser link  
 
 ---
 
@@ -43,35 +54,52 @@ AI_DMP_RAG/
 ├── build/                  # Build artifacts (packaging)
 ├── dist/                   # Distribution artifacts (packaging)
 └── DMP_RAG.egg-info/       # Package metadata (created during install/build)
-## Project Setup & Usage (All-in-One)
+```
 
-**Prerequisites:** Python **3.10+** (recommended), (optional) Git, and a `.env` file for secrets (API keys, endpoints, etc.).
+---
 
-**Setup (Local Development):** Create and activate a virtual environment.
+## Prerequisites
 
-- **Windows (PowerShell):**
+- Python **3.10+** (recommended)
+- (Optional) Git
+- A `.env` file for secrets (API keys, endpoints, etc.)
+
+---
+
+## Setup (Local Development)
+
+### Step 1 — Create and activate a virtual environment
+
+**Windows (PowerShell):**
 ```python
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-- **macOS/Linux:**
+**macOS/Linux:**
 ```python
 python -m venv venv
 source venv/bin/activate
 ```
 
-Install dependencies:
+### Step 2 — Install dependencies
+
 ```python
 pip install -r requirements.txt
 ```
 
-(Optional but recommended for development):
+(Optional but recommended for development / editable installs)
 ```python
 pip install -e .
 ```
 
-**Environment Variables (`.env`):** Create a `.env` file in the project root (same level as `app.py`). Example:
+---
+
+## Environment Variables (`.env`)
+
+Create a `.env` file in the project root (same level as `app.py`).
+
+Example:
 ```python
 # LLM Provider / API
 OPENAI_API_KEY=your_key_here
@@ -80,31 +108,123 @@ OPENAI_API_KEY=your_key_here
 ENV=dev
 LOG_LEVEL=INFO
 ```
-Keep `.env` out of Git (it should be in `.gitignore`).
 
-**Configuration (`config/`):** The pipeline typically reads settings from `config/` (e.g., `config/config.yaml`). Common items include: data paths, index/vectorstore settings, embedding model settings, LLM model settings, chunking parameters, and a rebuild-index flag.
+Notes:
+- Do **not** commit `.env` to Git.
+- Make sure `.env` is listed in `.gitignore`.
 
-**Data Ingestion & Indexing:** Key modules are `src/data_ingestion.py` (loads documents, cleans/chunks them, builds an index/vector store) and `src/core_pipeline_UI.py` (orchestrates retrieval + prompting + generation). Typical workflow: put reference documents into `data/`, run the pipeline once (or with a rebuild flag) to build the index, then run the app and generate DMPs through the UI. If rebuilding is needed, use a config flag like `force_rebuild_index=True` (or set it in YAML) or delete the old index folder (e.g., `data/index/`).
+---
 
-**Run the Web App (FastAPI):** From the project root (where `app.py` is):
+## Configuration (`config/`)
+
+The pipeline typically reads settings from `config/` (example: `config/config.yaml`).
+
+Common items you may configure:
+- Data paths (where source docs live)
+- Index / vector store settings
+- Embedding model settings
+- LLM model settings
+- Chunking parameters
+- Rebuild-index flag (e.g., `force_rebuild_index`)
+
+---
+
+## Data Ingestion & Indexing (How the pipeline works)
+
+### Key modules
+- `src/data_ingestion.py`  
+  Loads documents, cleans/chunks them, and builds an index/vector store.
+- `src/core_pipeline_UI.py`  
+  Runs retrieval + prompting + generation to produce the final DMP.
+
+### Typical workflow
+1. Put reference documents into `data/`
+2. Run the pipeline once (or enable rebuild) to create the index
+3. Run the web app and generate DMPs from the UI
+
+### Rebuild the index (if needed)
+- Set a config flag like `force_rebuild_index=True` (or in YAML), **or**
+- Delete the existing index folder (if you store it under something like `data/index/`)
+
+---
+
+## Run the Web App (FastAPI)
+
+From the project root (where `app.py` is):
+
 ```python
 uvicorn app:app --reload
 ```
-Open in your browser: `http://127.0.0.1:8000/` (and if enabled: `http://127.0.0.1:8000/docs`).
 
-**Logging:** `logger/custom_logger.py` centralizes logging format/handlers; runtime logs are typically written to `logs/`. If logs aren’t showing, check `LOG_LEVEL` in `.env` and ensure `logs/` exists and is writable.
+Open in your browser:
+- `http://127.0.0.1:8000/`
 
-**Prompts:** Prompt templates/utilities are in `prompt/prompt_library.py`. You can update the DMP template text, add section-by-section prompts, and enforce NIH structure/format rules.
+If API docs are enabled:
+- `http://127.0.0.1:8000/docs`
 
-**Common Troubleshooting:** If the page doesn’t open, copy the printed Uvicorn URL (e.g., `http://127.0.0.1:8000`) into your browser. For import errors, run `uvicorn` from the project root, confirm `src/__init__.py` exists, and try:
+---
+
+## Logging
+
+- `logger/custom_logger.py` controls logging format and handlers
+- Runtime logs are typically written to `logs/`
+
+If logs aren’t showing:
+- Check `LOG_LEVEL` in `.env`
+- Ensure `logs/` exists and your app has permission to write files
+
+---
+
+## Prompts
+
+Prompt templates/utilities are in:
+- `prompt/prompt_library.py`
+
+You can:
+- Update the DMP template text
+- Add section-by-section prompts
+- Enforce NIH structure/format rules (headings, required elements, compliance wording)
+
+---
+
+## Troubleshooting
+
+### App runs but the page doesn’t open
+- Copy the URL printed by Uvicorn (example: `http://127.0.0.1:8000`) and paste it into your browser.
+
+### Import errors
+- Make sure you run `uvicorn app:app --reload` from the **project root**
+- Confirm `src/__init__.py` exists
+- Try reinstalling in editable mode:
 ```python
 pip install -e .
 ```
-If retrieval is empty, confirm docs exist under `data/` and rebuild the index via config/ingestion. For log permission issues, ensure `logs/` exists and run terminal as admin (Windows) if needed.
 
-**Recommended `.gitignore`:** Ignore `venv/`, `__pycache__/`, `.env`, `build/`, `dist/`, `*.egg-info/`, and optionally `logs/` (depending on whether you want to commit logs or not).
+### Index not found / retrieval results are empty
+- Confirm you have documents in `data/`
+- Rebuild the index via config or rerun ingestion
 
-**Example Commands (Conda):**
+### Permission issues (logs or saved files)
+- Ensure `logs/` exists
+- On Windows, try running your terminal as Administrator
+
+---
+
+## Recommended `.gitignore`
+
+These are commonly ignored:
+- `venv/`
+- `__pycache__/`
+- `.env`
+- `build/`
+- `dist/`
+- `*.egg-info/`
+- `logs/` *(optional)*
+
+---
+
+## Setup (Example Commands — Conda)
+
 ```python
 git clone https://github.com/fairdataihub/dmpchef.git
 cd dmpchef
@@ -122,4 +242,7 @@ pip install -e .
 
 uvicorn app:app --reload
 ```
-Then open: `http://127.0.0.1:8000/` and test the app.
+
+Then open:
+- `http://127.0.0.1:8000/`  
+and test the app.
