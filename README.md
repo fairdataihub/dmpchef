@@ -103,24 +103,14 @@ pip install -e .
 
 **Workflow**
 1. Add reference documents to: `data/`
-2. Run once to build the index (or enable rebuild)
-3. Start the web app and generate DMPs from the UI
+2. Run once `src/data_ingestion.py` to build the index (or enable rebuild)
+3. Start the web app `uvicorn app:app` --reload and generate DMPs from the UI
+4. Open in your browser:
+- `http://127.0.0.1:8000/`
 
 **Rebuild the index (if needed)**
 - Set `force_rebuild_index=True` in your config/YAML, **or**
 - Delete the saved index folder (often `data/index/`) and run again
-
----
-
-### Run the Web App (FastAPI)
-
-From the project root (where `app.py` is):
-```python
-uvicorn app:app --reload
-Open in your browser:
-- `http://127.0.0.1:8000/`
-
-```
 
 
 ---
@@ -142,6 +132,7 @@ python setup.py install
 # or (recommended for development)
 pip install -e .
 
+src/data_ingestion.py
 uvicorn app:app --reload
 ```
 
