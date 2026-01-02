@@ -119,9 +119,7 @@ From the project root (where `app.py` is):
 uvicorn app:app --reload
 Open in your browser:
 - `http://127.0.0.1:8000/`
-
-
-
+---
 
 ## Setup (Example Commands — Conda)
 
