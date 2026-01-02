@@ -93,134 +93,35 @@ pip install -e .
 ```
 
 ---
+### Step 3 — Data Ingestion & Indexing
 
-## Environment Variables (`.env`)
+**What happens:** the app reads your documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
 
-Create a `.env` file in the project root (same level as `app.py`).
+**Main files**
+- `src/data_ingestion.py`: loads + cleans + chunks docs, builds the index
+- `src/core_pipeline_UI.py`: retrieves relevant chunks and generates the final DMP
 
-Example:
-```python
-# LLM Provider / API
-OPENAI_API_KEY=your_key_here
+**Workflow**
+1. Add reference documents to: `data/`
+2. Run once to build the index (or enable rebuild)
+3. Start the web app and generate DMPs from the UI
 
-# Optional settings
-ENV=dev
-LOG_LEVEL=INFO
-```
-
-Notes:
-- Do **not** commit `.env` to Git.
-- Make sure `.env` is listed in `.gitignore`.
+**Rebuild the index (if needed)**
+- Set `force_rebuild_index=True` in your config/YAML, **or**
+- Delete the saved index folder (often `data/index/`) and run again
 
 ---
 
-## Configuration (`config/`)
-
-The pipeline typically reads settings from `config/` (example: `config/config.yaml`).
-
-Common items you may configure:
-- Data paths (where source docs live)
-- Index / vector store settings
-- Embedding model settings
-- LLM model settings
-- Chunking parameters
-- Rebuild-index flag (e.g., `force_rebuild_index`)
-
----
-
-## Data Ingestion & Indexing (How the pipeline works)
-
-### Key modules
-- `src/data_ingestion.py`  
-  Loads documents, cleans/chunks them, and builds an index/vector store.
-- `src/core_pipeline_UI.py`  
-  Runs retrieval + prompting + generation to produce the final DMP.
-
-### Typical workflow
-1. Put reference documents into `data/`
-2. Run the pipeline once (or enable rebuild) to create the index
-3. Run the web app and generate DMPs from the UI
-
-### Rebuild the index (if needed)
-- Set a config flag like `force_rebuild_index=True` (or in YAML), **or**
-- Delete the existing index folder (if you store it under something like `data/index/`)
-
----
-
-## Run the Web App (FastAPI)
+### Run the Web App (FastAPI)
 
 From the project root (where `app.py` is):
-
-```python
+```bash
 uvicorn app:app --reload
-```
-
 Open in your browser:
 - `http://127.0.0.1:8000/`
 
-If API docs are enabled:
-- `http://127.0.0.1:8000/docs`
 
----
 
-## Logging
-
-- `logger/custom_logger.py` controls logging format and handlers
-- Runtime logs are typically written to `logs/`
-
-If logs aren’t showing:
-- Check `LOG_LEVEL` in `.env`
-- Ensure `logs/` exists and your app has permission to write files
-
----
-
-## Prompts
-
-Prompt templates/utilities are in:
-- `prompt/prompt_library.py`
-
-You can:
-- Update the DMP template text
-- Add section-by-section prompts
-- Enforce NIH structure/format rules (headings, required elements, compliance wording)
-
----
-
-## Troubleshooting
-
-### App runs but the page doesn’t open
-- Copy the URL printed by Uvicorn (example: `http://127.0.0.1:8000`) and paste it into your browser.
-
-### Import errors
-- Make sure you run `uvicorn app:app --reload` from the **project root**
-- Confirm `src/__init__.py` exists
-- Try reinstalling in editable mode:
-```python
-pip install -e .
-```
-
-### Index not found / retrieval results are empty
-- Confirm you have documents in `data/`
-- Rebuild the index via config or rerun ingestion
-
-### Permission issues (logs or saved files)
-- Ensure `logs/` exists
-- On Windows, try running your terminal as Administrator
-
----
-
-## Recommended `.gitignore`
-
-These are commonly ignored:
-- `venv/`
-- `__pycache__/`
-- `.env`
-- `build/`
-- `dist/`
-- `*.egg-info/`
-- `logs/` *(optional)*
-
----
 
 ## Setup (Example Commands — Conda)
 
