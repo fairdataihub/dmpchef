@@ -65,7 +65,7 @@ AI_DMP_RAG/
 
 ---
 
-## Setup (Local Development)
+## Setups (Local Development)
 
 ### Step 1 — Create and activate a virtual environment
 
@@ -115,10 +115,14 @@ pip install -e .
 ### Run the Web App (FastAPI)
 
 From the project root (where `app.py` is):
-```bash
+```python
 uvicorn app:app --reload
 Open in your browser:
 - `http://127.0.0.1:8000/`
+
+```
+
+
 ---
 
 ## Setup (Example Commands — Conda)
