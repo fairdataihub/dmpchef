@@ -50,10 +50,7 @@ AI_DMP_RAG/
 │   └── custom_exception.py
 │
 ├── utils/                  # Shared helper functions (general utilities)
-│
-├── build/                  # Build artifacts (packaging)
-├── dist/                   # Distribution artifacts (packaging)
-└── DMP_RAG.egg-info/       # Package metadata (created during install/build)
+
 ```
 
 ---
