@@ -93,7 +93,7 @@ pip install -e .
 ```
 
 ---
-### Step 3 — Data Ingestion & Indexing
+### Step 3 — RUN Pipeline
 
 **What happens:** the app reads your documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
 
