@@ -110,13 +110,14 @@ pip install -e .
 - Delete the saved index folder (often `data/index/`) and run ingestion again
 
 ---
-
 ### Step 4 — Start the Web App (FastAPI)
 
 Start the server from the project root (where `app.py` is):
 
 ```bash
 uvicorn app:app --reload
+```
+
 ---
 
 Open in your browser:
