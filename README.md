@@ -93,9 +93,9 @@ pip install -e .
 ```
 
 ---
-### Step 3 — RUN Pipeline
+### Step 3 — Run the Pipeline (Ingestion + Indexing)
 
-**What happens:** the app reads your documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
+**What happens:** the app reads documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
 
 **Main files**
 - `src/data_ingestion.py`: loads + cleans + chunks docs, builds the index
@@ -103,17 +103,34 @@ pip install -e .
 
 **Workflow**
 1. Add reference documents to: `data/`
-2. Run once `src/data_ingestion.py` to build the index (or enable rebuild)
-3. Start the web app `uvicorn app:app` --reload and generate DMPs from the UI
-4. Open in your browser:
-- `http://127.0.0.1:8000/`
+2. Run `src/data_ingestion.py` once to build the index (or enable rebuild)
 
 **Rebuild the index (if needed)**
 - Set `force_rebuild_index=True` in your config/YAML, **or**
-- Delete the saved index folder (often `data/index/`) and run again
-
+- Delete the saved index folder (often `data/index/`) and run ingestion again
 
 ---
+
+### Step 4 — Start the Web App (FastAPI)
+
+Start the server from the project root (where `app.py` is):
+
+```bash
+uvicorn app:app --reload
+---
+
+Open in your browser:
+- `http://127.0.0.1:8000/`
+
+---
+
+**In the UI:**
+- Fill out the input form (project details, data types, sharing plans, etc.)
+- Generate a DMP draft
+- Save/export outputs as **JSON**, **Markdown (`.md`)**, and **Word (`.docx`)**
+
+---
+
 
 ## Setup (Example Commands — Conda)
 
