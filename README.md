@@ -50,7 +50,9 @@ AI_DMP_RAG/
 │   └── custom_exception.py
 │
 ├── utils/                  # Shared helper functions (general utilities)
-
+│   ├── __init__.py
+│   └── config_loader.py
+│   └── model_loader.py
 ```
 
 ---
