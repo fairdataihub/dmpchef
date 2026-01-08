@@ -22,15 +22,6 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 
 ---
 
-## Quick Start (Most Common)
-1) Create + activate a virtual environment  
-2) Install requirements  
-3) Add your `.env` (API keys)  
-4) Run the app with Uvicorn  
-5) Open the browser link  
-
----
-
 ## Repository Structure
 ```text
 dmpchef/
@@ -69,14 +60,6 @@ dmpchef/
 │   ├── config_loader.py
 │   └── model_loader.py
 ```
-
----
-
-## Prerequisites
-- Python **3.10+**
-- (Optional) Git
-- A `.env` file for secrets (API keys, endpoints, etc.)
-
 ---
 
 ## Setup (Local Development)
