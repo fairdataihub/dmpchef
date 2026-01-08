@@ -10,16 +10,19 @@ It uses a pipeline to **ingest documents**, **build/search an index**, and **dra
 Learn more: **[DMP-Chef](https://fairdataihub.org/dmp-chef)**.
 
 ---
----
 
 ## Standards followed
-
-The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines](https://fair-biors.org/)**. The Python code in the primary Jupyter notebook, **[`main.ipynb`](https://github.com/fairdataihub/LLM-RAG-demo/blob/main/main.ipynb)**, follows **[PEP 8](https://peps.python.org/pep-0008/)** style conventions (including comments and docstrings). All required dependencies are listed in **[`requirements.txt`](https://github.com/fairdataihub/LLM-RAG-demo/blob/main/requirements.txt)**.
-
+The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines](https://fair-biors.org/)**. The Python code follows **[PEP 8](https://peps.python.org/pep-0008/)** style conventions (including comments and docstrings). All required dependencies are listed in **[`requirements.txt`](https://github.com/fairdataihub/dmpchef/blob/main/requirements.txt)**.
 
 ---
-## Quick Start (Most Common)
 
+## Main files
+- **[`src/data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/data_ingestion.py)** — Loads, cleans, and chunks documents; builds the vector index.
+- **[`src/core_pipeline_UI.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline_UI.py)** — Retrieves relevant chunks and generates the final output.
+
+---
+
+## Quick Start (Most Common)
 1) Create + activate a virtual environment  
 2) Install requirements  
 3) Add your `.env` (API keys)  
@@ -29,9 +32,8 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 ---
 
 ## Repository Structure
-
 ```text
-AI_DMP_RAG/
+dmpchef/
 │── app.py
 │── README.md
 │── requirements.txt
@@ -64,55 +66,49 @@ AI_DMP_RAG/
 │
 ├── utils/                  # Shared helper functions (general utilities)
 │   ├── __init__.py
-│   └── config_loader.py
+│   ├── config_loader.py
 │   └── model_loader.py
 ```
 
 ---
 
 ## Prerequisites
-
-- Python **3.10+** (recommended)
+- Python **3.10+**
 - (Optional) Git
 - A `.env` file for secrets (API keys, endpoints, etc.)
 
 ---
 
-## Setups (Local Development)
+## Setup (Local Development)
 
 ### Step 1 — Create and activate a virtual environment
 
 **Windows (PowerShell):**
-```python
+```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
 **macOS/Linux:**
-```python
+```bash
 python -m venv venv
 source venv/bin/activate
 ```
 
 ### Step 2 — Install dependencies
-
-```python
+```bash
 pip install -r requirements.txt
 ```
 
-(Optional but recommended for development / editable installs)
-```python
+(Optional, recommended for development)
+```bash
 pip install -e .
 ```
 
 ---
+
 ### Step 3 — Run the Pipeline (Ingestion + Indexing)
-
 **What happens:** the app reads documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
-
-**Main files**
-- `src/data_ingestion.py`: loads + cleans + chunks docs, builds the index
-- `src/core_pipeline_UI.py`: retrieves relevant chunks and generates the final DMP
 
 **Workflow**
 1. Add reference documents to: `data/`
@@ -123,32 +119,21 @@ pip install -e .
 - Delete the saved index folder (often `data/index/`) and run ingestion again
 
 ---
-### Step 4 — Start the Web App (FastAPI)
 
+### Step 4 — Start the Web App (FastAPI)
 Start the server from the project root (where `app.py` is):
 
 ```bash
 uvicorn app:app --reload
 ```
 
----
-
 Open in your browser:
 - `http://127.0.0.1:8000/`
 
 ---
 
-**In the UI:**
-- Fill out the input form (project details, data types, sharing plans, etc.)
-- Generate a DMP draft
-- Save/export outputs as **JSON**, **Markdown (`.md`)**, and **Word (`.docx`)**
-
----
-
-
 ## Setup (Example Commands — Conda)
-
-```python
+```bash
 git clone https://github.com/fairdataihub/dmpchef.git
 cd dmpchef
 code .
@@ -159,14 +144,31 @@ conda activate dmpchef
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
-python setup.py install
-# or (recommended for development)
+# optional: install package
 pip install -e .
 
-src/data_ingestion.py
+# build index (example)
+python src/data_ingestion.py
+
+# start app
 uvicorn app:app --reload
 ```
 
 Then open:
-- `http://127.0.0.1:8000/`  
-and test the app.
+- `http://127.0.0.1:8000/`
+---
+
+## License
+This work is licensed under the **[MIT License](https://opensource.org/license/mit/)**. See **[LICENSE](https://github.com/fairdataihub/dmpchef/blob/main/LICENSE)** for more information.
+
+
+---
+
+## Feedback and contribution
+Use **[GitHub Issues](https://github.com/fairdataihub/dmpchef/issues)** to submit feedback, report problems, or suggest improvements.  
+You can also **fork** the repository and submit a **Pull Request** with your changes.
+
+---
+
+## How to cite
+If you use this code, please cite this repository using the **versioned DOI on Zenodo** for the specific release you used (instructions will be added once the Zenodo record is available). For now, you can reference the repository here: **[fairdataihub/dmpchef](https://github.com/fairdataihub/dmpchef)**.
