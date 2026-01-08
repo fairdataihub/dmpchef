@@ -14,8 +14,6 @@ Learn more: **[DMP-Chef](https://fairdataihub.org/dmp-chef)**.
 ## Standards followed
 The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines](https://fair-biors.org/)**. The Python code follows **[PEP 8](https://peps.python.org/pep-0008/)** style conventions (including comments and docstrings). All required dependencies are listed in **[`requirements.txt`](https://github.com/fairdataihub/dmpchef/blob/main/requirements.txt)**.
 
----
-
 ## Main files
 - **[`src/data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/data_ingestion.py)** — Loads, cleans, and chunks documents; builds the vector index.
 - **[`src/core_pipeline_UI.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline_UI.py)** — Retrieves relevant chunks and generates the final output.
