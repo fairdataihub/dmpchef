@@ -107,9 +107,21 @@ Start the server from the project root (where `app.py` is):
 ```bash
 uvicorn app:app --reload
 ```
-
+---
 Open in your browser:
 - `http://127.0.0.1:8000/`
+
+## Generate a DMP (Web UI)
+1. Open the NIH Data Management Plan Generator page.
+2. Fill in the form fields (Project Title, research summary, data types/source, human subjects + consent, volume/format).
+3. Click **Generate DMP**.
+
+> Generation time depends on your CPU/GPU.
+
+### Outputs
+- **JSON** (structured)
+- **Markdown** (NIH-style narrative)
+
 
 ---
 
