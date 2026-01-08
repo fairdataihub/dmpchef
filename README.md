@@ -5,9 +5,9 @@
 [![DOI](https://img.shields.io/badge/DOI-pending-9e9e9e?style=flat-square)](#how-to-cite)
 
 # DMP-Chef — NIH Data Management Plan (DMP) Generator
-DMP-Chef generates an NIH-style **Data Management & Sharing Plan (DMP)** using an end-to-end **Retrieval-Augmented Generation (RAG)** workflow.  
-It uses a pipeline to **ingest documents**, **build/search an index**, and **draft a DMP** through a **FastAPI** web UI.  
-Learn more: **[DMP-Chef](https://fairdataihub.org/dmp-chef)**.
+DMP-Chef generates an NIH-style **Data Management & Sharing Plan (DMP)** using an end-to-end **Retrieval-Augmented Generation (RAG)** workflow.  It uses a pipeline to **ingest documents**, **build/search an index**, and **draft a DMP** through a **FastAPI** web UI. 
+
+👉 Learn more: **[DMP-Chef](https://fairdataihub.org/dmp-chef)**.
 
 ---
 
@@ -23,40 +23,41 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 ## Repository Structure
 ```text
 dmpchef/
-│── app.py
-│── README.md
-│── requirements.txt
-│── setup.py
-│── .env
-│── .gitignore
+│── app.py                  # FastAPI entry point (defines `app = FastAPI()` + API routes). Run: `uvicorn app:app --reload`
+│── README.md               # Project overview, setup instructions, usage examples, API docs
+│── requirements.txt        # Python dependencies for `pip install -r requirements.txt`
+│── setup.py                # Optional packaging config (enables `pip install -e .` for editable installs)
+│── .env                    # Local environment variables (keys/config) — keep private; DO NOT commit
+│── .gitignore              # Git ignore rules (e.g., venv, __pycache__, logs, .env, local data)
 │
-├── config/                 # Configuration files (YAML, etc.)
-├── data/                   # Input documents / datasets (raw or processed)
-├── model/                  # Saved models / embeddings / checkpoints (if any)
-├── logs/                   # Runtime logs (app + pipeline)
-├── notebook_DMP_RAG/       # Experiments, notebooks, prototypes
+├── config/                 # Configuration files (YAML/JSON/env templates; model + pipeline settings)
+├── data/                   # Input documents / datasets (raw PDFs, processed chunks, sample inputs)
+├── model/                  # Saved artifacts (embeddings, vector index files, checkpoints) if persisted locally
+├── logs/                   # Runtime logs (API + pipeline runs; useful for debugging)
+├── notebook_DMP_RAG/       # Notebooks / experiments / prototypes (not production code)
 │
-├── src/                    # Main application code
-│   ├── __init__.py
-│   ├── core_pipeline_UI.py # Pipeline logic used by the UI/app
-│   └── data_ingestion.py   # Document ingestion + indexing utilities
+├── src/                    # Main application source code (core pipeline + reusable modules)
+│   ├── __init__.py         # Package marker for `src`
+│   ├── core_pipeline_UI.py # Main RAG pipeline logic invoked by the app/UI (retrieve → prompt → generate)
+│   └── data_ingestion.py   # Ingestion + preprocessing + indexing utilities (load PDFs, chunk, embed, store)
 │
-├── prompt/                 # Prompt templates and prompt tools
-│   ├── __init__.py
-│   └── prompt_library.py
+├── prompt/                 # Prompt templates and prompt utilities
+│   ├── __init__.py         # Package marker for `prompt`
+│   └── prompt_library.py   # Centralized prompt templates (system/user prompts, formatting, guardrails)
 │
-├── logger/                 # Custom logger utilities
-│   ├── __init__.py
-│   └── custom_logger.py
+├── logger/                 # Custom logging utilities
+│   ├── __init__.py         # Package marker for `logger`
+│   └── custom_logger.py    # Logger setup (formatters, handlers, file/console logging)
 │
-├── exception/              # Custom exceptions
-│   ├── __init__.py
-│   └── custom_exception.py
+├── exception/              # Custom exception definitions
+│   ├── __init__.py         # Package marker for `exception`
+│   └── custom_exception.py # Custom error classes for clearer debugging and error handling
 │
-├── utils/                  # Shared helper functions (general utilities)
-│   ├── __init__.py
-│   ├── config_loader.py
-│   └── model_loader.py
+├── utils/                  # Shared helpers used across the project
+│   ├── __init__.py         # Package marker for `utils`
+│   ├── config_loader.py    # Loads/validates configuration (YAML/env), provides defaults
+│   └── model_loader.py     # Loads LLM/embeddings clients and related model settings
+
 ```
 ---
 
