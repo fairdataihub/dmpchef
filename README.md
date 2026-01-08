@@ -30,11 +30,18 @@ dmpchef/
 │── .env                    # Local environment variables (keys/config) — keep private; DO NOT commit
 │── .gitignore              # Git ignore rules (e.g., venv, __pycache__, logs, .env, local data)
 │
-├── config/                 # Configuration files (YAML/JSON/env templates; model + pipeline settings)
+├── config/                   # App/pipeline configuration
+│   ├── __init__.py           # Makes `config` importable as a package
+│   ├── config.yaml           # Main settings (models, paths, chunking, retriever params, etc.)
+│   ├── config_schema.py      # Schema/validation for config (pydantic/dataclasses validation)
+│   
 ├── data/                   # Input documents / datasets (raw PDFs, processed chunks, sample inputs)
-├── model/                  # Saved artifacts (embeddings, vector index files, checkpoints) if persisted locally
-├── logs/                   # Runtime logs (API + pipeline runs; useful for debugging)
-├── notebook_DMP_RAG/       # Notebooks / experiments / prototypes (not production code)
+├── model/                    # Model-related code + (optionally) persisted artifacts
+│   ├── __init__.py           # Makes `model` importable
+│   ├── models.py             # Model definitions / wrappers (LLM + embeddings config objects, etc.)
+│  
+│ 
+│ 
 │
 ├── src/                    # Main application source code (core pipeline + reusable modules)
 │   ├── __init__.py         # Package marker for `src`
@@ -57,6 +64,9 @@ dmpchef/
 │   ├── __init__.py         # Package marker for `utils`
 │   ├── config_loader.py    # Loads/validates configuration (YAML/env), provides defaults
 │   └── model_loader.py     # Loads LLM/embeddings clients and related model settings
+│ 
+├── notebook_DMP_RAG/       # Notebooks / experiments / prototypes (not production code)
+└── venv/                     # Local virtual environment — ignore in git
 
 ```
 ---
