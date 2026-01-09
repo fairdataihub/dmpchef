@@ -40,9 +40,6 @@ dmpchef/
 │   ├── __init__.py           # Makes `model` importable
 │   ├── models.py             # Model definitions / wrappers (LLM + embeddings config objects, etc.)
 │  
-│ 
-│ 
-│
 ├── src/                    # Main application source code (core pipeline + reusable modules)
 │   ├── __init__.py         # Package marker for `src`
 │   ├── core_pipeline_UI.py # Main RAG pipeline logic invoked by the app/UI (retrieve → prompt → generate)
