@@ -27,7 +27,7 @@ faiss_index/
 *.pkl
 
 # ========================
-# 📂 Data & Archives
+# 📂 Data & Outputs (IGNORE ONLY DATA FOLDER)
 # ========================
 data/
 data-Copy/
@@ -37,15 +37,21 @@ main_archive/
 *.pdf
 
 # ========================
-# 🔐 Secrets & Configs
+# 🔐 Secrets (keep these ignored)
 # ========================
 .env
 .env.*
-*.yaml
-*.yml
-*.json
-*.sqlite3
-*.md   # Ignore Markdown files (notes, prompts, etc.)
+
+# ✅ DO NOT ignore yaml/json/md globally anymore
+# (remove these lines if you had them)
+# *.yaml
+# *.yml
+# *.json
+# *.md
+
+# ✅ Explicitly keep these tracked
+!requirements.txt
+!config/config.yaml
 
 # ========================
 # 🪵 Logs
@@ -64,23 +70,12 @@ document_portal.egg-info/
 # 🧪 Temporary & Test Files
 # ========================
 test.py
-
-# Ignore image files
 *.png
-
-# Ignore text and data files
 *.csv
 *.txt
-
-# Ignore Excel files
 *.xls
 *.xlsx
 *.xlsm
-
-# Ignore Word files
 *.doc
 *.docx
-
-# Ignore Markdown files
-*.md
 *.cgi

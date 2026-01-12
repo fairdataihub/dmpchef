@@ -1,0 +1,18 @@
+
+root_dir: ./DMPCHEF
+
+paths:
+  data_pdfs: data/NIH_95             
+  index_dir: data/index
+  excel_path: data/inputs/inputs.xlsx
+  output_md: data/outputs/markdown
+  output_docx: data/outputs/docx
+
+rag:
+  chunk_size: 800
+  chunk_overlap: 120
+  retriever_top_k: 6
+
+models:
+  llm_name: llama3.3
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
