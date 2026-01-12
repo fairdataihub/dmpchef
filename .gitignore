@@ -74,8 +74,10 @@ test.py
 #Ignore markdown files, BUT keep data/dmp-template.md
 *.md
 
+!data/
 !data/inputs/
 !data/inputs/dmp-template.md
+
 
 
 # Ignore Office files
