@@ -1,5 +1,3 @@
-# ✅ Always track requirements
-!requirements.txt
 # ========================
 # 🐍 Python Cache & Virtualenv
 # ========================
@@ -29,7 +27,7 @@ faiss_index/
 *.pkl
 
 # ========================
-# 📂 Data & Outputs (IGNORE ONLY DATA FOLDER)
+# 📂 Data & Outputs
 # ========================
 data/
 data-Copy/
@@ -39,20 +37,14 @@ main_archive/
 *.pdf
 
 # ========================
-# 🔐 Secrets (keep these ignored)
+# 🔐 Secrets
 # ========================
 .env
 .env.*
 
-# ✅ DO NOT ignore yaml/json/md globally anymore
-# (remove these lines if you had them)
-# *.yaml
-# *.yml
-# *.json
-# *.md
-
-# ✅ Explicitly keep these tracked
-!requirements.txt
+# ========================
+# ⚙️ Config (track this)
+# ========================
 !config/config.yaml
 
 # ========================
@@ -74,10 +66,17 @@ document_portal.egg-info/
 test.py
 *.png
 *.csv
+
+# Ignore text files, BUT keep requirements.txt
 *.txt
+!requirements.txt
+
+# Ignore Office files
 *.xls
 *.xlsx
 *.xlsm
 *.doc
 *.docx
+
+# Misc
 *.cgi
