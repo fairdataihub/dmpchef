@@ -71,6 +71,10 @@ test.py
 *.txt
 !requirements.txt
 
+#Ignore markdown files, BUT keep data/dmp-template.md
+*.md
+!data/dmp-template.md
+
 # Ignore Office files
 *.xls
 *.xlsx
