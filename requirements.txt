@@ -67,6 +67,7 @@ charset-normalizer
 aiohttp
 httpx
 httpx-sse
+lxml
 
 #############################################
 # ⚙️ Backend & API
@@ -99,19 +100,7 @@ rouge-score
 selenium
 streamlit
 webdriver-manager
-lxml
 
-
-
-requests
-beautifulsoup4
-tqdm
-selenium 
-webdriver-manager
-structlog
-pypandoc
-PyYAML
-langchain-community
 #############################################
 # 📦 Local Package (Editable Install)
 #############################################
