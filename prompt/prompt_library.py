@@ -2,7 +2,7 @@
 # prompt_library.py — NIH DMP Generation Prompts (Aligned with Notebook)
 # ===============================================================
 
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from enum import Enum
 
 

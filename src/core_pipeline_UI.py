@@ -3,6 +3,7 @@
 # - Fixes FAISS '__fields_set__' load crash by auto-rebuilding index
 # - Formats retrieved docs into a STRING (prompt-friendly)
 # - Builds vectorstore/retriever/chain ONCE at init (fast for UI)
+# - Robust PDF loading: PyMuPDFLoader primary, PyPDFLoader fallback, skip bad PDFs
 # ===============================================================
 
 import re
@@ -12,8 +13,9 @@ from tqdm import tqdm
 import pypandoc
 import yaml
 
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader, PyMuPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 from langchain_community.vectorstores import FAISS
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableMap
@@ -117,6 +119,7 @@ class DMPPipeline:
         """
         Load or build FAISS vector index.
         If loading fails (pickle mismatch e.g., '__fields_set__'), rebuild automatically.
+        Also robustly loads PDFs: PyMuPDFLoader primary, PyPDFLoader fallback, skip bad PDFs.
         """
         try:
             faiss_path = self.index_dir / "index.faiss"
@@ -138,9 +141,38 @@ class DMPPipeline:
                 raise FileNotFoundError(f"❌ No PDFs found in: {self.data_pdfs}")
 
             docs = []
+            bad_pdfs = []
+
             for pdf in tqdm(pdf_files, desc="📥 Loading PDFs"):
-                loader = PyPDFLoader(str(pdf))
-                docs.extend(loader.load())
+                try:
+                    # ✅ Preferred: robust for malformed fonts (avoids pypdf bbox crash)
+                    loader = PyMuPDFLoader(str(pdf))
+                    docs.extend(loader.load())
+                except Exception as e1:
+                    try:
+                        # Fallback to PyPDFLoader
+                        loader = PyPDFLoader(str(pdf))
+                        docs.extend(loader.load())
+                    except Exception as e2:
+                        bad_pdfs.append(str(pdf))
+                        log.warning(
+                            "⚠️ Skipping PDF due to parse error",
+                            pdf=str(pdf),
+                            pymupdf_error=str(e1),
+                            pypdf_error=str(e2),
+                        )
+                        continue
+
+            if not docs:
+                raise RuntimeError(
+                    "❌ No documents could be loaded from PDFs. "
+                    "All PDFs may be corrupted or unreadable."
+                )
+
+            if bad_pdfs:
+                log.warning("⚠️ Some PDFs were skipped", skipped=len(bad_pdfs))
+                # Optional: log the first skipped file for quick debugging
+                log.warning("First skipped PDF", first=bad_pdfs[0])
 
             chunk_size = self.config.get_rag_param("chunk_size") or 800
             chunk_overlap = self.config.get_rag_param("chunk_overlap") or 120
