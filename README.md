@@ -10,8 +10,6 @@ DMP-Chef generates an NIH-style **Data Management & Sharing Plan (DMP)** using a
 👉 Learn more: **[DMP-Chef](https://fairdataihub.org/dmp-chef)**.
 
 ---
-
-## Standards followed
 ## Standards followed
 The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines](https://fair-biors.org/)**. All Python code follows **[PEP 8](https://peps.python.org/pep-0008/)** conventions, including consistent formatting, inline comments, and docstrings. Project dependencies are fully captured in **[requirements.txt](https://github.com/fairdataihub/dmpchef/blob/main/requirements.txt)**. We also retain **[dmp-template](https://github.com/fairdataihub/dmpchef/blob/main/data/inputs/dmp-template.md)** as inside the prompt template used by the DMP generation workflow.
 
