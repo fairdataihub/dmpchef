@@ -4,8 +4,10 @@
 [![License](https://img.shields.io/github/license/fairdataihub/LLM-RAG-demo?style=flat-square&color=1f6feb)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-pending-9e9e9e?style=flat-square)](#how-to-cite)
 
-# DMP-Chef — NIH Data Management Plan (DMP) Generator
-DMP-Chef generates an NIH-style **Data Management & Sharing Plan (DMP)** using an end-to-end **Retrieval-Augmented Generation (RAG)** workflow.  It uses a pipeline to **ingest documents**, **build/search an index**, and **draft a DMP** through a **FastAPI** web UI. 
+# DMP Chef
+DMP Chef is an open-source (MIT License), Python-based pipeline that draft funder-compliant **Data Management & Sharing Plan (DMPs)** using an end-to-end **Retrieval-Augmented Generation (RAG)** workflow with a **Large Language Model (LLM)**. It provides a pipeline to **ingest documents**, **build/search an index**, and **draft a DMP** through a **FastAPI** web UI. 
+
+This project is part of a broader extension of the DMP Tool platform. The ultimate goal is to integrate the DMP Chef pipeline into the [DMP Tool](https://dmptool.org/) platform, providing researchers with a familiar and convenient user interface that does not require any coding knowledge.
 
 👉 Learn more: **[DMP-Chef](https://fairdataihub.org/dmp-chef)**.
 
