@@ -26,8 +26,10 @@ from exception.custom_exception import DocumentPortalException
 from logger.custom_logger import GLOBAL_LOGGER as log
 from prompt.prompt_library import PROMPT_REGISTRY, PromptType
 
-# ✅ NEW: dmptool JSON builder (you add this file in utils/)
+# ✅ NEW: dmptool JSON builder (add this file in utils/)
 from utils.dmptool_json import build_dmptool_json
+# ✅ NEW: dmptool word builder (add this file in utils/)
+from utils.nih_docx_writer import build_nih_docx_from_template
 
 
 # ===============================================================
@@ -263,8 +265,14 @@ class DMPPipeline:
 
             md_path.write_text(result, encoding="utf-8")
 
-            # DOCX conversion requires pandoc installed (pypandoc)
-            pypandoc.convert_text(result, "docx", format="md", outputfile=str(docx_path))
+            # ✅ UPDATED: Build DOCX from NIH template (keeps exact Word formatting)
+            nih_template_docx = Path("data/inputs/nih-dms-plan-template.docx")
+            build_nih_docx_from_template(
+                template_docx_path=str(nih_template_docx),
+                output_docx_path=str(docx_path),
+                project_title=title,
+                generated_markdown=result,
+            )
 
             # ✅ UPDATED: Write dmptool JSON format (only this part changed)
             with open(json_path, "w", encoding="utf-8") as f:
