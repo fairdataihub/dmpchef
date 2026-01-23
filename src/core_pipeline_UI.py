@@ -26,6 +26,9 @@ from exception.custom_exception import DocumentPortalException
 from logger.custom_logger import GLOBAL_LOGGER as log
 from prompt.prompt_library import PROMPT_REGISTRY, PromptType
 
+# ✅ NEW: dmptool JSON builder (you add this file in utils/)
+from utils.dmptool_json import build_dmptool_json
+
 
 # ===============================================================
 # CONFIGURATION MANAGER
@@ -263,23 +266,22 @@ class DMPPipeline:
             # DOCX conversion requires pandoc installed (pypandoc)
             pypandoc.convert_text(result, "docx", format="md", outputfile=str(docx_path))
 
+            # ✅ UPDATED: Write dmptool JSON format (only this part changed)
             with open(json_path, "w", encoding="utf-8") as f:
-                json.dump(
-                    {
-                        "title": title,
-                        "form_inputs": form_inputs,
-                        "template_used": str(self.template_md),
-                        "generated_markdown": result,
-                        "outputs": {
-                            "markdown_path": str(md_path),
-                            "docx_path": str(docx_path),
-                            "json_path": str(json_path),
-                        },
+                dmptool_obj = build_dmptool_json(
+                    title=title,
+                    form_inputs=form_inputs,
+                    generated_markdown=result,
+                    template_title="NIH DMS Plan Template",
+                    provenance="dmp_chef",
+                    outputs={
+                        "markdown_path": str(md_path),
+                        "docx_path": str(docx_path),
+                        "json_path": str(json_path),
                     },
-                    f,
-                    indent=2,
-                    ensure_ascii=False,
+                    template_used=str(self.template_md),
                 )
+                json.dump(dmptool_obj, f, indent=2, ensure_ascii=False)
 
             log.info("✅ DMP generated successfully (UI)", title=title)
             return result
