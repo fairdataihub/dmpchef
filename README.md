@@ -32,16 +32,25 @@ dmpchef/
 │── .env                    # Local environment variables (keys/config) — keep private; DO NOT commit
 │── .gitignore              # Git ignore rules (e.g., venv, __pycache__, logs, .env, local data)
 │
-├── config/                   # App/pipeline configuration
-│   ├── __init__.py           # Makes `config` importable as a package
-│   ├── config.yaml           # Main settings (models, paths, chunking, retriever params, etc.)
-│   ├── config_schema.py      # Schema/validation for config (pydantic/dataclasses validation)
-│   
-├── data/                   # Input documents / datasets (raw PDFs, processed chunks, sample inputs)
-├── model/                    # Model-related code + (optionally) persisted artifacts
-│   ├── __init__.py           # Makes `model` importable
-│   ├── models.py             # Model definitions / wrappers (LLM + embeddings config objects, etc.)
-│  
+├── config/                 # App/pipeline configuration
+│   ├── __init__.py         # Makes `config` importable as a package
+│   ├── config.yaml         # Main settings (models, paths, chunking, retriever params, etc.)
+│   └── config_schema.py    # Schema/validation for config (pydantic/dataclasses validation)
+│
+├── data/                   # Input documents / datasets / outputs
+│   ├── inputs/             # User-facing templates + example inputs
+│   │   ├── dmp-template.md                 # Markdown prompt template used by the LLM
+│   │   └── nih-dms-plan-template.docx      # NIH blank DOCX template (used to preserve exact Word formatting)
+│   ├── pdfs/               # NIH guidance PDFs used for RAG (config.paths.data_pdfs points here)
+│   └── outputs/            # Generated artifacts
+│       ├── md/             # Generated Markdown DMPs (config.paths.output_md points here)
+│       ├── docx/           # Generated DOCX DMPs (config.paths.output_docx points here)
+│       └── json/           # Generated JSON outputs (dmptool schema) (core_pipeline_UI writes here)
+│
+├── model/                  # Model-related code + (optionally) persisted artifacts
+│   ├── __init__.py         # Makes `model` importable
+│   └── models.py           # Model definitions / wrappers (LLM + embeddings config objects, etc.)
+│
 ├── src/                    # Main application source code (core pipeline + reusable modules)
 │   ├── __init__.py         # Package marker for `src`
 │   ├── core_pipeline_UI.py # Main RAG pipeline logic invoked by the app/UI (retrieve → prompt → generate)
@@ -62,10 +71,13 @@ dmpchef/
 ├── utils/                  # Shared helpers used across the project
 │   ├── __init__.py         # Package marker for `utils`
 │   ├── config_loader.py    # Loads/validates configuration (YAML/env), provides defaults
-│   └── model_loader.py     # Loads LLM/embeddings clients and related model settings
-│ 
+│   ├── model_loader.py     # Loads LLM/embeddings clients and related model settings
+│   ├── dmptool_json.py     # ✅ Builds dmptool JSON output schema (used by core_pipeline_UI)
+│   └── nih_docx_writer.py  # ✅ Fills NIH blank DOCX template to preserve exact Word formatting
+│
 ├── notebook_DMP_RAG/       # Notebooks / experiments / prototypes (not production code)
-└── venv/                     # Local virtual environment — ignore in git
+└── venv/                   # Local virtual environment — ignore in git
+
 
 ```
 ---
