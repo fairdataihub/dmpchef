@@ -10,7 +10,6 @@ import re
 import json
 from pathlib import Path
 from tqdm import tqdm
-import pypandoc
 import yaml
 
 from langchain_community.document_loaders import PyPDFLoader, PyMuPDFLoader
@@ -26,9 +25,9 @@ from exception.custom_exception import DocumentPortalException
 from logger.custom_logger import GLOBAL_LOGGER as log
 from prompt.prompt_library import PROMPT_REGISTRY, PromptType
 
-# ✅ NEW: dmptool JSON builder (add this file in utils/)
+# ✅ dmptool JSON builder (NEW format) — expects generated_markdown now
 from utils.dmptool_json import build_dmptool_json
-# ✅ NEW: dmptool word builder (add this file in utils/)
+# ✅ NIH Word builder
 from utils.nih_docx_writer import build_nih_docx_from_template
 
 
@@ -150,12 +149,10 @@ class DMPPipeline:
 
             for pdf in tqdm(pdf_files, desc="📥 Loading PDFs"):
                 try:
-                    # ✅ Preferred: robust for malformed fonts (avoids pypdf bbox crash)
                     loader = PyMuPDFLoader(str(pdf))
                     docs.extend(loader.load())
                 except Exception as e1:
                     try:
-                        # Fallback to PyPDFLoader
                         loader = PyPDFLoader(str(pdf))
                         docs.extend(loader.load())
                     except Exception as e2:
@@ -176,7 +173,6 @@ class DMPPipeline:
 
             if bad_pdfs:
                 log.warning("⚠️ Some PDFs were skipped", skipped=len(bad_pdfs))
-                # Optional: log the first skipped file for quick debugging
                 log.warning("First skipped PDF", first=bad_pdfs[0])
 
             chunk_size = self.config.get_rag_param("chunk_size") or 800
@@ -265,7 +261,7 @@ class DMPPipeline:
 
             md_path.write_text(result, encoding="utf-8")
 
-            # ✅ UPDATED: Build DOCX from NIH template (keeps exact Word formatting)
+            # ✅ Build DOCX from NIH Word template (keeps exact Word formatting)
             nih_template_docx = Path("data/inputs/nih-dms-plan-template.docx")
             build_nih_docx_from_template(
                 template_docx_path=str(nih_template_docx),
@@ -274,21 +270,16 @@ class DMPPipeline:
                 generated_markdown=result,
             )
 
-            # ✅ UPDATED: Write dmptool JSON format (only this part changed)
+            # ✅ JSON ends at Section 6, but stores generated plan inside Section 6 (question 2)
+            dmptool_obj = build_dmptool_json(
+                template_title="NIH DMS Plan Template",
+                project_title=title,
+                form_inputs=form_inputs,
+                generated_markdown=result,   # ✅ requires updated utils/dmptool_json.py signature
+                provenance="dmpchef",
+            )
+
             with open(json_path, "w", encoding="utf-8") as f:
-                dmptool_obj = build_dmptool_json(
-                    title=title,
-                    form_inputs=form_inputs,
-                    generated_markdown=result,
-                    template_title="NIH DMS Plan Template",
-                    provenance="dmp_chef",
-                    outputs={
-                        "markdown_path": str(md_path),
-                        "docx_path": str(docx_path),
-                        "json_path": str(json_path),
-                    },
-                    template_used=str(self.template_md),
-                )
                 json.dump(dmptool_obj, f, indent=2, ensure_ascii=False)
 
             log.info("✅ DMP generated successfully (UI)", title=title)
