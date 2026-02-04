@@ -59,7 +59,7 @@ dmpchef/
 │
 ├── src/                    # Main application source code (core pipeline + reusable modules)
 │   ├── __init__.py         # Package marker for `src`
-│   ├── core_pipeline.py # Main RAG pipeline logic invoked by the app/UI (retrieve → prompt → generate)
+│   ├── core_pipeline.py    # Main RAG pipeline logic invoked by main.py(retrieve → prompt → generate)
 │   └── NIH_data_ingestion.py   # Ingestion + preprocessing + indexing utilities (load PDFs, chunk, embed, store)
 │
 ├── prompt/                 # Prompt templates and prompt utilities
@@ -78,7 +78,7 @@ dmpchef/
 │   ├── __init__.py         # Package marker for `utils`
 │   ├── config_loader.py    # Loads/validates configuration (YAML/env), provides defaults
 │   ├── model_loader.py     # Loads LLM/embeddings clients and related model settings
-│   ├── dmptool_json.py     # Builds dmptool JSON output schema (used by core_pipeline_UI)
+│   ├── dmptool_json.py     # Builds dmptool JSON output schema (used by core_pipeline)
 │   └── nih_docx_writer.py  # Fills NIH blank DOCX template to preserve exact Word formatting
 │
 ├── notebook_DMP_RAG/       # Notebooks / experiments / prototypes (not production code)
