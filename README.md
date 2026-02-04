@@ -155,7 +155,7 @@ pip install -r requirements.txt
 pip install -e .
 
 # build index 
-python src/data_ingestion.py
+python src/NIH_data_ingestion.py
 # run pipeline 
 python main.py
 ```
