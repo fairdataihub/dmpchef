@@ -1,10 +1,11 @@
-# app.py  (JSON in -> Markdown + NIH-template DOCX + ONLY DMPTool JSON)
-# ✅ also removes any other JSON files for this title (keeps ONLY <safe_title>.dmptool.json)
+# main.py  (JSON in -> Markdown + NIH-template DOCX + ONLY DMPTool JSON)
+# ✅ supports RAG toggle via input JSON:  "use_rag": true/false  (or CLI --use_rag)
+# ✅ keeps ONLY <safe_title>.dmptool.json (deletes other title*.json)
 
 import json
 import re
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from src.core_pipeline import DMPPipeline
 from utils.dmptool_json import build_dmptool_json
@@ -38,6 +39,7 @@ def main(
     out_root: str = "data/outputs",
     config_path: str = "config/config.yaml",
     nih_template_path: str = "data/inputs/nih-dms-plan-template.docx",
+    use_rag: Optional[bool] = None,  # None => use YAML default (rag.enabled)
 ):
     # ---- Resolve + validate input path ----
     in_path = Path(input_json_path).expanduser().resolve()
@@ -56,6 +58,13 @@ def main(
     if not st:
         raise ValueError("Safe filename is empty. Please provide a valid title.")
 
+    # RAG toggle priority:
+    # 1) CLI arg (if provided)
+    # 2) JSON field "use_rag"
+    # 3) YAML default rag.enabled inside pipeline
+    if use_rag is None and "use_rag" in req:
+        use_rag = bool(req.get("use_rag"))
+
     # Output folders
     out_root = Path(out_root).expanduser().resolve()
     out_json = out_root / "json"
@@ -65,9 +74,9 @@ def main(
     ensure_dir(out_md)
     ensure_dir(out_docx)
 
-    # Run pipeline
+    # Run pipeline (returns markdown)
     pipeline = DMPPipeline(config_path=config_path, force_rebuild_index=False)
-    md_text = pipeline.generate_dmp(title, inputs)
+    md_text = pipeline.generate_dmp(title, inputs, use_rag=use_rag)
 
     # ✅ Save Markdown output
     md_path = out_md / f"{st}.md"
@@ -83,9 +92,7 @@ def main(
     )
     dmptool_json_path = out_json / f"{st}.dmptool.json"
 
-    # remove any duplicates for this title (old files, pipeline outputs, etc.)
     cleanup_title_json(out_json, st)
-
     dmptool_json_path.write_text(json.dumps(dmptool_payload, indent=2), encoding="utf-8")
 
     # ✅ NIH template DOCX
@@ -93,7 +100,7 @@ def main(
     if not template_path.exists():
         raise FileNotFoundError(
             f"NIH template DOCX not found: {template_path}\n"
-            f'Fix: python app.py --nih_template "PATH\\TO\\nih-dms-plan-template.docx"'
+            f'Fix: python main.py --nih_template "PATH\\TO\\nih-dms-plan-template.docx"'
         )
 
     docx_path = out_docx / f"{st}.docx"
@@ -104,8 +111,12 @@ def main(
         generated_markdown=md_text,
     )
 
+    # Print final mode
+    final_mode = pipeline.use_rag_default if use_rag is None else use_rag
+
     print("✅ Done")
     print(f"- Input: {in_path}")
+    print(f"- use_rag: {final_mode}")
     print(f"- Markdown: {md_path}")
     print(f"- DMPTool JSON: {dmptool_json_path}")
     print(f"- NIH DOCX: {docx_path}")
@@ -120,11 +131,25 @@ if __name__ == "__main__":
     parser.add_argument("--out_root", default="data/outputs")
     parser.add_argument("--config", default="config/config.yaml")
     parser.add_argument("--nih_template", default="data/inputs/nih-dms-plan-template.docx")
+
+    # Optional toggle:
+    #   python main.py --use_rag true
+    #   python main.py --use_rag false
+    # If omitted => uses JSON "use_rag" if present; otherwise YAML rag.enabled
+    parser.add_argument("--use_rag", choices=["true", "false"], default=None)
+
     args = parser.parse_args()
+
+    use_rag_val: Optional[bool] = None
+    if args.use_rag == "true":
+        use_rag_val = True
+    elif args.use_rag == "false":
+        use_rag_val = False
 
     main(
         input_json_path=args.input,
         out_root=args.out_root,
         config_path=args.config,
         nih_template_path=args.nih_template,
+        use_rag=use_rag_val,
     )

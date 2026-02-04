@@ -1,9 +1,8 @@
 # ===============================================================
-# core_pipeline_UI.py — Web-Integrated RAG Core (Fixed + Stable)
-# - Fixes FAISS '__fields_set__' load crash by auto-rebuilding index
-# - Formats retrieved docs into a STRING (prompt-friendly)
-# - Builds vectorstore/retriever/chain ONCE at init (fast for UI)
-# - Robust PDF loading: PyMuPDFLoader primary, PyPDFLoader fallback, skip bad PDFs
+# core_pipeline.py — RAG Toggle + No extra JSON
+# - RAG toggle per call OR via YAML (rag.enabled)
+# - NO-RAG mode does NOT load FAISS / retriever / RAG chain
+# - Saves: Markdown + NIH-template DOCX + ONLY DMPTool JSON
 # ===============================================================
 
 import re
@@ -11,6 +10,7 @@ import json
 from pathlib import Path
 from tqdm import tqdm
 import yaml
+from typing import Optional
 
 from langchain_community.document_loaders import PyPDFLoader, PyMuPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -25,9 +25,7 @@ from exception.custom_exception import DocumentPortalException
 from logger.custom_logger import GLOBAL_LOGGER as log
 from prompt.prompt_library import PROMPT_REGISTRY, PromptType
 
-# ✅ dmptool JSON builder (NEW format) — expects generated_markdown now
 from utils.dmptool_json import build_dmptool_json
-# ✅ NIH Word builder
 from utils.nih_docx_writer import build_nih_docx_from_template
 
 
@@ -68,12 +66,12 @@ class ConfigManager:
 # MAIN PIPELINE CLASS
 # ===============================================================
 class DMPPipeline:
-    """End-to-end pipeline for NIH DMP generation via web input."""
+    """End-to-end pipeline for NIH DMP generation (RAG optional)."""
 
     def __init__(self, config_path="config/config.yaml", force_rebuild_index: bool = False):
         try:
-            # --- Load configuration ---
             self.config = ConfigManager(config_path)
+            self.force_rebuild_index = force_rebuild_index
 
             self.data_pdfs = self.config.get_path("data_pdfs")
             self.index_dir = self.config.get_path("index_dir")
@@ -81,38 +79,43 @@ class DMPPipeline:
             self.output_docx = self.config.get_path("output_docx")
             self.output_json = Path("data/outputs/json")
 
-            # Template path (can be moved into YAML later)
+            # Template path
             self.template_md = Path("data/inputs/dmp-template.md")
 
-            # Create output dirs
+            # Create output dirs (index_dir is created, but FAISS is not loaded unless needed)
             for p in [self.output_md, self.output_docx, self.output_json, self.index_dir]:
                 p.mkdir(parents=True, exist_ok=True)
 
-            # --- Load template file ---
             if not self.template_md.exists():
                 raise FileNotFoundError(f"❌ DMP template not found: {self.template_md}")
             self.template_text = self.template_md.read_text(encoding="utf-8")
 
-            # --- Load models ---
+            # Models
             self.model_loader = ModelLoader()
             self.embeddings = self.model_loader.load_embeddings()
             self.llm_name = self.model_loader.llm_name
             self.llm = Ollama(model=self.llm_name)
 
-            # --- Load prompt template from registry ---
+            # Prompt template
             self.prompt_template = PROMPT_REGISTRY[PromptType.NIH_DMP.value]
 
-            # --- Build / load index ONCE (UI performance) ---
-            self.vectorstore = self._load_or_build_index(force_rebuild=force_rebuild_index)
+            # YAML default (rag.enabled). If missing => True.
+            enabled_val = self.config.get_rag_param("enabled")
+            self.use_rag_default = True if enabled_val is None else bool(enabled_val)
 
-            # --- Create retriever ONCE ---
-            top_k = self.config.get_rag_param("retriever_top_k") or 6
-            self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": top_k})
+            # Build NO-RAG chain only (cheap)
+            self.no_rag_chain = self._build_no_rag_chain()
 
-            # --- Build RAG chain ONCE ---
-            self.rag_chain = self._build_rag_chain(self.retriever)
+            # Lazy RAG fields (built only if use_rag=True)
+            self.vectorstore = None
+            self.retriever = None
+            self.rag_chain = None
 
-            log.info("✅ DMPPipeline initialized (UI-ready, stable FAISS load, formatted context)")
+            log.info(
+                "✅ DMPPipeline initialized",
+                llm=self.llm_name,
+                rag_default=self.use_rag_default,
+            )
 
         except Exception as e:
             log.error("❌ Failed to initialize DMPPipeline", error=str(e))
@@ -121,9 +124,8 @@ class DMPPipeline:
     # ---------------------------------------------------------------
     def _load_or_build_index(self, force_rebuild: bool = False):
         """
-        Load or build FAISS vector index.
-        If loading fails (pickle mismatch e.g., '__fields_set__'), rebuild automatically.
-        Also robustly loads PDFs: PyMuPDFLoader primary, PyPDFLoader fallback, skip bad PDFs.
+        Load or build FAISS vector index (ONLY when RAG is enabled).
+        Robust PDF loading: PyMuPDFLoader primary, PyPDFLoader fallback.
         """
         try:
             faiss_path = self.index_dir / "index.faiss"
@@ -139,7 +141,6 @@ class DMPPipeline:
                 except Exception as e:
                     log.warning(f"⚠️ Failed to load FAISS index. Rebuilding... Reason: {e}")
 
-            # ---- rebuild path ----
             pdf_files = sorted(self.data_pdfs.glob("*.pdf"))
             if not pdf_files:
                 raise FileNotFoundError(f"❌ No PDFs found in: {self.data_pdfs}")
@@ -226,14 +227,81 @@ class DMPPipeline:
             raise DocumentPortalException("RAG chain build error", e)
 
     # ---------------------------------------------------------------
-    def generate_dmp(self, title: str, form_inputs: dict):
-        """Generate NIH DMP dynamically from user web form input."""
+    def _build_no_rag_chain(self):
+        """Build chain without retrieval (context is empty)."""
+        try:
+            no_rag_chain = (
+                RunnableMap(
+                    {
+                        "context": lambda x: "",
+                        "question": lambda x: x["input"],
+                    }
+                )
+                | self.prompt_template
+                | self.llm
+                | StrOutputParser()
+            )
+
+            log.info("🔗 No-RAG chain built successfully", llm=self.llm_name)
+            return no_rag_chain
+
+        except Exception as e:
+            raise DocumentPortalException("No-RAG chain build error", e)
+
+    # ---------------------------------------------------------------
+    def _ensure_rag_ready(self):
+        """Lazy-init FAISS + retriever + rag_chain ONLY when needed."""
+        if self.rag_chain is not None and self.retriever is not None and self.vectorstore is not None:
+            return
+
+        self.vectorstore = self._load_or_build_index(force_rebuild=self.force_rebuild_index)
+
+        top_k = self.config.get_rag_param("retriever_top_k") or 6
+        self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": top_k})
+
+        self.rag_chain = self._build_rag_chain(self.retriever)
+
+        log.info("✅ RAG components initialized", llm=self.llm_name, top_k=top_k)
+
+    # ---------------------------------------------------------------
+    def _cleanup_title_json(self, safe_title: str):
+        """
+        Remove any old JSONs for this title except the dmptool JSON.
+        Helps avoid duplicates from older runs.
+        """
+        keep = f"{safe_title}.dmptool.json"
+        for p in self.output_json.glob(f"{safe_title}*.json"):
+            if p.name != keep:
+                try:
+                    p.unlink()
+                except Exception:
+                    pass
+
+    # ---------------------------------------------------------------
+    def generate_dmp(self, title: str, form_inputs: dict, use_rag: Optional[bool] = None):
+        """
+        Generate NIH DMP from inputs.
+
+        use_rag:
+          - True  => use retrieval (loads FAISS lazily)
+          - False => no retrieval (never touches FAISS)
+          - None  => use YAML default rag.enabled
+        """
         try:
             title = (title or "").strip()
             if not title:
                 raise ValueError("❌ Title is required.")
 
-            # --- Combine user-provided form input ---
+            use_rag_final = self.use_rag_default if use_rag is None else bool(use_rag)
+
+            # choose chain
+            if use_rag_final:
+                self._ensure_rag_ready()
+                chain = self.rag_chain
+            else:
+                chain = self.no_rag_chain
+
+            # user inputs block
             user_elements = [
                 f"{key.replace('_',' ').title()}: {val}".strip()
                 for key, val in (form_inputs or {}).items()
@@ -244,24 +312,35 @@ class DMPPipeline:
                 f"You are an NIH data steward and grant writer. "
                 f"Create a complete NIH Data Management and Sharing Plan (DMSP) "
                 f"for the project titled '{title}'.\n\n"
-                f"Use retrieved NIH context to help ensure NIH-aligned language.\n\n"
                 f"User Inputs:\n{chr(10).join(user_elements)}\n\n"
                 f"Use the following NIH DMSP Markdown template. Do not alter section titles:\n"
                 f"{self.template_text}"
             )
 
-            # --- Generate ---
-            result = self.rag_chain.invoke({"input": query})
+            # Only mention retrieval when actually using RAG (keeps behavior clean)
+            if use_rag_final:
+                query = (
+                    f"You are an NIH data steward and grant writer. "
+                    f"Create a complete NIH Data Management and Sharing Plan (DMSP) "
+                    f"for the project titled '{title}'.\n\n"
+                    f"Use retrieved NIH context to help ensure NIH-aligned language.\n\n"
+                    f"User Inputs:\n{chr(10).join(user_elements)}\n\n"
+                    f"Use the following NIH DMSP Markdown template. Do not alter section titles:\n"
+                    f"{self.template_text}"
+                )
 
-            # --- Save outputs ---
+            # generate
+            result = chain.invoke({"input": query})
+
+            # save outputs
             safe_title = re.sub(r'[\\/*?:"<>|]', "_", title).strip()
             md_path = self.output_md / f"{safe_title}.md"
             docx_path = self.output_docx / f"{safe_title}.docx"
-            json_path = self.output_json / f"{safe_title}.json"
+            dmptool_json_path = self.output_json / f"{safe_title}.dmptool.json"
 
             md_path.write_text(result, encoding="utf-8")
 
-            # ✅ Build DOCX from NIH Word template (keeps exact Word formatting)
+            # NIH DOCX (exact template formatting)
             nih_template_docx = Path("data/inputs/nih-dms-plan-template.docx")
             build_nih_docx_from_template(
                 template_docx_path=str(nih_template_docx),
@@ -270,19 +349,28 @@ class DMPPipeline:
                 generated_markdown=result,
             )
 
-            # ✅ JSON ends at Section 6, but stores generated plan inside Section 6 (question 2)
             dmptool_obj = build_dmptool_json(
-                template_title="NIH DMS Plan Template",
+                template_title="NIH Data Management and Sharing Plan",
                 project_title=title,
                 form_inputs=form_inputs,
-                generated_markdown=result,   # ✅ requires updated utils/dmptool_json.py signature
+                generated_markdown=result,
                 provenance="dmpchef",
             )
 
-            with open(json_path, "w", encoding="utf-8") as f:
+            # prevent duplicates
+            self._cleanup_title_json(safe_title)
+
+            with open(dmptool_json_path, "w", encoding="utf-8") as f:
                 json.dump(dmptool_obj, f, indent=2, ensure_ascii=False)
 
-            log.info("✅ DMP generated successfully (UI)", title=title)
+            log.info(
+                "✅ DMP generated successfully",
+                title=title,
+                use_rag=use_rag_final,
+                md=str(md_path),
+                docx=str(docx_path),
+                dmptool_json=str(dmptool_json_path),
+            )
             return result
 
         except Exception as e:

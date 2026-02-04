@@ -1,5 +1,6 @@
 {
   "title": "NIH Data Management and Sharing Plan: Imaging + Tabular Clinical Outcomes Study",
+  "use_rag": false,
   "inputs": {
     "research_context": "This project evaluates whether multimodal data—clinical imaging paired with structured EHR-derived variables—can improve prediction of predefined clinical outcomes. Analyses will include model development, validation, and generation of derived datasets (e.g., features and summary tables) to support reproducibility.",
     "data_types": "Raw and processed medical images (DICOM), structured tabular datasets (CSV) containing de-identified participant-level variables, derived analytic features/embeddings, model artifacts (e.g., code, configuration files), and supporting documentation (data dictionaries, README files, and protocols in PDF/Markdown).",
