@@ -126,7 +126,7 @@ pip install -r requirements.txt
 ### Step 4 — Run the pipeline
 
 ```bash
-python app.py
+python main.py
 ```
 ---
 
