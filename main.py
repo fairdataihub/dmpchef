@@ -1,6 +1,6 @@
 # main.py  (JSON in -> Markdown + NIH-template DOCX + ONLY DMPTool JSON)
 # ✅ supports RAG toggle via input JSON:  "use_rag": true/false  (or CLI --use_rag)
-# ✅ keeps ONLY <safe_title>.dmptool.json (deletes other title*.json)
+
 
 import json
 import re
