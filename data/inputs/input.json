@@ -1,0 +1,11 @@
+{
+  "title": "NIH Data Management and Sharing Plan: Imaging + Tabular Clinical Outcomes Study",
+  "inputs": {
+    "research_context": "This project evaluates whether multimodal data—clinical imaging paired with structured EHR-derived variables—can improve prediction of predefined clinical outcomes. Analyses will include model development, validation, and generation of derived datasets (e.g., features and summary tables) to support reproducibility.",
+    "data_types": "Raw and processed medical images (DICOM), structured tabular datasets (CSV) containing de-identified participant-level variables, derived analytic features/embeddings, model artifacts (e.g., code, configuration files), and supporting documentation (data dictionaries, README files, and protocols in PDF/Markdown).",
+    "data_source": "Data will be collected from human participants enrolled under an approved study protocol and from imaging acquired during standard clinical care using clinical imaging instruments. Structured variables will be obtained from clinical systems and study case report forms, then curated into analysis-ready datasets.",
+    "human_subjects": "Yes. The study includes human participant data. Prior to sharing, datasets will be de-identified to the extent possible and reviewed to minimize re-identification risk (e.g., removal of direct identifiers and application of appropriate de-identification procedures for imaging and associated metadata).",
+    "consent_status": "Participant consent permits broad sharing of de-identified data when feasible. If any data cannot be sufficiently de-identified or consent/agreements require restrictions, those data will be shared via controlled-access mechanisms with appropriate data use agreements and review.",
+    "data_volume": "Estimated total volume is ~200 GB. Imaging data will be maintained and shared in DICOM format when appropriate; tabular datasets will be shared as CSV; and documentation will be provided in PDF/Markdown with accompanying README and data dictionaries."
+  }
+}

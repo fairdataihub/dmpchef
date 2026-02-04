@@ -18,14 +18,15 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 
 ## Main files
 - **[`src/data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/data_ingestion.py)** — Loads, cleans, and chunks documents; builds the vector index.
-- **[`src/core_pipeline_UI.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline_UI.py)** — Retrieves relevant chunks and generates the final output.
+- **[`src/core_pipeline_UI.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline_UI.py)** — Core RAG pipeline logic (retrieve → prompt → generate).
+- **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** — Command-line entry point for running the pipeline end-to-end.
 
 ---
 
 ## Repository Structure
 ```text
 dmpchef/
-│── app.py                  # FastAPI entry point (defines `app = FastAPI()` + API routes). Run: `uvicorn app:app --reload`
+│── main.py                  # # Main script for running the pipeline end-to-end
 │── README.md               # Project overview, setup instructions, usage examples, API docs
 │── requirements.txt        # Python dependencies for `pip install -r requirements.txt`
 │── setup.py                # Optional packaging config (enables `pip install -e .` for editable installs)
@@ -40,12 +41,13 @@ dmpchef/
 ├── data/                   # Input documents / datasets / outputs
 │   ├── inputs/             # User-facing templates + example inputs
 │   │   ├── dmp-template.md                 # Markdown prompt template used by the LLM
-│   │   └── nih-dms-plan-template.docx      # NIH blank DOCX template (used to preserve exact Word formatting)
+│   │   ├── nih-dms-plan-template.docx      # NIH blank DOCX template (used to preserve exact Word formatting)
+│   │   └── inputs.json                     # hson schema DMPtools
 │   ├── pdfs/               # NIH guidance PDFs used for RAG (config.paths.data_pdfs points here)
 │   └── outputs/            # Generated artifacts
-│       ├── md/             # Generated Markdown DMPs (config.paths.output_md points here)
-│       ├── docx/           # Generated DOCX DMPs (config.paths.output_docx points here)
-│       └── json/           # Generated JSON outputs (dmptool schema) (core_pipeline_UI writes here)
+│       ├── md/             # Generated Markdown DMPs (NIH format)
+│       ├── docx/           # Generated DOCX DMPs (NIH Format)
+│       └── json/           # Generated JSON outputs (dmptool schema) 
 │
 ├── model/                  # Model-related code + (optionally) persisted artifacts
 │   ├── __init__.py         # Makes `model` importable
@@ -72,8 +74,8 @@ dmpchef/
 │   ├── __init__.py         # Package marker for `utils`
 │   ├── config_loader.py    # Loads/validates configuration (YAML/env), provides defaults
 │   ├── model_loader.py     # Loads LLM/embeddings clients and related model settings
-│   ├── dmptool_json.py     # ✅ Builds dmptool JSON output schema (used by core_pipeline_UI)
-│   └── nih_docx_writer.py  # ✅ Fills NIH blank DOCX template to preserve exact Word formatting
+│   ├── dmptool_json.py     # Builds dmptool JSON output schema (used by core_pipeline_UI)
+│   └── nih_docx_writer.py  # Fills NIH blank DOCX template to preserve exact Word formatting
 │
 ├── notebook_DMP_RAG/       # Notebooks / experiments / prototypes (not production code)
 └── venv/                   # Local virtual environment — ignore in git
@@ -102,12 +104,6 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-
-(Optional, recommended for development)
-```bash
-pip install -e .
-```
-
 ---
 
 ### Step 3 — Run the Pipeline (Ingestion + Indexing)
@@ -122,28 +118,23 @@ pip install -e .
 - Delete the saved index folder (often `data/index/`) and run ingestion again
 
 ---
-
-### Step 4 — Start the Web App (FastAPI)
-Start the server from the project root (where `app.py` is):
+### Step 4 — Run the pipeline (no UI)
 
 ```bash
-uvicorn app:app --reload
+python app.py
 ```
 ---
-Open in your browser:
-- `http://127.0.0.1:8000/`
 
-## Generate a DMP (Web UI)
-1. Open the NIH Data Management Plan Generator page.
-2. Fill in the form fields (Project Title, research summary, data types/source, human subjects + consent, volume/format).
-3. Click **Generate DMP**.
+## Inputs
 
-> Generation time depends on your CPU/GPU.
+- Reference documents (e.g., NIH guidance PDFs) used for retrieval  
+- User/project metadata (example in `data/inputs/inputs.json`)
 
-### Outputs
+## Outputs
+
 - **JSON** (structured)
 - **Markdown** (NIH-style narrative)
-
+- **DOCX** (optional; preserves NIH template formatting when enabled)
 
 ---
 
@@ -164,13 +155,8 @@ pip install -e .
 
 # build index (example)
 python src/data_ingestion.py
+python main.py
 
-# start app
-uvicorn app:app --reload
-```
-
-Then open:
-- `http://127.0.0.1:8000/`
 ---
 
 ## License
