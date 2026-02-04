@@ -154,8 +154,9 @@ pip install -r requirements.txt
 # optional: install package
 pip install -e .
 
-# build index (example)
+# build index 
 python src/data_ingestion.py
+# run pipeline 
 python main.py
 ```
 ---
