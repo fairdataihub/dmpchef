@@ -118,7 +118,7 @@ pip install -r requirements.txt
 - Delete the saved index folder (often `data/index/`) and run ingestion again
 
 ---
-### Step 4 — Run the pipeline (no UI)
+### Step 4 — Run the pipeline
 
 ```bash
 python app.py
