@@ -17,7 +17,7 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 
 
 ## Main files
-- **[`src/data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/data_ingestion.py)** — Loads, cleans, and chunks documents; builds the vector index.
+- **[`src/NIH_data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/NIH_data_ingestion.py)** — Loads, cleans, and chunks documents; builds the vector index.
 - **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core RAG pipeline logic (retrieve → prompt → generate).
 - **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** — Command-line entry point for running the pipeline end-to-end.
 
@@ -56,7 +56,7 @@ dmpchef/
 ├── src/                    # Main application source code (core pipeline + reusable modules)
 │   ├── __init__.py         # Package marker for `src`
 │   ├── core_pipeline.py # Main RAG pipeline logic invoked by the app/UI (retrieve → prompt → generate)
-│   └── data_ingestion.py   # Ingestion + preprocessing + indexing utilities (load PDFs, chunk, embed, store)
+│   └── NIH_data_ingestion.py   # Ingestion + preprocessing + indexing utilities (load PDFs, chunk, embed, store)
 │
 ├── prompt/                 # Prompt templates and prompt utilities
 │   ├── __init__.py         # Package marker for `prompt`
@@ -112,7 +112,7 @@ pip install -r requirements.txt
 
 **Workflow**
 1. Add reference documents to: `data/`
-2. Run `src/data_ingestion.py` once to build the index (or enable rebuild)
+2. Run `src/NIH_data_ingestion.py` once to build the index (or enable rebuild)
 
 **Rebuild the index (if needed)**
 - Set `force_rebuild_index=True` in your config/YAML, **or**
