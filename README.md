@@ -26,7 +26,7 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 ## Repository Structure
 ```text
 dmpchef/
-│── main.py                  # # Main script for running the pipeline end-to-end
+│── main.py                 # Main script for running the pipeline end-to-end
 │── README.md               # Project overview, setup instructions, usage examples, API docs
 │── requirements.txt        # Python dependencies for `pip install -r requirements.txt`
 │── setup.py                # Optional packaging config (enables `pip install -e .` for editable installs)
@@ -156,7 +156,7 @@ pip install -e .
 # build index (example)
 python src/data_ingestion.py
 python main.py
-
+```
 ---
 
 ## License
