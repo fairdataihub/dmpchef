@@ -106,7 +106,8 @@ pip install -r requirements.txt
 ```
 ---
 
-### Step 3 — Run the Pipeline (Ingestion + Indexing)
+### Step 3 — ### Step 3 — Build the Index (One-time setup)
+**When to run this:** Run ingestion **once** during initial setup (or anytime you add/update reference documents or change chunking/embedding settings).
 **What happens:** the app reads documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
 
 **Workflow**
