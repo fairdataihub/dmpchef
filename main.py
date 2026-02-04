@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Dict, Any
 
-from src.core_pipeline_UI import DMPPipeline
+from src.core_pipeline import DMPPipeline
 from utils.dmptool_json import build_dmptool_json
 from utils.nih_docx_writer import build_nih_docx_from_template
 

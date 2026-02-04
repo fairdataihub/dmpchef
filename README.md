@@ -18,7 +18,7 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 
 ## Main files
 - **[`src/data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/data_ingestion.py)** — Loads, cleans, and chunks documents; builds the vector index.
-- **[`src/core_pipeline_UI.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline_UI.py)** — Core RAG pipeline logic (retrieve → prompt → generate).
+- **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core RAG pipeline logic (retrieve → prompt → generate).
 - **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** — Command-line entry point for running the pipeline end-to-end.
 
 ---
@@ -55,7 +55,7 @@ dmpchef/
 │
 ├── src/                    # Main application source code (core pipeline + reusable modules)
 │   ├── __init__.py         # Package marker for `src`
-│   ├── core_pipeline_UI.py # Main RAG pipeline logic invoked by the app/UI (retrieve → prompt → generate)
+│   ├── core_pipeline.py # Main RAG pipeline logic invoked by the app/UI (retrieve → prompt → generate)
 │   └── data_ingestion.py   # Ingestion + preprocessing + indexing utilities (load PDFs, chunk, embed, store)
 │
 ├── prompt/                 # Prompt templates and prompt utilities
