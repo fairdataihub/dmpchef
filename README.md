@@ -5,7 +5,9 @@
 [![DOI](https://img.shields.io/badge/DOI-pending-9e9e9e?style=flat-square)](#how-to-cite)
 
 # DMP Chef
-DMP Chef is an open-source (MIT License), Python-based pipeline that draft funder-compliant **Data Management & Sharing Plan (DMPs)** using a **Large Language Model (LLM)**. It supports two modes entirely in Python:
+DMP Chef is an open-source (MIT License), Python-based pipeline that draft funder-compliant **Data Management & Sharing Plan (DMPs)** using a **Large Language Model (LLM)**. 
+
+It supports two modes entirely in Python:
 - **RAG**: Retrieves NIH-related guidance from an indexed document collection and uses it to ground the draft. In this mode, the pipeline can **ingest documents**, **build and search an index**, and **draft a DMP**.
 - **No-RAG**: Generates the draft only from the user’s project inputs (no retrieval).
 
