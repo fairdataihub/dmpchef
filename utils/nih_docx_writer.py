@@ -28,7 +28,8 @@ PROMPT_ANCHORS: List[Tuple[str, List[str]]] = [
 
 # ---------- DOCX helpers ----------
 
-def _insert_paragraph_after(paragraph: Paragraph, text: str, style_name: Optional[str] = None) -> Paragraph:
+def _insert_paragraph_after(paragraph: Paragraph, text: str = "", style_name: Optional[str] = None) -> Paragraph:
+    """Insert a new paragraph after an existing paragraph (python-docx safe)."""
     new_p = OxmlElement("w:p")
     paragraph._p.addnext(new_p)
     new_para = Paragraph(new_p, paragraph._parent)
@@ -46,13 +47,14 @@ def _insert_paragraph_after(paragraph: Paragraph, text: str, style_name: Optiona
 
 
 def _delete_paragraph(paragraph: Paragraph) -> None:
+    """Remove a paragraph from the document."""
     p = paragraph._element
     p.getparent().remove(p)
     paragraph._p = paragraph._element = None  # type: ignore
 
 
 def _normalize_ws_after(doc: Document, idx: int) -> None:
-    """Delete all consecutive blank paragraphs starting at idx."""
+    """Delete ALL consecutive blank paragraphs starting at idx."""
     j = idx
     while j < len(doc.paragraphs):
         p = doc.paragraphs[j]
@@ -71,18 +73,6 @@ def _find_anchor_paragraph_index(doc: Document, anchor_aliases: List[str]) -> Op
     return None
 
 
-def _write_answer_after_anchor(doc: Document, anchor_aliases: List[str], answer: str) -> None:
-    idx = _find_anchor_paragraph_index(doc, anchor_aliases)
-    if idx is None:
-        return
-
-    anchor_p = doc.paragraphs[idx]
-    style_to_use = anchor_p.style.name if anchor_p.style else None
-
-    _normalize_ws_after(doc, idx + 1)
-    _insert_paragraph_after(anchor_p, answer.strip(), style_name=style_to_use)
-
-
 def _remove_placeholder_only_paragraphs(doc: Document) -> None:
     placeholders = {k.lower() for k, _ in PROMPT_ANCHORS}
     for p in doc.paragraphs:
@@ -90,10 +80,133 @@ def _remove_placeholder_only_paragraphs(doc: Document) -> None:
             p.text = ""
 
 
+def _copy_paragraph_format(dst: Paragraph, src: Paragraph) -> None:
+    """
+    Copy indent/spacing/alignment from src paragraph to dst paragraph so the answer aligns
+    exactly like the NIH template.
+    """
+    dpf = dst.paragraph_format
+    spf = src.paragraph_format
+
+    # Indentation
+    dpf.left_indent = spf.left_indent
+    dpf.right_indent = spf.right_indent
+    dpf.first_line_indent = spf.first_line_indent
+
+    # Spacing
+    dpf.space_before = spf.space_before
+    dpf.space_after = spf.space_after
+    dpf.line_spacing = spf.line_spacing
+
+    # Alignment / pagination
+    dpf.alignment = spf.alignment
+    dpf.keep_together = spf.keep_together
+    dpf.keep_with_next = spf.keep_with_next
+    dpf.page_break_before = spf.page_break_before
+    dpf.widow_control = spf.widow_control
+
+
+def _add_answer_paragraph_after(
+    anchor: Paragraph,
+    text: str,
+    style_name: Optional[str],
+    format_source: Paragraph,
+) -> Paragraph:
+    """
+    Add a paragraph after anchor, using:
+      - style_name (usually the template answer line style)
+      - paragraph_format copied from format_source (indentation/spacing)
+    """
+    p = _insert_paragraph_after(anchor, "", style_name=style_name)
+    _copy_paragraph_format(p, format_source)
+    if text:
+        p.add_run(text)
+    return p
+
+
+def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: str) -> None:
+    """
+    Insert answer after the NIH prompt, formatted like the template:
+      - normal paragraphs aligned under the prompt (indent copied)
+      - exactly one blank line between paragraphs and between sections
+      - list lines ("- ...") become normal paragraphs (no bullet indentation)
+    """
+    idx = _find_anchor_paragraph_index(doc, anchor_aliases)
+    if idx is None:
+        return
+
+    anchor_p = doc.paragraphs[idx]
+
+    # Prefer style/format from the template's answer line (often the blank paragraph right after the prompt)
+    style_name = anchor_p.style.name if anchor_p.style else None
+    format_source = anchor_p
+
+    if idx + 1 < len(doc.paragraphs):
+        nxt = doc.paragraphs[idx + 1]
+        # If the template has a blank "answer line" paragraph, copy its style/format
+        if (nxt.text or "").strip() == "":
+            format_source = nxt
+            if nxt.style:
+                style_name = nxt.style.name
+
+    # Remove ALL blank paragraphs right after the anchor prompt
+    _normalize_ws_after(doc, idx + 1)
+
+    answer = (answer or "").replace("\r\n", "\n").replace("\r", "\n").strip()
+    if not answer:
+        # keep one blank answer line (matches template feel)
+        _add_answer_paragraph_after(anchor_p, "", style_name, format_source)
+        return
+
+    # Turn the answer into a list of paragraphs separated by blank lines.
+    # Also turn "- item" into its own paragraph "item" (no bullet style).
+    raw_lines = [ln.rstrip() for ln in answer.split("\n")]
+    paragraphs: List[str] = []
+    buf: List[str] = []
+
+    def flush_buf():
+        nonlocal buf
+        joined = " ".join([x.strip() for x in buf if x.strip()]).strip()
+        if joined:
+            paragraphs.append(joined)
+        buf = []
+
+    for ln in raw_lines:
+        s = ln.strip()
+        if s == "":
+            flush_buf()
+            continue
+
+        if s.startswith("- "):
+            flush_buf()
+            paragraphs.append(s[2:].strip())
+            continue
+
+        if s.startswith("• "):
+            flush_buf()
+            paragraphs.append(s[2:].strip())
+            continue
+
+        buf.append(s)
+
+    flush_buf()
+
+    # Write paragraphs with EXACTLY one blank line between them
+    last_p = anchor_p
+    for i, para_text in enumerate(paragraphs):
+        last_p = _add_answer_paragraph_after(last_p, para_text, style_name, format_source)
+
+        # one blank line between paragraphs (not after last)
+        if i != len(paragraphs) - 1:
+            last_p = _add_answer_paragraph_after(last_p, "", style_name, format_source)
+
+    # one blank line after the whole block (between sections)
+    _add_answer_paragraph_after(last_p, "", style_name, format_source)
+
+
 # ---------- Markdown parsing for YOUR output format ----------
 
 def _strip_markdown_keep_structure(md: str) -> str:
-    """Keep headings, remove links/emphasis, normalize whitespace."""
     if not md:
         return ""
     text = md.replace("\r\n", "\n").replace("\r", "\n")
@@ -101,7 +214,7 @@ def _strip_markdown_keep_structure(md: str) -> str:
     # [text](url) -> text
     text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
 
-    # remove bold/italic markers but keep content
+    # remove emphasis markers
     text = text.replace("**", "").replace("*", "")
 
     # collapse excessive blank lines
@@ -111,12 +224,6 @@ def _strip_markdown_keep_structure(md: str) -> str:
 
 
 def _split_into_heading_blocks(text: str) -> List[Tuple[str, str]]:
-    """
-    Split by headings:
-      - 'Element X: ...' lines (may appear as plain after stripping **)
-      - '### ...' lines
-    Returns list of (heading, content_until_next_heading)
-    """
     lines = text.split("\n")
     blocks: List[Tuple[str, List[str]]] = []
 
@@ -153,30 +260,9 @@ def _split_into_heading_blocks(text: str) -> List[Tuple[str, str]]:
 
 
 def _extract_blocks_from_generated_markdown(generated_markdown: str) -> Dict[str, str]:
-    """
-    Map YOUR headings to e*_q* keys.
-
-    Expected headings in your generated markdown:
-      Element 1: Data Type
-        ### Types and amount...
-        ### Scientific data that will be preserved...
-        ### Metadata, other relevant data...
-      Element 2: Related Tools...
-      Element 3: Standards
-      Element 4:
-        ### Repository...
-        ### How scientific data will be findable...
-        ### When and how long...
-      Element 5:
-        ### Factors affecting...
-        ### Whether access...
-        ### Protections...
-      Element 6: Oversight...
-    """
     plain = _strip_markdown_keep_structure(generated_markdown)
     heading_blocks = _split_into_heading_blocks(plain)
 
-    # Normalize heading -> content
     hmap: Dict[str, str] = {}
     for h, c in heading_blocks:
         hmap[h.lower()] = c.strip()
@@ -195,7 +281,7 @@ def _extract_blocks_from_generated_markdown(generated_markdown: str) -> Dict[str
     blocks["e1_q2"] = get_h("scientific data that will be preserved and shared")
     blocks["e1_q3"] = get_h("metadata, other relevant data")
 
-    # Element 2/3/6 are whole-element blocks (content after "Element X: ...")
+    # Element 2/3/6 whole blocks
     blocks["e2_q1"] = get_h("element 2: related tools")
     blocks["e3_q1"] = get_h("element 3: standards")
     blocks["e6_q1"] = get_h("element 6: oversight")
@@ -210,7 +296,6 @@ def _extract_blocks_from_generated_markdown(generated_markdown: str) -> Dict[str
     blocks["e5_q2"] = get_h("whether access to scientific data will be controlled")
     blocks["e5_q3"] = get_h("protections for privacy, rights, and confidentiality")
 
-    # Clean leading ":" etc
     for k, v in list(blocks.items()):
         blocks[k] = (v or "").strip().lstrip(" \t\n\r:.-").strip()
 
@@ -234,10 +319,9 @@ def build_nih_docx_from_template(
             _insert_paragraph_after(p, title_line, style_name=p.style.name if p.style else None)
             break
 
-    # Extract answer blocks from YOUR markdown format
     blocks = _extract_blocks_from_generated_markdown(generated_markdown)
 
-    # Remove old placeholder-only paragraphs if they exist
+    # Remove old placeholder-only paragraphs (e1_q1, etc.) if they exist
     _remove_placeholder_only_paragraphs(doc)
 
     # Insert each extracted answer after the NIH instruction paragraph
@@ -245,7 +329,7 @@ def build_nih_docx_from_template(
         answer = (blocks.get(key, "") or "").strip()
         if not answer:
             continue
-        _write_answer_after_anchor(doc, aliases, answer)
+        _write_block_after_anchor(doc, aliases, answer)
 
     Path(str(output_docx_path)).parent.mkdir(parents=True, exist_ok=True)
     doc.save(str(output_docx_path))

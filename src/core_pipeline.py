@@ -122,6 +122,23 @@ class DMPPipeline:
             raise DocumentPortalException("Pipeline initialization error", e)
 
     # ---------------------------------------------------------------
+    # ✅ NEW: safe bool parser (so "false" doesn't become True)
+    def _to_bool(self, v, default: Optional[bool] = None) -> Optional[bool]:
+        if v is None:
+            return default
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, (int, float)):
+            return bool(v)
+        if isinstance(v, str):
+            s = v.strip().lower()
+            if s in {"true", "1", "yes", "y", "on"}:
+                return True
+            if s in {"false", "0", "no", "n", "off"}:
+                return False
+        return default
+
+    # ---------------------------------------------------------------
     def _load_or_build_index(self, force_rebuild: bool = False):
         """
         Load or build FAISS vector index (ONLY when RAG is enabled).
@@ -292,7 +309,15 @@ class DMPPipeline:
             if not title:
                 raise ValueError("❌ Title is required.")
 
-            use_rag_final = self.use_rag_default if use_rag is None else bool(use_rag)
+            # ✅ UPDATED (ONLY THIS LINE): safe boolean handling
+            use_rag_final = self._to_bool(use_rag, default=self.use_rag_default)
+
+            log.info(
+                "🧭 RAG decision",
+                use_rag_input=use_rag,
+                rag_default=self.use_rag_default,
+                use_rag_final=use_rag_final,
+            )
 
             # choose chain
             if use_rag_final:
