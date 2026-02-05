@@ -92,6 +92,10 @@ test.py
 # =========================================================
 # 📄 Text / Markdown / Input templates
 # =========================================================
+# Word: ignore all, but keep the NIH template
+*.docx
+!data/inputs/nih-dms-plan-template.docx
+
 
 # Text: ignore all, but keep requirements.txt
 *.txt
@@ -104,15 +108,13 @@ test.py
 # Inputs: keep specific input JSON files you need
 !data/inputs/input.json
 
-# Word: ignore all, but keep the NIH template
-*.docx
-!data/inputs/nih-dms-plan-template.docx
+
 
 # =========================================================
 # 📤 Outputs (generated) — ignore
 
-data/outputs/
-data/outputs/*
+!data/outputs/
+!data/outputs/*
 !data/outputs/.gitkeep
 # =========================================================
 # 🗃️ Office files

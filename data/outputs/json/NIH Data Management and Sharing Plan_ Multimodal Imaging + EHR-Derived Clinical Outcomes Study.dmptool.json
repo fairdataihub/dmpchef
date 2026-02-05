@@ -1,0 +1,173 @@
+{
+  "dmptool": {
+    "provenance": "dmpchef",
+    "narrative": {
+      "title": "NIH Data Management and Sharing Plan",
+      "project_title": "NIH Data Management and Sharing Plan: Multimodal Imaging + EHR-Derived Clinical Outcomes Study",
+      "section": [
+        {
+          "order": 1,
+          "title": "Element 1: Data Type",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Types and amount of scientific data expected to be generated in the project",
+              "answer": {
+                "json": {
+                  "answer": "The \"Multimodal Imaging + EHR-Derived Clinical Outcomes Study\" will generate a diverse range of scientific data, including clinical imaging data (approximately 100-200 GB), structured participant-level tabular data extracted from Electronic Health Records (EHR) and Enterprise Data Warehouses (EDW) (estimated 1-5 GB), derived analytic datasets such as cleaned/normalized tables, harmonized code sets, feature matrices, embeddings, labels, and dataset partitions (approximately 10-50 GB), model artifacts including trained weights/checkpoints, hyperparameter configurations, model cards or summary reports, inference scripts, and evaluation outputs (around 1-10 GB), software/code including ETL scripts, preprocessing pipelines, modeling code, and environment specifications (estimated 100 MB to 1 GB), and supporting documentation such as data dictionaries, README files, protocol references, analytic workflow descriptions, and provenance notes (approximately 100 MB to 1 GB). The total estimated volume of scientific data is around 200-300 GB.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
+              "answer": {
+                "json": {
+                  "answer": "All generated scientific data will be preserved and shared, except where limited by informed consent, privacy, or confidentiality concerns. This includes clinical imaging data in DICOM format, structured participant-level tabular data, derived analytic datasets, model artifacts, software/code, and supporting documentation. The rationale for sharing these data is to facilitate transparency, reproducibility, and secondary analyses that can accelerate the discovery of predictive models for clinical outcomes.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Metadata, other relevant data, and associated documentation",
+              "answer": {
+                "json": {
+                  "answer": "To facilitate interpretation of the scientific data, the following metadata will be made accessible: study protocol and informed consent documents posted to ClinicalTrials.gov, data dictionaries describing variable definitions and mappings, README files outlining preprocessing and modeling decisions, protocol references, analytic workflow descriptions, and provenance notes capturing data lineage and transformation steps. Additionally, other relevant data such as feature matrices, embeddings, labels, and dataset partitions will be shared with clear schemas and version identifiers.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Element 2: Related Tools, Software and/or Code",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 2: Related Tools, Software and/or Code",
+              "answer": {
+                "json": {
+                  "answer": "Specialized tools, software, and/or code are needed to access or manipulate the shared scientific data. These include DICOM viewers for clinical imaging data, programming languages like Python or R for data analysis and modeling, and libraries such as TensorFlow or PyTorch for machine learning tasks. Access to these tools can be obtained through open-source repositories (e.g., GitHub) or official software websites.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Element 3: Standards",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 3: Standards",
+              "answer": {
+                "json": {
+                  "answer": "To enable interoperability of datasets and resources, common data standards will be applied to the scientific data and associated metadata. These include DICOM for clinical imaging data, CSV and Parquet for structured tabular data, and standardized formats for derived analytic datasets such as feature matrices and model artifacts. For metadata, standards like Dublin Core for general metadata and specific domain standards (e.g., HL7 for healthcare data) will be applied. If applicable, the lack of consensus standards in certain areas will be noted, and efforts to align with emerging or de facto standards will be described.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "Element 4: Data Preservation, Access, and Associated Timelines",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Repository where scientific data and metadata will be archived",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data and metadata arising from this project will be archived in a designated NIH-approved repository, such as the National Institutes of Health's (NIH) National Library of Medicine (NLM) or other certified repositories that meet the requirements for data sharing and preservation.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "How scientific data will be findable and identifiable",
+              "answer": {
+                "json": {
+                  "answer": "Scientific data will be made findable and identifiable through the use of persistent unique identifiers (e.g., DOIs) and standard indexing tools. Data will be registered in a repository with a unique identifier, enabling easy discovery and access by other researchers.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "When and how long the scientific data will be made available",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made available to other users no later than the time of an associated publication or the end of the performance period, whichever comes first. Data will be preserved for at least 10 years after the project's completion, following best practices in data curation and preservation to ensure long-term availability and accessibility.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 5,
+          "title": "Element 5: Access, Distribution, or Reuse Considerations",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
+              "answer": {
+                "json": {
+                  "answer": "Access, distribution, or reuse of certain scientific data may be limited due to informed consent restrictions, privacy and confidentiality protections, or other considerations that safeguard human research participants. Justifiable reasons for limiting data sharing include the protection of sensitive information, potential risks to participant privacy, or specific constraints outlined in data use agreements (DUAs) or institutional policies.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Whether access to scientific data will be controlled",
+              "answer": {
+                "json": {
+                  "answer": "Access to some scientific data will be controlled through mechanisms such as data use agreements, review by an access committee or equivalent governance body, and user authentication/authorization requirements. Controlled access will apply to data that cannot be fully de-identified or poses significant risks to participant privacy if shared openly.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Protections for privacy, rights, and confidentiality of human research participants",
+              "answer": {
+                "json": {
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, all scientific data derived from humans will undergo de-identification procedures. Additionally, Certificates of Confidentiality will be obtained when applicable, and other protective measures such as secure data storage, access controls, and adherence to HIPAA guidelines will be implemented.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 6,
+          "title": "Element 6: Oversight of Data Management and Sharing",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 6: Oversight of Data Management and Sharing",
+              "answer": {
+                "json": {
+                  "answer": "Compliance with this Data Management Plan will be monitored and managed by the project's Principal Investigator (PI) in collaboration with the institution's research data management office. Regular oversight will occur through quarterly reviews of data sharing progress, adherence to the plan, and addressing any issues or concerns that arise during the project period. The PI and designated personnel will ensure that all data sharing activities are conducted in accordance with this plan, relevant regulations, and ethical standards for research involving human subjects.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
