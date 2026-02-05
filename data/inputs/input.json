@@ -1,13 +1,13 @@
 {
-  "title": "NIH Data Management and Sharing Plan: Social Media Corpus + Instagram RCT Survey + User Analytics Study",
+  "title": "NIH Data Management and Sharing Plan: Clinical and MRI Data from Human Research Participants",
   "funding_agency": "NIH",
-  "use_rag": true,
+  "use_rag": false,
   "inputs": {
-    "research_context": "This project analyzes publicly available social media content and evaluates an Instagram-delivered randomized intervention using participant surveys and engagement analytics. Analyses will generate de-identified datasets, derived variables, and documentation to support reproducibility.",
-    "data_types": "Data include social media posts/comments (via a third-party vendor), participant survey responses and study arm assignment, program monitoring/engagement analytics, derived coded/cleaned datasets, analysis scripts, and documentation (codebooks, data dictionaries, instruments, README).",
-    "data_source": "Social media data will be retrieved through a vendor using documented search parameters. Survey and analytics data will be collected from enrolled adult participants via online tools and linked using study IDs. Processing will include basic quality checks and documented data handling steps.",
-    "human_subjects": "Yes. Participant data will be de-identified before sharing. Direct identifiers will not be included in shared datasets. Raw social media content will not be shared when restricted by vendor terms or privacy considerations; derived/coded data will be shared instead.",
-    "consent_status": "Participation is voluntary and informed consent will be obtained. Consent will describe data collection, confidentiality protections, monitoring/analytics, and what de-identified data may be shared, including any limits on sharing.",
-    "data_volume": "Volume depends on the size of the social media corpus and retained analytics. Public releases will include de-identified survey tables, derived/coded datasets, documentation, and analysis code; restricted raw vendor content will be excluded."
+    "research_context": "Demographic, clinical, and MRI, 1H fMRS and fMRI imaging data will be acquired from 110 affected youth and 110 matched healthy controls (described in detail in sections C.3 and C.4 of this application). All data will be deidentified prior to receipt by the repository, but the information needed to generate a global unique identifier for the NIMH Data Archive (NDA) will be collected for each subject.",
+    "data_types": "Demographic and clinical data (tabular) and MRI-based imaging data including structural MRI, fMRI, and 1H fMRS, along with derived imaging measures/features and supporting documentation (data dictionaries, protocols, README).",
+    "data_source": "Data will be collected from human research participants (110 affected youth and 110 matched healthy controls) under an approved study protocol. MRI data will be acquired using standardized scan protocols, and clinical/demographic measures will be collected using study instruments and recorded in study databases.",
+    "human_subjects": "Yes",
+    "consent_status": "All research participants will be consented for broad data sharing.",
+    "data_volume": "The dataset will include participant-level clinical/demographic tables for 220 participants and multi-modal MRI imaging data (structural MRI, fMRI, and 1H fMRS). Total volume will depend on imaging protocols and retained derivatives, with imaging data expected to be the largest component."
   }
 }

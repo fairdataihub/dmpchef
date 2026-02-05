@@ -1,121 +1,119 @@
 # ===============================================================
-# core_pipeline.py — RAG Toggle + No extra JSON
-# - RAG toggle per call OR via YAML (rag.enabled)
-# - NO-RAG mode does NOT load FAISS / retriever / RAG chain
-# - Saves: Markdown + NIH-template DOCX + ONLY DMPTool JSON
+# core_pipeline.py — RAG Toggle + No extra JSON (OLD-STYLE RAG CALL) — UPDATED (FUNDER-READY)
 #
-# ✅ Updates in this version:
-#   1) Embeddings are lazy-loaded ONLY when RAG is used
-#   2) funding_agency is NO LONGER read from inputs; it's passed as an argument
-#   3) Log includes funding_agency
-#   4) Keeps NIH prompt/template/docx/json behavior (future-ready for NSF)
+# ✅ Keeps your OLD-STYLE RAG behavior:
+#    - CLEAN retrieval_query (no template text)
+#    - manual retrieval -> format context -> prompt_template.format(...) -> llm.invoke(...)
+#
+# ✅ Makes RAG vs NO-RAG meaningfully different by:
+#    1) Using MMR (diverse retrieval) when enabled
+#    2) Adding a light selection step (default ON)
+#    3) Trimming/structuring context so it becomes usable
+#    4) Logging + saving retrieved context to a debug file (proves retrieval)
+#    5) Adding a small RAG-only instruction wrapper (forces usage)
+#
+# ✅ Prevent overwriting outputs by adding a run suffix:
+#    - __rag__k8__llama3.3  OR  __norag__llama3.3
+#
+# ✅ NEW (Funder-ready with NO behavior change today):
+#    - Adds a simple FUNDER_SPECS registry (NIH is the default)
+#    - Routes template_md / docx_template / prompt_type / dmptool_template_title by funder key
+#    - If an unknown funder is passed, falls back to NIH safely
+#
+# Outputs unchanged (only filenames get suffix):
+#  - Saves: Markdown + NIH-template DOCX + ONLY DMPTool JSON
 # ===============================================================
 
-# -------------------------------
-# Standard library imports
-# -------------------------------
-import re                     # Used to sanitize file names and handle simple regex operations
-import json                   # Used to write the DMPTool JSON output to disk
-from pathlib import Path      # Cross-platform path handling for files/folders
-from tqdm import tqdm         # Progress bar for PDF loading (nice UX)
-import yaml                   # Loads YAML configuration
-from typing import Optional   # Type hints for optional inputs
+import json
+import re
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional, List, Tuple, Dict
 
-# -------------------------------
-# LangChain / RAG-related imports
-# -------------------------------
-from langchain_community.document_loaders import PyPDFLoader, PyMuPDFLoader  # Robust PDF loaders
-from langchain_text_splitters import RecursiveCharacterTextSplitter          # Chunking documents for embeddings
+import yaml
+from tqdm import tqdm
 
-from langchain_community.vectorstores import FAISS        # Vector store for retrieval (used only if RAG is enabled)
-from langchain_core.output_parsers import StrOutputParser # Converts model output to plain string
-from langchain_core.runnables import RunnableMap          # Maps inputs into prompt fields (context/question)
-from langchain_community.llms import Ollama               # Local LLM interface via Ollama
+from langchain_community.document_loaders import PyMuPDFLoader, PyPDFLoader
+from langchain_community.vectorstores import FAISS
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# -------------------------------
-# Local project imports
-# -------------------------------
-from utils.model_loader import ModelLoader                         # Loads embeddings and LLM config
-from exception.custom_exception import DocumentPortalException     # Custom wrapped exception for consistent error handling
-from logger.custom_logger import GLOBAL_LOGGER as log              # Project logger
-from prompt.prompt_library import PROMPT_REGISTRY, PromptType      # Prompt templates registry + enum
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableMap
 
-from utils.dmptool_json import build_dmptool_json                  # Builds a DMPTool-schema JSON object
-from utils.nih_docx_writer import build_nih_docx_from_template     # Writes NIH DOCX using official template formatting
+try:
+    from langchain_ollama import OllamaLLM as Ollama  # type: ignore
+except Exception:
+    from langchain_community.llms import Ollama  # type: ignore
+
+from utils.model_loader import ModelLoader
+from exception.custom_exception import DocumentPortalException
+from logger.custom_logger import GLOBAL_LOGGER as log
+from prompt.prompt_library import PROMPT_REGISTRY, PromptType
+
+from utils.dmptool_json import build_dmptool_json
+from utils.nih_docx_writer import build_nih_docx_from_template
+
+
+# ===============================================================
+# FUNDER REGISTRY (Funder-ready; NIH is default)
+# ===============================================================
+@dataclass(frozen=True)
+class FunderSpec:
+    key: str
+    template_md: Path
+    docx_template: Path
+    dmptool_template_title: str
+    prompt_type_value: str
+    role_label: str
+    retrieval_hint: str
+
+
+FUNDER_SPECS: Dict[str, FunderSpec] = {
+    "NIH": FunderSpec(
+        key="NIH",
+        template_md=Path("data/inputs/dmp-template.md"),
+        docx_template=Path("data/inputs/nih-dms-plan-template.docx"),
+        dmptool_template_title="NIH Data Management and Sharing Plan",
+        prompt_type_value=PromptType.NIH_DMP.value,
+        role_label="NIH data steward and grant writer",
+        retrieval_hint="NIH Data Management and Sharing Plan (DMSP) guidance",
+    ),
+}
+
+
+def get_funder_spec(funding_agency: str) -> FunderSpec:
+    key = (funding_agency or "NIH").strip().upper()
+    return FUNDER_SPECS.get(key, FUNDER_SPECS["NIH"])
 
 
 # ===============================================================
 # CONFIGURATION MANAGER
 # ===============================================================
 class ConfigManager:
-    """Loads and provides access to YAML configuration."""
-
-    def __init__(self, config_path="config/config.yaml"):
-        """
-        Initialize the configuration manager by reading a YAML file.
-
-        Args:
-            config_path: Path to YAML config. Defaults to config/config.yaml.
-
-        Raises:
-            FileNotFoundError: If the YAML file does not exist.
-        """
-        path = Path(config_path)  # Convert to Path for safe file operations
+    def __init__(self, config_path: str = "config/config.yaml"):
+        path = Path(config_path)
         if not path.exists():
-            # Fail fast if config file is missing (better than hidden defaults)
             raise FileNotFoundError(f"❌ Config file not found: {path}")
 
-        # Load YAML contents as a Python dict
         with open(path, "r", encoding="utf-8") as f:
             self.cfg = yaml.safe_load(f) or {}
 
-        # Split config into top-level groups for cleaner access patterns
-        self.paths = self.cfg.get("paths", {}) or {}   # e.g., data_pdfs, index_dir, output folders
-        self.models = self.cfg.get("models", {}) or {} # e.g., embedding model name, llm name (if applicable)
-        self.rag = self.cfg.get("rag", {}) or {}       # rag.enabled, chunk sizes, retriever_top_k, etc.
+        self.paths = self.cfg.get("paths", {}) or {}
+        self.models = self.cfg.get("models", {}) or {}
+        self.rag = self.cfg.get("rag", {}) or {}
 
         log.info("✅ Config loaded successfully")
 
     def get_path(self, key: str) -> Path:
-        """
-        Return a configured path as a Path object.
-
-        Args:
-            key: Name of the path inside config.paths
-
-        Returns:
-            Path object for the requested path key.
-
-        Raises:
-            KeyError: If config.paths.<key> is missing or empty.
-        """
         val = self.paths.get(key)
         if not val:
             raise KeyError(f"❌ Missing config.paths.{key} in YAML")
         return Path(val)
 
     def get_model(self, key: str):
-        """
-        Return a model-related value from config.models.
-
-        Args:
-            key: Name of the model config key
-
-        Returns:
-            The value from config.models[key] or None if absent.
-        """
         return self.models.get(key)
 
     def get_rag_param(self, key: str):
-        """
-        Return a rag-related value from config.rag.
-
-        Args:
-            key: Name of the rag config key
-
-        Returns:
-            The value from config.rag[key] or None if absent.
-        """
         return self.rag.get(key)
 
 
@@ -123,105 +121,49 @@ class ConfigManager:
 # MAIN PIPELINE CLASS
 # ===============================================================
 class DMPPipeline:
-    """End-to-end pipeline for NIH DMP generation (RAG optional)."""
-
-    def __init__(self, config_path="config/config.yaml", force_rebuild_index: bool = False):
-        """
-        Initialize the pipeline:
-          - Load config
-          - Setup paths
-          - Load template text
-          - Initialize the LLM (Ollama)
-          - Build a cheap no-RAG chain immediately
-          - Keep RAG components lazy (only built if needed)
-
-        Args:
-            config_path: Path to YAML config
-            force_rebuild_index: If True, rebuild FAISS index even if it exists
-        """
+    def __init__(self, config_path: str = "config/config.yaml", force_rebuild_index: bool = False):
         try:
-            # Load config and store rebuild preference
             self.config = ConfigManager(config_path)
             self.force_rebuild_index = force_rebuild_index
 
-            # Read required paths from config
-            self.data_pdfs = self.config.get_path("data_pdfs")     # Where reference PDFs live
-            self.index_dir = self.config.get_path("index_dir")     # Where FAISS index is stored
-            self.output_md = self.config.get_path("output_md")     # Markdown output folder
-            self.output_docx = self.config.get_path("output_docx") # DOCX output folder
+            self.data_pdfs = self.config.get_path("data_pdfs")
+            self.index_dir = self.config.get_path("index_dir")
+            self.output_md = self.config.get_path("output_md")
+            self.output_docx = self.config.get_path("output_docx")
 
-            # Output JSON folder is hardcoded here (consistent with your pipeline conventions)
             self.output_json = Path("data/outputs/json")
+            self.output_debug = Path("data/outputs/debug")
 
-            # Template path (currently NIH markdown template)
-            self.template_md = Path("data/inputs/dmp-template.md")
-
-            # Create output dirs early (safe even if they already exist)
-            # Note: index_dir is created even if RAG is never used; FAISS is still not loaded unless needed.
-            for p in [self.output_md, self.output_docx, self.output_json, self.index_dir]:
+            for p in [self.output_md, self.output_docx, self.output_json, self.output_debug, self.index_dir]:
                 p.mkdir(parents=True, exist_ok=True)
 
-            # Ensure the NIH markdown template exists before any generation happens
-            if not self.template_md.exists():
-                raise FileNotFoundError(f"❌ DMP template not found: {self.template_md}")
-
-            # Cache template content in memory (avoids repeated disk reads per request)
-            self.template_text = self.template_md.read_text(encoding="utf-8")
-
-            # Initialize model loader (your abstraction around embeddings + LLM naming)
             self.model_loader = ModelLoader()
-
-            # ✅ Lazy-load embeddings only if/when RAG is enabled
-            # This keeps NO-RAG runs fast and avoids unnecessary GPU/CPU load.
             self.embeddings = None
 
-            # Determine LLM name from model_loader and instantiate Ollama client
             self.llm_name = self.model_loader.llm_name
             self.llm = Ollama(model=self.llm_name)
 
-            # Load the prompt template from registry (currently NIH)
-            self.prompt_template = PROMPT_REGISTRY[PromptType.NIH_DMP.value]
-
-            # YAML default: rag.enabled (if missing => default True)
             enabled_val = self.config.get_rag_param("enabled")
             self.use_rag_default = True if enabled_val is None else bool(enabled_val)
 
-            # Build the NO-RAG chain immediately (cheap, does not touch embeddings or FAISS)
-            self.no_rag_chain = self._build_no_rag_chain()
+            self._no_rag_chain_cache: Dict[str, object] = {}
 
-            # Lazy RAG fields (built only if use_rag=True)
-            self.vectorstore = None  # FAISS vector store
-            self.retriever = None    # Retriever wrapper on top of vectorstore
-            self.rag_chain = None    # Full retrieval + prompt + LLM chain
+            self.vectorstore = None
+            self.retriever = None
 
-            log.info(
-                "✅ DMPPipeline initialized",
-                llm=self.llm_name,
-                rag_default=self.use_rag_default,
-            )
+            # ✅ NEW: main.py can read this to name outputs with __rag__/__norag__
+            self.last_run_stem: Optional[str] = None
+
+            log.info("✅ DMPPipeline initialized", llm=self.llm_name, rag_default=self.use_rag_default)
 
         except Exception as e:
-            # Log the root error, then raise a project-specific exception wrapper
             log.error("❌ Failed to initialize DMPPipeline", error=str(e))
             raise DocumentPortalException("Pipeline initialization error", e)
 
-    # ---------------------------------------------------------------
-    # ✅ safe bool parser (so "false" doesn't become True)
+    # -------------------------
+    # Helpers
+    # -------------------------
     def _to_bool(self, v, default: Optional[bool] = None) -> Optional[bool]:
-        """
-        Convert different "truthy/falsey" input forms into a real bool.
-
-        Why:
-            In Python, bool("false") is True (because it's a non-empty string).
-            This helper avoids that common bug when parsing config/UI JSON inputs.
-
-        Args:
-            v: value that might be bool/int/float/str/None
-            default: value returned when parsing fails or v is None
-
-        Returns:
-            True/False if confidently parsed, otherwise `default`.
-        """
         if v is None:
             return default
         if isinstance(v, bool):
@@ -236,67 +178,147 @@ class DMPPipeline:
                 return False
         return default
 
-    # ---------------------------------------------------------------
-    def _load_or_build_index(self, force_rebuild: bool = False):
-        """
-        Load or build FAISS vector index (ONLY when RAG is enabled).
+    def _safe_title(self, title: str) -> str:
+        return re.sub(r'[\\/*?:"<>|]', "_", (title or "").strip()).strip()
 
-        - If an index exists and force_rebuild is False: load it from disk.
-        - If load fails OR force_rebuild is True: rebuild index from PDFs.
+    def _llm_tag(self) -> str:
+        return re.sub(r'[\\/*?:"<>|\s]', "_", (self.llm_name or "").strip()).strip() or "llm"
 
-        Robust PDF loading strategy:
-            1) Try PyMuPDFLoader (often better at real-world PDFs)
-            2) Fallback to PyPDFLoader (if PyMuPDF fails)
+    def _run_suffix(self, use_rag_final: bool, top_k: int) -> str:
+        mode_tag = "rag" if use_rag_final else "norag"
+        llm_tag = self._llm_tag()
+        if use_rag_final:
+            return f"__{mode_tag}__k{top_k}__{llm_tag}"
+        return f"__{mode_tag}__{llm_tag}"
 
-        Args:
-            force_rebuild: if True, skip loading and rebuild index
+    def _format_docs(self, docs) -> str:
+        if not docs:
+            return ""
+        formatted: List[str] = []
+        for i, d in enumerate(docs, start=1):
+            page = d.metadata.get("page", "")
+            src = d.metadata.get("source", "")
+            content = (d.page_content or "").strip()
+            if not content:
+                continue
+            formatted.append(f"[CTX-{i}] Page {page} | {src}\n{content}")
+        return "\n\n".join(formatted)
 
-        Returns:
-            FAISS vectorstore ready for retrieval.
+    def _trim_context(self, context_text: str, max_chars: int) -> str:
+        context_text = (context_text or "").strip()
+        if not context_text:
+            return ""
+        if len(context_text) <= max_chars:
+            return context_text
+        return context_text[:max_chars].rstrip() + "\n\n[CTX-TRUNCATED]"
 
-        Raises:
-            DocumentPortalException: wraps any underlying indexing errors.
-        """
+    def _select_top_chunks_simple(self, docs, max_chars: int) -> Tuple[List, int]:
+        selected = []
+        total = 0
+        for d in (docs or []):
+            txt = (d.page_content or "").strip()
+            if not txt:
+                continue
+            n = len(txt)
+            if total + n > max_chars and selected:
+                break
+            selected.append(d)
+            total += n
+            if total >= max_chars:
+                break
+        return selected, total
+
+    def _get_prompt_template(self, spec: FunderSpec):
         try:
-            # Defensive check: embeddings must be available before building/loading FAISS
+            return PROMPT_REGISTRY[spec.prompt_type_value]
+        except Exception:
+            return PROMPT_REGISTRY[PromptType.NIH_DMP.value]
+
+    def _load_template_text(self, spec: FunderSpec) -> str:
+        path = spec.template_md
+        if path.exists():
+            return path.read_text(encoding="utf-8")
+
+        nih_path = FUNDER_SPECS["NIH"].template_md
+        if nih_path.exists():
+            log.warning("⚠️ Funder template missing; falling back to NIH template", missing=str(path))
+            return nih_path.read_text(encoding="utf-8")
+
+        raise FileNotFoundError(f"❌ Template not found for funder: {spec.key} (missing {path})")
+
+    def _build_no_rag_chain(self, prompt_template):
+        try:
+            chain = (
+                RunnableMap({"context": lambda x: "", "question": lambda x: x["input"]})
+                | prompt_template
+                | self.llm
+                | StrOutputParser()
+            )
+            log.info("🔗 No-RAG chain built successfully", llm=self.llm_name)
+            return chain
+        except Exception as e:
+            raise DocumentPortalException("No-RAG chain build error", e)
+
+    def _get_no_rag_chain_for_funder(self, spec: FunderSpec):
+        if spec.key in self._no_rag_chain_cache:
+            return self._no_rag_chain_cache[spec.key]
+        prompt_template = self._get_prompt_template(spec)
+        chain = self._build_no_rag_chain(prompt_template)
+        self._no_rag_chain_cache[spec.key] = chain
+        return chain
+
+    # ✅ NEW: LangChain-version-safe retrieval
+    def _retrieve(self, query: str):
+        """
+        New LangChain retrievers: retriever.invoke(query)
+        Older LangChain: retriever.get_relevant_documents(query)
+        """
+        if self.retriever is None:
+            return []
+        try:
+            return self.retriever.invoke(query) or []
+        except Exception:
+            try:
+                return self.retriever.get_relevant_documents(query) or []
+            except Exception:
+                fn = getattr(self.retriever, "_get_relevant_documents", None)
+                return fn(query) if callable(fn) else []
+
+    # -------------------------
+    # Index build/load (FAISS)
+    # -------------------------
+    def _load_or_build_index(self, force_rebuild: bool = False):
+        try:
             if self.embeddings is None:
                 raise RuntimeError("Embeddings are not loaded. Call _ensure_rag_ready() first.")
 
-            # Expected FAISS file name created by FAISS.save_local()
             faiss_path = self.index_dir / "index.faiss"
 
-            # Attempt loading existing index (fast path)
             if faiss_path.exists() and not force_rebuild:
                 try:
                     log.info("📦 Loading existing FAISS index", path=str(faiss_path))
                     return FAISS.load_local(
                         str(self.index_dir),
                         self.embeddings,
-                        allow_dangerous_deserialization=True,  # needed for FAISS local load in some setups
+                        allow_dangerous_deserialization=True,
                     )
                 except Exception as e:
-                    # If load fails (version mismatch, corruption, etc.), rebuild automatically
                     log.warning(f"⚠️ Failed to load FAISS index. Rebuilding... Reason: {e}")
 
-            # No index found or rebuild required: collect PDFs
             pdf_files = sorted(self.data_pdfs.glob("*.pdf"))
             if not pdf_files:
                 raise FileNotFoundError(f"❌ No PDFs found in: {self.data_pdfs}")
 
-            docs = []       # all successfully loaded documents
-            bad_pdfs = []   # PDFs that could not be parsed
+            docs = []
+            bad_pdfs = []
 
-            # Load each PDF with robust fallback
             for pdf in tqdm(pdf_files, desc="📥 Loading PDFs"):
                 try:
-                    loader = PyMuPDFLoader(str(pdf))
-                    docs.extend(loader.load())
+                    docs.extend(PyMuPDFLoader(str(pdf)).load())
                 except Exception as e1:
                     try:
-                        loader = PyPDFLoader(str(pdf))
-                        docs.extend(loader.load())
+                        docs.extend(PyPDFLoader(str(pdf)).load())
                     except Exception as e2:
-                        # Record the PDF and continue instead of failing the whole pipeline
                         bad_pdfs.append(str(pdf))
                         log.warning(
                             "⚠️ Skipping PDF due to parse error",
@@ -304,32 +326,20 @@ class DMPPipeline:
                             pymupdf_error=str(e1),
                             pypdf_error=str(e2),
                         )
-                        continue
 
-            # If nothing loaded, fail with a clear message
             if not docs:
-                raise RuntimeError(
-                    "❌ No documents could be loaded from PDFs. "
-                    "All PDFs may be corrupted or unreadable."
-                )
+                raise RuntimeError("❌ No documents could be loaded from PDFs.")
 
-            # Warn if some PDFs were skipped, but do not fail the run
             if bad_pdfs:
                 log.warning("⚠️ Some PDFs were skipped", skipped=len(bad_pdfs))
                 log.warning("First skipped PDF", first=bad_pdfs[0])
 
-            # Chunking parameters (from YAML or defaults)
             chunk_size = self.config.get_rag_param("chunk_size") or 800
             chunk_overlap = self.config.get_rag_param("chunk_overlap") or 120
 
-            # Split docs into overlapping chunks to improve retrieval
-            splitter = RecursiveCharacterTextSplitter(
-                chunk_size=chunk_size,
-                chunk_overlap=chunk_overlap,
-            )
+            splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
             chunks = splitter.split_documents(docs)
 
-            # Build FAISS from chunks and persist it
             log.info("🧱 Building new FAISS index ...", chunks=len(chunks))
             vectorstore = FAISS.from_documents(chunks, self.embeddings)
             vectorstore.save_local(str(self.index_dir))
@@ -337,276 +347,172 @@ class DMPPipeline:
             return vectorstore
 
         except Exception as e:
-            # Wrap any errors to keep consistent exception type upstream
             raise DocumentPortalException("FAISS index error", e)
 
-    # ---------------------------------------------------------------
-    def _build_rag_chain(self, retriever):
-        """
-        Build the RAG chain using:
-          - retriever -> context (formatted as a single string)
-          - question  -> prompt question slot
-          - prompt_template
-          - llm
-          - string output parser
-
-        Args:
-            retriever: LangChain retriever that returns top-k relevant chunks
-
-        Returns:
-            A runnable chain that takes {"input": "..."} and returns a string DMP.
-        """
-        try:
-            def format_docs(docs):
-                """
-                Format retrieved docs into a readable context string.
-
-                Notes:
-                    - Includes page and source metadata if present
-                    - Keeps chunk content clean (strip whitespace)
-                """
-                if not docs:
-                    return ""
-                formatted = []
-                for d in docs:
-                    page = d.metadata.get("page", "")
-                    src = d.metadata.get("source", "")
-                    formatted.append(f"[Page {page}] {src}\n{d.page_content.strip()}")
-                return "\n\n".join(formatted)
-
-            # RunnableMap builds the expected prompt inputs:
-            #   context: retrieved text
-            #   question: the user's instruction/query
-            rag_chain = (
-                RunnableMap(
-                    {
-                        "context": lambda x: format_docs(retriever.invoke(x["input"])),
-                        "question": lambda x: x["input"],
-                    }
-                )
-                | self.prompt_template
-                | self.llm
-                | StrOutputParser()
-            )
-
-            log.info("🔗 RAG chain built successfully", llm=self.llm_name)
-            return rag_chain
-
-        except Exception as e:
-            raise DocumentPortalException("RAG chain build error", e)
-
-    # ---------------------------------------------------------------
-    def _build_no_rag_chain(self):
-        """
-        Build a chain without retrieval.
-
-        Behavior:
-          - context is always an empty string
-          - question comes from x["input"]
-          - prompt_template must accept context/question keys
-
-        Returns:
-            Runnable chain for pure prompt-based generation.
-        """
-        try:
-            no_rag_chain = (
-                RunnableMap(
-                    {
-                        "context": lambda x: "",          # no retrieved context
-                        "question": lambda x: x["input"], # full query becomes the question
-                    }
-                )
-                | self.prompt_template
-                | self.llm
-                | StrOutputParser()
-            )
-
-            log.info("🔗 No-RAG chain built successfully", llm=self.llm_name)
-            return no_rag_chain
-
-        except Exception as e:
-            raise DocumentPortalException("No-RAG chain build error", e)
-
-    # ---------------------------------------------------------------
+    # -------------------------
+    # Lazy init RAG components
+    # -------------------------
     def _ensure_rag_ready(self):
-        """
-        Lazy-init embeddings + FAISS + retriever + rag_chain ONLY when needed.
-
-        This is the key optimization:
-          - If use_rag=False, you never pay for embeddings or index loading.
-          - If use_rag=True, components are initialized once and reused.
-        """
-        # If already initialized, do nothing
-        if self.rag_chain is not None and self.retriever is not None and self.vectorstore is not None:
+        if self.retriever is not None and self.vectorstore is not None:
             return
 
-        # ✅ Load embeddings only at the moment we truly need RAG
         if self.embeddings is None:
             self.embeddings = self.model_loader.load_embeddings()
 
-        # Load existing FAISS index or build a new one
         self.vectorstore = self._load_or_build_index(force_rebuild=self.force_rebuild_index)
 
-        # Create retriever with top-k configuration
         top_k = self.config.get_rag_param("retriever_top_k") or 6
-        self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": top_k})
+        use_mmr = self._to_bool(self.config.get_rag_param("use_mmr"), default=True)
 
-        # Build the full RAG chain with retriever
-        self.rag_chain = self._build_rag_chain(self.retriever)
+        if use_mmr:
+            self.retriever = self.vectorstore.as_retriever(
+                search_type="mmr",
+                search_kwargs={"k": top_k, "fetch_k": max(20, top_k * 4), "lambda_mult": 0.5},
+            )
+            log.info("✅ RAG retriever initialized", type="mmr", top_k=top_k)
+        else:
+            self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": top_k})
+            log.info("✅ RAG retriever initialized", type="similarity", top_k=top_k)
 
-        log.info("✅ RAG components initialized", llm=self.llm_name, top_k=top_k)
-
-    # ---------------------------------------------------------------
     def _cleanup_title_json(self, safe_title: str):
-        """
-        Remove any old JSONs for this title except the dmptool JSON.
-
-        Why:
-            Older pipeline versions may have produced multiple JSON variants.
-            This keeps the output folder clean and prevents confusion.
-
-        Args:
-            safe_title: sanitized project title used as the file stem.
-        """
         keep = f"{safe_title}.dmptool.json"
         for p in self.output_json.glob(f"{safe_title}*.json"):
             if p.name != keep:
                 try:
                     p.unlink()
                 except Exception:
-                    # Swallow deletion errors (e.g., file locked) since it's non-critical cleanup
                     pass
 
-    # ---------------------------------------------------------------
+    # -------------------------
+    # MAIN: Generate DMP
+    # -------------------------
     def generate_dmp(
         self,
         title: str,
         form_inputs: dict,
         use_rag: Optional[bool] = None,
-        funding_agency: str = "NIH",   # ✅ NEW: passed from main.py (top-level JSON)
+        funding_agency: str = "NIH",
     ):
-        """
-        Generate DMP from inputs.
-
-        use_rag:
-          - True  => use retrieval (loads embeddings + FAISS lazily)
-          - False => no retrieval (never touches embeddings/FAISS)
-          - None  => use YAML default rag.enabled
-
-        funding_agency:
-          - passed from top-level input JSON (not inside inputs)
-          - currently used for logging / future routing (still NIH outputs for now)
-
-        Args:
-            title: Project title (used in prompt and output filenames)
-            form_inputs: Dict of user-entered fields (Element 1..4 content, etc.)
-            use_rag: Override for RAG usage (optional)
-            funding_agency: Funder identifier ("NIH", later "NSF", etc.)
-
-        Returns:
-            Generated markdown string (the DMP content).
-        """
         try:
-            # Validate title early to avoid generating unnamed files
             title = (title or "").strip()
             if not title:
                 raise ValueError("❌ Title is required.")
 
-            # Normalize funder label for logging/future routing
-            funding_agency = (funding_agency or "NIH").strip().upper()
+            spec = get_funder_spec(funding_agency)
+            funding_agency = spec.key
             log.info("🏷️ Funding agency selected", funding_agency=funding_agency)
 
-            # Decide final RAG usage (explicit argument > YAML default)
+            prompt_template = self._get_prompt_template(spec)
+            template_text = self._load_template_text(spec)
+
             use_rag_final = self._to_bool(use_rag, default=self.use_rag_default)
+            log.info("🧾 RAG decision", use_rag_input=use_rag, rag_default=self.use_rag_default, use_rag_final=use_rag_final)
 
-            log.info(
-                "🧾 RAG decision",
-                use_rag_input=use_rag,
-                rag_default=self.use_rag_default,
-                use_rag_final=use_rag_final,
-            )
-
-            # Choose chain based on final RAG decision
-            if use_rag_final:
-                # Initializes embeddings/index/retriever only once, when needed
-                self._ensure_rag_ready()
-                chain = self.rag_chain
-            else:
-                chain = self.no_rag_chain
-
-            # Convert form inputs into readable lines for the prompt
-            # - Only include non-empty string values
-            # - Normalize keys into Title Case for readability
             user_elements = [
-                f"{key.replace('_',' ').title()}: {val}".strip()
+                f"{key.replace('_', ' ').title()}: {val}".strip()
                 for key, val in (form_inputs or {}).items()
                 if isinstance(val, str) and val.strip()
             ]
 
-            # Build the query/prompt sent to the chain
-            # NOTE: Still NIH wording + NIH template (until you add NSF support routing)
-            query = (
-                f"You are an NIH data steward and grant writer. "
-                f"Create a complete NIH Data Management and Sharing Plan (DMSP) "
-                f"for the project titled '{title}'.\n\n"
-                f"User Inputs:\n{chr(10).join(user_elements)}\n\n"
-                f"Use the following NIH DMSP Markdown template. Do not alter section titles:\n"
-                f"{self.template_text}"
+            top_k = int(self.config.get_rag_param("retriever_top_k") or 6)
+
+            base_title = self._safe_title(title)
+            safe_title = f"{base_title}{self._run_suffix(use_rag_final, top_k=top_k)}"
+
+            # ✅ NEW: expose this to main.py so it saves files with suffix
+            self.last_run_stem = safe_title
+
+            rag_usage_rules = (
+                f"IMPORTANT (RAG MODE): You MUST use the provided context as authoritative {funding_agency} guidance. "
+                "Incorporate specific details from it, and prefer it over generic wording.\n\n"
             )
 
-            # If using RAG, add an explicit instruction to incorporate retrieved context
-            # (This helps the model treat context as authoritative guidance.)
+            question_text = (
+                f"You are an expert {spec.role_label}. "
+                f"Create a complete {funding_agency} Data Management plan "
+                f"for the project titled '{title}'.\n\n"
+                f"{rag_usage_rules if use_rag_final else ''}"
+                f"User Inputs:\n{chr(10).join(user_elements)}\n\n"
+                f"Use the following {funding_agency} Markdown template. Do not alter section titles:\n"
+                f"{template_text}"
+            )
+
             if use_rag_final:
-                query = (
-                    f"You are an NIH data steward and grant writer. "
-                    f"Create a complete NIH Data Management and Sharing Plan (DMSP) "
-                    f"for the project titled '{title}'.\n\n"
-                    f"Use retrieved NIH context to help ensure NIH-aligned language.\n\n"
-                    f"User Inputs:\n{chr(10).join(user_elements)}\n\n"
-                    f"Use the following NIH DMSP Markdown template. Do not alter section titles:\n"
-                    f"{self.template_text}"
+                self._ensure_rag_ready()
+
+                retrieval_query = (
+                    f"{spec.retrieval_hint} relevant to this project.\n"
+                    f"Project title: {title}\n"
+                    f"User Inputs:\n{chr(10).join(user_elements)}\n"
                 )
 
-            # Run the chain: input -> (optional retrieval) -> prompt -> LLM -> string output
-            result = chain.invoke({"input": query})
+                # ✅ FIX: version-safe retrieval
+                docs = self._retrieve(retrieval_query) or []
 
-            # Create safe file stem from title (Windows-safe, Linux-safe)
-            safe_title = re.sub(r'[\\/*?:"<>|]', "_", title).strip()
+                max_ctx_chars = int(self.config.get_rag_param("max_context_chars") or 12000)
+                select_first = self._to_bool(self.config.get_rag_param("select_top_chunks"), default=True)
 
-            # Compute output paths for each artifact
+                if select_first:
+                    docs, _ = self._select_top_chunks_simple(docs, max_chars=max_ctx_chars)
+
+                docs = docs[:top_k]
+
+                context_text = self._format_docs(docs)
+                context_text = self._trim_context(context_text, max_chars=max_ctx_chars)
+
+                debug_path = self.output_debug / f"{safe_title}.retrieved_context.txt"
+                debug_path.write_text(context_text, encoding="utf-8")
+
+                log.info(
+                    "🔎 Retrieval complete",
+                    retriever_top_k=top_k,
+                    retrieved_docs=len(docs),
+                    retrieved_chars=len(context_text),
+                    debug_context_file=str(debug_path),
+                )
+
+                full_prompt = prompt_template.format(context=context_text, question=question_text)
+
+                result = self.llm.invoke(full_prompt)
+                if not isinstance(result, str):
+                    result = str(result)
+
+            else:
+                no_rag_chain = self._get_no_rag_chain_for_funder(spec)
+                result = no_rag_chain.invoke({"input": question_text})
+                if not isinstance(result, str):
+                    result = str(result)
+
             md_path = self.output_md / f"{safe_title}.md"
             docx_path = self.output_docx / f"{safe_title}.docx"
             dmptool_json_path = self.output_json / f"{safe_title}.dmptool.json"
 
-            # Save markdown output (the generated DMP text)
             md_path.write_text(result, encoding="utf-8")
 
-            # Generate NIH DOCX using the official NIH template to preserve formatting
-            nih_template_docx = Path("data/inputs/nih-dms-plan-template.docx")
+            docx_template_path = spec.docx_template if spec.docx_template.exists() else FUNDER_SPECS["NIH"].docx_template
+            if not spec.docx_template.exists():
+                log.warning("⚠️ Funder DOCX template missing; falling back to NIH template", missing=str(spec.docx_template))
+
             build_nih_docx_from_template(
-                template_docx_path=str(nih_template_docx),
+                template_docx_path=str(docx_template_path),
                 output_docx_path=str(docx_path),
                 project_title=title,
                 generated_markdown=result,
             )
 
-            # Build the DMPTool-compatible JSON object (ONLY JSON output desired)
             dmptool_obj = build_dmptool_json(
-                template_title="NIH Data Management and Sharing Plan",
+                template_title=spec.dmptool_template_title,
                 project_title=title,
                 form_inputs=form_inputs,
                 generated_markdown=result,
                 provenance="dmpchef",
             )
 
-            # Clean up older json files for this title (keeps only *.dmptool.json)
             self._cleanup_title_json(safe_title)
 
-            # Write the dmptool JSON to disk
             with open(dmptool_json_path, "w", encoding="utf-8") as f:
                 json.dump(dmptool_obj, f, indent=2, ensure_ascii=False)
 
-            # Final success log (includes funder + rag decision + paths)
             log.info(
                 "✅ DMP generated successfully",
                 title=title,
@@ -619,5 +525,4 @@ class DMPPipeline:
             return result
 
         except Exception as e:
-            # Wrap any generation-time exception for consistent upstream handling
             raise DocumentPortalException("DMP generation error", e)
