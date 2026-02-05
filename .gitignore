@@ -114,8 +114,7 @@ test.py
 # 📤 Outputs (generated) — ignore
 
 !data/outputs/
-!data/outputs/*
-!data/outputs/.gitkeep
+
 # =========================================================
 # 🗃️ Office files
 # =========================================================
