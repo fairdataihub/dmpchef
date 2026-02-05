@@ -1,14 +1,14 @@
-
 root_dir: ./DMPCHEF
 
 paths:
-  data_pdfs: data/NIH_95             
+  data_pdfs: data/NIH_95
   index_dir: data/index
   excel_path: data/inputs/inputs.xlsx
   output_md: data/outputs/markdown
   output_docx: data/outputs/docx
 
 rag:
+  enabled: true          # optional; default behavior if use_rag is not provided
   chunk_size: 800
   chunk_overlap: 120
   retriever_top_k: 6
@@ -16,3 +16,13 @@ rag:
 models:
   llm_name: llama3.3
   embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  hf_cache_dir: data/cache/hf
+  local_files_only: true   # ✅ after first download
+
+
+  # ✅ NEW: cache embeddings locally so it won't re-download every run
+  hf_cache_dir: data/cache/hf
+
+  # ✅ NEW: set true if you want "offline mode" (no HF downloads)
+  # Use false for first run to download+cache, then switch to true later.
+  local_files_only: false

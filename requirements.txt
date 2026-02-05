@@ -101,6 +101,9 @@ selenium
 streamlit
 webdriver-manager
 
+
+python-docx
+docx2pdf
 #############################################
 # 📦 Local Package (Editable Install)
 #############################################

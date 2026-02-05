@@ -3,6 +3,12 @@
 # - RAG toggle per call OR via YAML (rag.enabled)
 # - NO-RAG mode does NOT load FAISS / retriever / RAG chain
 # - Saves: Markdown + NIH-template DOCX + ONLY DMPTool JSON
+#
+# ✅ Updates in this version:
+#   1) Embeddings are lazy-loaded ONLY when RAG is used
+#   2) funding_agency is NO LONGER read from inputs; it's passed as an argument
+#   3) Log includes funding_agency
+#   4) Keeps NIH prompt/template/docx/json behavior (future-ready for NSF)
 # ===============================================================
 
 import re
@@ -79,7 +85,7 @@ class DMPPipeline:
             self.output_docx = self.config.get_path("output_docx")
             self.output_json = Path("data/outputs/json")
 
-            # Template path
+            # Template path (currently NIH markdown template)
             self.template_md = Path("data/inputs/dmp-template.md")
 
             # Create output dirs (index_dir is created, but FAISS is not loaded unless needed)
@@ -92,11 +98,14 @@ class DMPPipeline:
 
             # Models
             self.model_loader = ModelLoader()
-            self.embeddings = self.model_loader.load_embeddings()
+
+            # ✅ Lazy-load embeddings only if/when RAG is enabled
+            self.embeddings = None
+
             self.llm_name = self.model_loader.llm_name
             self.llm = Ollama(model=self.llm_name)
 
-            # Prompt template
+            # Prompt template (currently NIH)
             self.prompt_template = PROMPT_REGISTRY[PromptType.NIH_DMP.value]
 
             # YAML default (rag.enabled). If missing => True.
@@ -122,7 +131,7 @@ class DMPPipeline:
             raise DocumentPortalException("Pipeline initialization error", e)
 
     # ---------------------------------------------------------------
-    # ✅ NEW: safe bool parser (so "false" doesn't become True)
+    # ✅ safe bool parser (so "false" doesn't become True)
     def _to_bool(self, v, default: Optional[bool] = None) -> Optional[bool]:
         if v is None:
             return default
@@ -145,6 +154,9 @@ class DMPPipeline:
         Robust PDF loading: PyMuPDFLoader primary, PyPDFLoader fallback.
         """
         try:
+            if self.embeddings is None:
+                raise RuntimeError("Embeddings are not loaded. Call _ensure_rag_ready() first.")
+
             faiss_path = self.index_dir / "index.faiss"
 
             if faiss_path.exists() and not force_rebuild:
@@ -267,9 +279,13 @@ class DMPPipeline:
 
     # ---------------------------------------------------------------
     def _ensure_rag_ready(self):
-        """Lazy-init FAISS + retriever + rag_chain ONLY when needed."""
+        """Lazy-init embeddings + FAISS + retriever + rag_chain ONLY when needed."""
         if self.rag_chain is not None and self.retriever is not None and self.vectorstore is not None:
             return
+
+        # ✅ load embeddings only here
+        if self.embeddings is None:
+            self.embeddings = self.model_loader.load_embeddings()
 
         self.vectorstore = self._load_or_build_index(force_rebuild=self.force_rebuild_index)
 
@@ -295,25 +311,37 @@ class DMPPipeline:
                     pass
 
     # ---------------------------------------------------------------
-    def generate_dmp(self, title: str, form_inputs: dict, use_rag: Optional[bool] = None):
+    def generate_dmp(
+        self,
+        title: str,
+        form_inputs: dict,
+        use_rag: Optional[bool] = None,
+        funding_agency: str = "NIH",   # ✅ NEW: passed from main.py (top-level JSON)
+    ):
         """
-        Generate NIH DMP from inputs.
+        Generate DMP from inputs.
 
         use_rag:
-          - True  => use retrieval (loads FAISS lazily)
-          - False => no retrieval (never touches FAISS)
+          - True  => use retrieval (loads embeddings + FAISS lazily)
+          - False => no retrieval (never touches embeddings/FAISS)
           - None  => use YAML default rag.enabled
+
+        funding_agency:
+          - passed from top-level input JSON (not inside inputs)
+          - currently used for logging / future routing (still NIH outputs for now)
         """
         try:
             title = (title or "").strip()
             if not title:
                 raise ValueError("❌ Title is required.")
 
-            # ✅ UPDATED (ONLY THIS LINE): safe boolean handling
+            funding_agency = (funding_agency or "NIH").strip().upper()
+            log.info("🏷️ Funding agency selected", funding_agency=funding_agency)
+
             use_rag_final = self._to_bool(use_rag, default=self.use_rag_default)
 
             log.info(
-                "🧭 RAG decision",
+                "🧾 RAG decision",
                 use_rag_input=use_rag,
                 rag_default=self.use_rag_default,
                 use_rag_final=use_rag_final,
@@ -333,6 +361,7 @@ class DMPPipeline:
                 if isinstance(val, str) and val.strip()
             ]
 
+            # NOTE: still NIH wording + NIH template (until you add NSF support)
             query = (
                 f"You are an NIH data steward and grant writer. "
                 f"Create a complete NIH Data Management and Sharing Plan (DMSP) "
@@ -342,7 +371,6 @@ class DMPPipeline:
                 f"{self.template_text}"
             )
 
-            # Only mention retrieval when actually using RAG (keeps behavior clean)
             if use_rag_final:
                 query = (
                     f"You are an NIH data steward and grant writer. "
@@ -391,6 +419,7 @@ class DMPPipeline:
             log.info(
                 "✅ DMP generated successfully",
                 title=title,
+                funding_agency=funding_agency,
                 use_rag=use_rag_final,
                 md=str(md_path),
                 docx=str(docx_path),

@@ -1,34 +1,57 @@
-# ========================
-# 🐍 Python Cache & Virtualenv
-# ========================
+# =========================================================
+# 🐍 Python: bytecode, venvs, packaging
+# =========================================================
 __pycache__/
 *.py[cod]
-*.so
 *.pyd
 *.pyo
+*.so
+
 env/
 venv/
 .venv/
+
 *.egg-info/
 *.egg
 
-# ========================
-# 🧰 OS & Editor Files
-# ========================
+dist/
+build/
+document_portal.egg-info/
+
+
+# =========================================================
+# 🧰 OS & Editors
+# =========================================================
 .DS_Store
 .vscode/
 .idea/
 
-# ========================
-# 🧠 LangChain / Vector Store
-# ========================
+
+# =========================================================
+# 🪵 Logs
+# =========================================================
+logs/
+*.log
+
+
+# =========================================================
+# 🔐 Secrets
+# =========================================================
+.env
+.env.*
+
+
+# =========================================================
+# 🧠 LangChain / Vector stores / artifacts
+# =========================================================
 faiss_index/
 *.faiss
 *.pkl
 
-# ========================
-# 📂 Data & Outputs
-# ========================
+
+# =========================================================
+# 📦 Data, outputs, archives (ignored by default)
+# =========================================================
 data/
 data-Copy/
 outputs/
@@ -36,56 +59,66 @@ archive/
 main_archive/
 *.pdf
 
-# ========================
-# 🔐 Secrets
-# ========================
-.env
-.env.*
-
-# ========================
-# ⚙️ Config (track this)
-# ========================
-!config/config.yaml
-
-# ========================
-# 🪵 Logs
-# ========================
-logs/
-*.log
-
-# ========================
-# 🏗️ Build & Distribution
-# ========================
-dist/
-build/
-document_portal.egg-info/
-
-# ========================
-# 🧪 Temporary & Test Files
-# ========================
-test.py
-*.png
-*.csv
-
-# Ignore text files, BUT keep requirements.txt
-*.txt
-!requirements.txt
-
-#Ignore markdown files, BUT keep data/dmp-template.md
-*.md
-
+# --- Exceptions: keep specific tracked data/template files
 !data/
 !data/inputs/
 !data/inputs/dmp-template.md
 
 
+# =========================================================
+# 🗂️ Caches (HF / Transformers / general)
+# =========================================================
+data/cache/
+data/**/cache/
+.cache/
+hf_cache/
+**/hf_models/
+**/models/
 
-# Ignore Office files
+**/huggingface/
+**/transformers/
+**/sentence-transformers/
+
+
+# =========================================================
+# 🧪 Temporary / test files & generated assets
+# =========================================================
+test.py
+*.png
+*.csv
+*.cgi
+
+
+# =========================================================
+# 📄 Text / Markdown / Input templates
+# =========================================================
+
+# Text: ignore all, but keep requirements.txt
+*.txt
+!requirements.txt
+
+# Markdown: ignore all, but keep the DMP template
+*.md
+!data/inputs/dmp-template.md
+
+# Word: ignore all, but keep the NIH template
+*.docx
+!data/inputs/nih-dms-plan-template.docx
+
+# Inputs: keep specific input JSON files you need
+!data/inputs/input.json
+
+
+# =========================================================
+# 📤 Outputs (generated) — ignore
+# =========================================================
+data/outputs/
+data/outputs/*
+# =========================================================
+# 🗃️ Office files
+# =========================================================
 *.xls
 *.xlsx
 *.xlsm
 *.doc
 *.docx
-
-# Misc
-*.cgi
