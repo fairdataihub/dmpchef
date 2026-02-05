@@ -101,19 +101,19 @@ test.py
 *.md
 !data/inputs/dmp-template.md
 
+# Inputs: keep specific input JSON files you need
+!data/inputs/input.json
+
 # Word: ignore all, but keep the NIH template
 *.docx
 !data/inputs/nih-dms-plan-template.docx
 
-# Inputs: keep specific input JSON files you need
-!data/inputs/input.json
-
-
 # =========================================================
 # 📤 Outputs (generated) — ignore
-# =========================================================
+
 data/outputs/
 data/outputs/*
+!data/outputs/.gitkeep
 # =========================================================
 # 🗃️ Office files
 # =========================================================
