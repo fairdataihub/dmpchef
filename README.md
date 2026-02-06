@@ -90,27 +90,32 @@ dmpchef/
 
 ## Setup (Local Development)
 
-### Step 1 — Create and activate a virtual environment
-
-**Windows (PowerShell):**
-```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
+### Step 1 — Clone the repository
+```bash
+git clone https://github.com/fairdataihub/dmpchef.git
+cd dmpchef
+code .
 ```
+### Step 2 — Create and activate a virtual environment
 
+**Windows (cmd):**
+```bash
+python -m venv venv
+venv\Scripts\activate.bat
+```
 **macOS/Linux:**
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
 
-### Step 2 — Install dependencies
+### Step 3 — Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 ---
 
-### Step 3 — Build the Index (One-time setup)
+### Step 4 — Build the Index (One-time setup)
 **When to run this:** Run ingestion **once** during initial setup (or anytime you add/update reference documents or change chunking/embedding settings).
 
 **What happens:** the app reads documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
@@ -124,7 +129,7 @@ pip install -r requirements.txt
 - Delete the saved index folder (often `data/index/`) and run ingestion again
 
 ---
-### Step 4 — Run the pipeline
+### Step 5 — Run the pipeline
 
 ```bash
 python main.py
@@ -158,28 +163,6 @@ python main.py
 - **PDF**: created by converting the DOCX (platform-dependent; typically works on Windows/macOS with Word).
 - **JSON**: a **DMPTool-compatible** JSON file (`*.dmptool.json`).
 
----
-
-## Setup (Example Commands — Conda)
-```bash
-git clone https://github.com/fairdataihub/dmpchef.git
-cd dmpchef
-code .
-
-conda create -n dmpchef python=3.10 -y
-conda activate dmpchef
-
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-
-# optional: install package
-pip install -e .
-
-# build index 
-python src/NIH_data_ingestion.py
-# run pipeline 
-python main.py
-```
 ---
 
 ## License
