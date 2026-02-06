@@ -150,18 +150,17 @@ python main.py
   - **inputs**: A dictionary of user/project fields used to draft the plan (free-form keys are allowed). Common examples include:
     - `research_context`, `data_types`, `data_source`, `human_subjects`, `consent_status`, `data_volume`, etc.
 
-  **Notes**
-  - Output filenames include a run suffix to prevent overwriting:
-    - `__rag__k{top_k}__{llm}` (RAG runs)  
-    - `__norag__{llm}` (No-RAG runs)
-
-
 ## Outputs
 
 - **Markdown**: the generated funder-aligned DMP narrative (currently NIH structure).
 - **DOCX**: generated using the funder template (NIH template today) to preserve official formatting.
 - **PDF**: created by converting the DOCX (platform-dependent; typically works on Windows/macOS with Word).
 - **JSON**: a **DMPTool-compatible** JSON file (`*.dmptool.json`).
+
+ **Notes**
+  - Output filenames include a run suffix to prevent overwriting:
+    - `__rag__k{top_k}__{llm}` (RAG runs)  
+    - `__norag__{llm}` (No-RAG runs)
 
 ---
 
