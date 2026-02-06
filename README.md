@@ -133,19 +133,30 @@ python main.py
 
 ## Inputs
 
-- Reference documents (e.g., NIH guidance PDFs) used for retrieval  
-- User/project metadata (example in `data/inputs/inputs.json`) is basically a **job request** for the pipeline. It can include:
+- **Reference documents**: guidance PDFs (and other funder instructions) placed in your configured `paths.data_pdfs` folder.  
+  These are used **only when `use_rag=true`** to retrieve funder-aligned language and examples.
 
-- **title**: Project title used for filenames and the document title.
-- **use_rag** : `true` / `false` to force RAG or No-RAG for this run.
-- **inputs** : The pipeline uses the fields inside the JSON (e.g., `research_context`, `data_types`, `data_source`,`human_subjects`,`consent_status` and`data_volume`).
+- **Request JSON**: a single “job request” file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate.
+
+  **Top-level fields**
+  - **title**: Project title (also used for output filenames).
+  - **funding_agency**: Funder key (e.g., `NIH`; future-ready for others like `NSF`); 
+  - **use_rag**: `true` / `false` (optional). If omitted, the pipeline uses the YAML default `rag.enabled`.
+  - **inputs**: A dictionary of user/project fields used to draft the plan (free-form keys are allowed). Common examples include:
+    - `research_context`, `data_types`, `data_source`, `human_subjects`, `consent_status`, `data_volume`, etc.
+
+  **Notes**
+  - Output filenames include a run suffix to prevent overwriting:
+    - `__rag__k{top_k}__{llm}` (RAG runs)  
+    - `__norag__{llm}` (No-RAG runs)
 
 
 ## Outputs
 
-- **JSON** (structured)
-- **Markdown** (NIH-style narrative)
-- **DOCX** (optional; preserves NIH template formatting when enabled)
+- **Markdown**: the generated funder-aligned DMP narrative (currently NIH structure).
+- **DOCX**: generated using the funder template (NIH template today) to preserve official formatting.
+- **PDF**: created by converting the DOCX (platform-dependent; typically works on Windows/macOS with Word).
+- **JSON**: a **DMPTool-compatible** JSON file (`*.dmptool.json`).
 
 ---
 
