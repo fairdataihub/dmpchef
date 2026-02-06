@@ -15,7 +15,7 @@
               "text": "Types and amount of scientific data expected to be generated in the project",
               "answer": {
                 "json": {
-                  "answer": "The project titled 'NIH Data Management and Sharing Plan: Clinical and MRI Data from Human Research Participants' expects to generate a significant amount of scientific data, including demographic and clinical data (tabular) and MRI-based imaging data. This will encompass structural MRI, fMRI, and 1H fMRS data, along with derived imaging measures/features and supporting documentation such as data dictionaries, protocols, and README files. The dataset will include participant-level clinical/demographic tables for 220 participants (110 affected youth and 110 matched healthy controls) and multi-modal MRI imaging data.",
+                  "answer": "The project titled 'NIH Data Management and Sharing Plan: Clinical and MRI Data from Human Research Participants' expects to generate demographic, clinical, and MRI-based imaging data. This includes structural MRI, fMRI, and 1H fMRS data, along with derived imaging measures/features and supporting documentation such as data dictionaries, protocols, and README files. The dataset will comprise participant-level clinical/demographic tables for 220 participants (110 affected youth and 110 matched healthy controls) and multi-modal MRI imaging data. The total volume of the data will depend on the imaging protocols used and the derivatives retained, with the imaging data expected to be the largest component.",
                   "type": "textArea"
                 }
               }
@@ -25,7 +25,7 @@
               "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
               "answer": {
                 "json": {
-                  "answer": "All collected data, including demographic, clinical, and MRI imaging data, will be preserved and shared. The rationale behind this decision is to maximize the utility of the data for future research, facilitate replication studies, and accelerate discoveries in the field by making these valuable resources available to the broader scientific community. This approach aligns with the principles of open science and the NIH's emphasis on enhancing data sharing and reuse.",
+                  "answer": "All collected data, including demographic and clinical data (in tabular form) and MRI-based imaging data, will be preserved and shared. The rationale for sharing these data is to facilitate transparency, reproducibility, and further research in the field by providing a comprehensive dataset that can be used by other researchers. This approach aligns with the principles of open science and maximizes the potential benefits of the research conducted.",
                   "type": "textArea"
                 }
               }
@@ -35,7 +35,7 @@
               "text": "Metadata, other relevant data, and associated documentation",
               "answer": {
                 "json": {
-                  "answer": "To facilitate the interpretation and reuse of the scientific data, the following metadata, other relevant data, and associated documentation will be made accessible:\n- Data dictionaries that describe the variables and codes used in the demographic and clinical datasets.\n- Study protocols outlining the procedures for collecting MRI and clinical data.\n- README files providing an overview of the dataset structure, content, and any specific instructions for use.\n- Information on the standardized scan protocols used for MRI data acquisition.",
+                  "answer": "To facilitate interpretation of the scientific data, the following metadata, other relevant data, and associated documentation will be made accessible:\n- Data dictionaries that describe the variables and their formats in the demographic and clinical datasets.\n- Study protocols outlining how the MRI imaging data were collected.\n- README files providing an overview of the dataset structure, content, and any specific instructions for use.\n- Information on the standardized scan protocols used for acquiring MRI data.",
                   "type": "textArea"
                 }
               }
@@ -52,7 +52,7 @@
               "text": "Element 2: Related Tools, Software and/or Code",
               "answer": {
                 "json": {
-                  "answer": "Specialized tools and software are needed to access or manipulate the shared scientific data. Specifically, for MRI imaging data:\n- FSL (FMRIB Software Library) for analysis of structural and functional MRI data.\n- AFNI (Analysis of Functional NeuroImages) for processing and analyzing fMRI and 1H fMRS data.\n- 3D Slicer for visualizing and analyzing MRI images.\nThese tools are widely used in the neuroimaging community and can be accessed through their respective websites or repositories.",
+                  "answer": "Specialized tools and software will be needed to access or manipulate the shared scientific data, particularly for analyzing the MRI imaging data. These include but are not limited to:\n- MRI analysis software such as FSL (FMRIB Software Library) or AFNI (Analysis of Functional NeuroImages).\n- Statistical software like R or Python libraries (e.g., pandas, NumPy, and scikit-learn) for handling and analyzing the demographic and clinical data.\nThese tools can be accessed through their respective websites or repositories.",
                   "type": "textArea"
                 }
               }
@@ -69,7 +69,7 @@
               "text": "Element 3: Standards",
               "answer": {
                 "json": {
-                  "answer": "To enable interoperability of datasets and resources, common data standards will be applied to the scientific data and associated metadata. The project will adhere to:\n- The Brain Imaging Data Structure (BIDS) standard for organizing and describing MRI data.\n- The NIH's National Institute of Mental Health (NIMH) Data Archive (NDA) guidelines for formatting and submitting demographic and clinical data.\n- Standardized ontologies and vocabularies, such as those provided by the NIMH or other relevant organizations, will be used to annotate metadata and ensure consistency across datasets.",
+                  "answer": "To enable interoperability of datasets and resources, common data standards will be applied to the scientific data and associated metadata. Specifically:\n- The MRI data will adhere to the BIDS (Brain Imaging Data Structure) standard for organization and formatting.\n- Demographic and clinical data will follow standardized formats such as those recommended by the National Institute of Mental Health (NIMH) for data sharing, including the use of standardized vocabularies and ontologies where applicable.\nThese standards ensure that the data can be easily understood, accessed, and combined with other datasets.",
                   "type": "textArea"
                 }
               }
@@ -86,7 +86,7 @@
               "text": "Repository where scientific data and metadata will be archived",
               "answer": {
                 "json": {
-                  "answer": "The scientific data and metadata arising from this project will be archived in the NIMH Data Archive (NDA). The NDA is a repository that supports the sharing and reuse of data related to mental health research, making it an appropriate choice for this study.",
+                  "answer": "The scientific data and metadata arising from this project will be archived in the NIMH Data Archive (NDA), a repository that specializes in storing and sharing data related to mental health research. The NDA provides a secure, reliable, and accessible platform for data sharing, facilitating collaboration among researchers.",
                   "type": "textArea"
                 }
               }
@@ -96,7 +96,7 @@
               "text": "How scientific data will be findable and identifiable",
               "answer": {
                 "json": {
-                  "answer": "To ensure that the scientific data are findable and identifiable, each dataset will be assigned a persistent unique identifier (e.g., DOI) upon publication in the NDA. Additionally, datasets will be indexed with standardized metadata to facilitate discovery through search tools provided by the NDA.",
+                  "answer": "The scientific data will be made findable and identifiable through the assignment of a persistent unique identifier (e.g., DOI) upon deposition into the NDA. Additionally, metadata will be fully indexed and searchable within the NDA's database, allowing users to locate specific datasets based on various criteria such as study description, participant demographics, or data types.",
                   "type": "textArea"
                 }
               }
@@ -106,7 +106,7 @@
               "text": "When and how long the scientific data will be made available",
               "answer": {
                 "json": {
-                  "answer": "The scientific data will be made available to other users no later than the time of an associated publication or the end of the performance period, whichever comes first. The data will remain available indefinitely, as per the NDA's policies, to support ongoing research and maximize the impact of the project's findings.",
+                  "answer": "The scientific data will be made available to other users no later than the time of an associated publication or the end of the performance period, whichever comes first. The data are expected to remain accessible for a minimum of 10 years following the initial release, in accordance with NIH guidelines and the policies of the NDA.",
                   "type": "textArea"
                 }
               }
@@ -123,7 +123,7 @@
               "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
               "answer": {
                 "json": {
-                  "answer": "While the project aims to maximize data sharing, factors that may affect subsequent access, distribution, or reuse include the need to protect participant privacy and confidentiality. All data will be deidentified before sharing, but access to certain sensitive information might require additional approval processes through the NDA.",
+                  "answer": "While the project aims to maximize data sharing, factors such as privacy and confidentiality protections for human research participants may limit certain aspects of data access. Specifically, all shared data will be de-identified to protect participant privacy. However, access to the data may be controlled through a request and approval process managed by the NDA to ensure that data use agreements are in place to safeguard sensitive information.",
                   "type": "textArea"
                 }
               }
@@ -133,7 +133,7 @@
               "text": "Whether access to scientific data will be controlled",
               "answer": {
                 "json": {
-                  "answer": "Access to the scientific data will be controlled through the NDA's access request system. Users will need to register and agree to the NDA's Data Use Certification agreement before accessing the datasets. This ensures that data are used appropriately and in compliance with ethical standards and regulations.",
+                  "answer": "Yes, access to the scientific data will be controlled. The NDA will manage access through a system where users must register and agree to terms of use before being granted access to the datasets. This ensures that data are used responsibly and in compliance with ethical standards.",
                   "type": "textArea"
                 }
               }
@@ -143,7 +143,7 @@
               "text": "Protections for privacy, rights, and confidentiality of human research participants",
               "answer": {
                 "json": {
-                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, all identifiable information will be removed from the datasets before they are shared. Participants have been consented for broad data sharing under an approved study protocol that includes provisions for protecting their privacy and confidentiality.",
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, several measures will be implemented:\n- All data shared through the NDA will be de-identified to remove direct identifiers.\n- Participants will provide broad consent for data sharing as part of the study's informed consent process.\n- Certificates of Confidentiality will be obtained to further protect against disclosure of sensitive information.",
                   "type": "textArea"
                 }
               }
@@ -160,7 +160,7 @@
               "text": "Element 6: Oversight of Data Management and Sharing",
               "answer": {
                 "json": {
-                  "answer": "Compliance with this Data Management and Sharing Plan will be monitored and managed by the project's Principal Investigator (PI), in collaboration with the institution's research administration office. Regular oversight meetings will be conducted quarterly to review progress, address any challenges in data management and sharing, and ensure that all datasets are properly documented and submitted to the NDA according to the planned timeline. The PI and the research team will work closely with the NDA support staff as needed to resolve any issues related to data submission or access.",
+                  "answer": "Compliance with this Data Management and Sharing Plan will be monitored and managed by the project's Principal Investigator (PI) in conjunction with the institution's research administration office. Regular oversight will occur at least bi-annually, or as needed based on milestones such as data collection completion or publication of results. Responsibilities include ensuring that all project staff understand and adhere to the Plan, coordinating data deposition into the NDA, monitoring access requests and ensuring compliance with data use agreements, and reviewing feedback from users to improve data sharing practices. This oversight ensures that the project meets its obligations regarding transparent and responsible data sharing.",
                   "type": "textArea"
                 }
               }

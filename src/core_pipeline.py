@@ -1,28 +1,3 @@
-# ===============================================================
-# core_pipeline.py — RAG Toggle + No extra JSON (OLD-STYLE RAG CALL) — UPDATED (FUNDER-READY)
-#
-# ✅ Keeps your OLD-STYLE RAG behavior:
-#    - CLEAN retrieval_query (no template text)
-#    - manual retrieval -> format context -> prompt_template.format(...) -> llm.invoke(...)
-#
-# ✅ Makes RAG vs NO-RAG meaningfully different by:
-#    1) Using MMR (diverse retrieval) when enabled
-#    2) Adding a light selection step (default ON)
-#    3) Trimming/structuring context so it becomes usable
-#    4) Logging + saving retrieved context to a debug file (proves retrieval)
-#    5) Adding a small RAG-only instruction wrapper (forces usage)
-#
-# ✅ Prevent overwriting outputs by adding a run suffix:
-#    - __rag__k8__llama3.3  OR  __norag__llama3.3
-#
-# ✅ NEW (Funder-ready with NO behavior change today):
-#    - Adds a simple FUNDER_SPECS registry (NIH is the default)
-#    - Routes template_md / docx_template / prompt_type / dmptool_template_title by funder key
-#    - If an unknown funder is passed, falls back to NIH safely
-#
-# Outputs unchanged (only filenames get suffix):
-#  - Saves: Markdown + NIH-template DOCX + ONLY DMPTool JSON
-# ===============================================================
 
 import json
 import re
