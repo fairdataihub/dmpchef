@@ -1,4 +1,3 @@
-# dmpchef/__init__.py
-from .api import generate, draft
+from .api import generate, draft, prepare_nih_corpus
 
-__all__ = ["generate", "draft"]
+__all__ = ["generate", "draft", "prepare_nih_corpus"]

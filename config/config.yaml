@@ -9,7 +9,6 @@ paths:
 
 rag:
   enabled: true
-  # Smaller chunks = more precise retrieval (prevents RAG looking same as no-RAG)
   chunk_size: 900
   chunk_overlap: 150
   retriever_top_k: 10
@@ -18,12 +17,5 @@ models:
   llm_name: llama3.3
   embedding_model: sentence-transformers/all-MiniLM-L6-v2
   hf_cache_dir: data/cache/hf
-  local_files_only: true   # ✅ after first download
-
-
-  # ✅ NEW: cache embeddings locally so it won't re-download every run
-  hf_cache_dir: data/cache/hf
-
-  # ✅ NEW: set true if you want "offline mode" (no HF downloads)
-  # Use false for first run to download+cache, then switch to true later.
-  local_files_only: false
+  # Set false for first run to download, then true for offline reuse
+  local_files_only: true
