@@ -79,7 +79,10 @@ hf_cache/
 **/transformers/
 **/sentence-transformers/
 
-
+notebook_DMP_RAG/data/cache/
+notebook_DMP_RAG/data/**/cache/
+notebook_DMP_RAG/config/**
+notebook_DMP_RAG/inputs/**
 # =========================================================
 # 🧪 Temporary / test files & generated assets
 # =========================================================
