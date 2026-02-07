@@ -21,7 +21,6 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 
 
 ## Main files
-## Main files
 
 - **[`dmpchef/api.py`](https://github.com/fairdataihub/dmpchef/blob/main/dmpchef/api.py)** — Public, importable API:
   - `generate()` / `draft()` to produce DMP outputs (Markdown, DOCX, DMPTool JSON, optional PDF)
@@ -128,9 +127,10 @@ pip install -e .
 ### Option A — Jupyter demo
 Use **[`demo_import.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)**.
 
-### Option B — CLI
-```bash
-python main.py
+### Option B — CLI-— Command-line entry point for running the pipeline end-to-end
+
+Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** 
+
 ```
 ---
 ```
