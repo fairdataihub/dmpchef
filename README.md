@@ -53,12 +53,13 @@ dmpchef/
 │
 ├── config/                 # Configuration
 │   ├── config.yaml         # Main settings (models, paths, retriever params)
-│   └── config_schema.py    # Validation/schema helpers (if used)
+│   └── config_schema.py    # Validation/schema helpers (optional)
 │
-├── data/                   # Local data + artifacts (not guaranteed in wheel)
+├── data/                   # Local workspace data + artifacts (not guaranteed in wheel)
 │   ├── inputs/             # Templates + examples
 │   │   ├── nih-dms-plan-template.docx  # NIH blank Word template
-│   │   └── input.json                 # Example request file
+│   │   └── input.json                  # Example request file
+│   ├── web_links.json      # Seed links for NIH/DMPTool ingestion (used by src/NIH_data_ingestion.py)
 │   ├── NIH_95/             # Reference PDFs collected for NIH RAG (optional)
 │   ├── index/              # Vector index artifacts (e.g., FAISS)
 │   ├── outputs/            # Generated artifacts
@@ -66,7 +67,7 @@ dmpchef/
 │   │   ├── docx/           # Generated DOCX DMPs (template-preserving)
 │   │   ├── json/           # DMPTool-compatible JSON outputs
 │   │   ├── pdf/            # Optional PDFs converted from DOCX
-│   │   └── debug/          # Optional retrieval debug outputs
+│   │   └── debug/          # Optional retrieval debug outputs (retrieved context, logs, etc.)
 │   └── data_ingestion/     # Session folders + manifests from crawling
 │
 ├── src/                    # Core implementation
@@ -84,9 +85,16 @@ dmpchef/
 │   └── nih_docx_writer.py
 │
 ├── logger/                 # Logging utilities
+│   ├── __init__.py
+│   └── custom_logger.py
+│
 ├── exception/              # Custom exceptions
+│   ├── __init__.py
+│   └── custom_exception.py
+│
 ├── notebook_DMP_RAG/       # Notebooks/experiments (non-production)
 └── venv/                   # Local virtualenv (ignore in git)
+
 
 
 ```
