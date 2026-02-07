@@ -131,9 +131,7 @@ Use **[`demo_import.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/de
 
 Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** 
 
-```
 ---
-```
 
 ## Inputs
 
