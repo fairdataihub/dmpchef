@@ -1,0 +1,741 @@
+{
+  "sites": {
+    "dmptool.org": {
+      "https://dmptool.org/plans/105399/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/105399/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0001.pdf",
+        "hash": "9e7f840f66995a9a2b13ea062bcec057f7a88df6d03a9f13956f4962679cb0bc",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:22.520375"
+      },
+      "https://dmptool.org/plans/120817/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/120817/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0002.pdf",
+        "hash": "9bf8e9339b094e3bd693f937ccdb2d8c85b2a6ede011f3c477dca3ba85777265",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:22.770536"
+      },
+      "https://dmptool.org/plans/148362/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/148362/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0003.pdf",
+        "hash": "7f411e3b735b49d04c5dd0515b85f358f67df2b9b711529df8d3603e4ded8401",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:23.048207"
+      },
+      "https://dmptool.org/plans/148807/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/148807/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0004.pdf",
+        "hash": "42e0c5fa4e434574e6e679665173de05c0e871de6007b2184f7e9e151ade32a1",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:23.361733"
+      },
+      "https://dmptool.org/plans/29491/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/29491/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0005.pdf",
+        "hash": "b1d316ebb9b594c5b721b71d3713dc5f30802928146624765ab4e7b9c50a912b",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:23.614158"
+      },
+      "https://dmptool.org/plans/52844/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/52844/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0006.pdf",
+        "hash": "83c3db5823d8fe205fb71168d904c7ee49da9aa57f1fba015e7dffe89c2d4ed1",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:23.827687"
+      },
+      "https://dmptool.org/plans/66478/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/66478/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0007.pdf",
+        "hash": "3de492ade7654d451fe11a7f6f01fa432a5940b375f0e0dca0f3fc51bc171508",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:24.098544"
+      },
+      "https://dmptool.org/plans/74502/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/74502/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0008.pdf",
+        "hash": "2b6d741917d6d278ebf6cae1e631be8bbb90fda1944aed19ca407d267b2f26e1",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:24.396069"
+      },
+      "https://dmptool.org/plans/90532/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/90532/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0009.pdf",
+        "hash": "05bdc6aed862b30b79dde1ade03c999dabf2ada3debc8cc66a47c38a24b2f807",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:24.657800"
+      },
+      "https://dmptool.org/plans/93022/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/93022/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0010.pdf",
+        "hash": "21cff1bd02f79679554a814d099ff489fd915032a147412a82eacd2241c99736",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:24.921592"
+      },
+      "https://dmptool.org/plans/143674/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/143674/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0011.pdf",
+        "hash": "5a1ee077e80932cf7dc167a752b01a96d5ac73498d30d92f7d00e439c3f1ba5b",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:26.480958"
+      },
+      "https://dmptool.org/plans/144576/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/144576/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0012.pdf",
+        "hash": "9f814a8193ca6abb859139e42c8780cb26fcc92031789ca67beaf0d1c87abb99",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:26.731688"
+      },
+      "https://dmptool.org/plans/144863/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/144863/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0013.pdf",
+        "hash": "7a2027d345019e248e97bbe3588ca444fbdf44f615fdc176b056ed3a6b859693",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:26.998316"
+      },
+      "https://dmptool.org/plans/145712/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/145712/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0014.pdf",
+        "hash": "de1cde2d81ea8f1e2ee16ac5fecb788f7ea4bcf84956916c426ddf87a7554e94",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:27.283817"
+      },
+      "https://dmptool.org/plans/146405/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/146405/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0015.pdf",
+        "hash": "f7db5d3316d6e83e9d5e812f75a07c2aa54900f8c64f14693540b25b7ffd3b9b",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:27.513917"
+      },
+      "https://dmptool.org/plans/146419/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/146419/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0016.pdf",
+        "hash": "3a67223026417b641714c021a9341de1b4201fe5459fd5fcb3223ef4beed8728",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:27.752319"
+      },
+      "https://dmptool.org/plans/146864/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/146864/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0017.pdf",
+        "hash": "7b0c0995e945bdd9781edb5ab90a0c1aa8973b0327b89c5f4b749dba86b0afff",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:27.997863"
+      },
+      "https://dmptool.org/plans/147136/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/147136/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0018.pdf",
+        "hash": "2b8cdcd4f946cdfc4de4aad178ae7504cc1674a13fb8d98811b0081a51cd254a",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:28.239418"
+      },
+      "https://dmptool.org/plans/147183/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/147183/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0019.pdf",
+        "hash": "e7e271cac3c5864c2a522b4a0611e209164a9b7fdb2f9ee5346a30410cd4adac",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:28.490147"
+      },
+      "https://dmptool.org/plans/147435/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/147435/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0020.pdf",
+        "hash": "83c6d754a679433e580140f0ba35a07a9405b474fe7795387dc6f9ca4f0c4224",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:28.741200"
+      },
+      "https://dmptool.org/plans/131492/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/131492/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0021.pdf",
+        "hash": "1bdc12d89322aa112611f9019b57952d15b3856312ee00cfb9f24f627dd677de",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:30.317440"
+      },
+      "https://dmptool.org/plans/132456/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/132456/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0022.pdf",
+        "hash": "d0a40147de1923e0cd67fd5a59fc19f389d5b66588eafe87e1b2de78e24e43bd",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:30.573848"
+      },
+      "https://dmptool.org/plans/133202/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/133202/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0023.pdf",
+        "hash": "cdfe8bd8dbdcf68ccaada8ccecffafcc3684c933a866e196dfd42c933eeea60b",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:30.878150"
+      },
+      "https://dmptool.org/plans/133549/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/133549/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0024.pdf",
+        "hash": "e1ce49f2d7c016d3a624faec1ccbe58c706fca0b7a60b2f89dbfd9cb1d557d3e",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:31.176214"
+      },
+      "https://dmptool.org/plans/133810/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/133810/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0025.pdf",
+        "hash": "55dadf10c0c448eba30b1ec7a1d88d3f30723761a90d5a7d284798b2667d3d60",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:31.425979"
+      },
+      "https://dmptool.org/plans/136083/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/136083/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0026.pdf",
+        "hash": "862a02f973c27c470d4e6e4809be1fff0a54cecaed19422702c3fe0448d2bed0",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:31.712825"
+      },
+      "https://dmptool.org/plans/138577/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/138577/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0027.pdf",
+        "hash": "ae6d8f21409bd6a0e624e54b8c37c63398189f35135c5d2f1f6beff685eb1487",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:31.982415"
+      },
+      "https://dmptool.org/plans/143037/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/143037/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0028.pdf",
+        "hash": "bbe9b4cd0d20d79debfa3e97ea47e89b02300eb4476ef131841760e8c8ac49d0",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:32.232508"
+      },
+      "https://dmptool.org/plans/143378/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/143378/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0029.pdf",
+        "hash": "2e21ad61332dae0e8d09a8845ca22840f968f837ab63a38768c73922c997c3c8",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:32.484666"
+      },
+      "https://dmptool.org/plans/143498/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/143498/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0030.pdf",
+        "hash": "482fb11ff8569805ee1a25b667fafe81947697f1ae187aec64d131c9377334ad",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:32.738459"
+      },
+      "https://dmptool.org/plans/114207/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/114207/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0031.pdf",
+        "hash": "4f9adb354018726d2f4ad20747ead417e511c48d1f1c06a60b7f42b59b72acfd",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:34.291235"
+      },
+      "https://dmptool.org/plans/114559/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/114559/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0032.pdf",
+        "hash": "4189cc2f49cfd20ddb398690e670c83be711b9ecdb273739438a115fb5cbd4ac",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:34.548565"
+      },
+      "https://dmptool.org/plans/115994/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/115994/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0033.pdf",
+        "hash": "af107fa4f01836f8b1e221e1204a4f1e6f71638c410c3255fd4897e75b906d50",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:34.793795"
+      },
+      "https://dmptool.org/plans/117661/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/117661/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0034.pdf",
+        "hash": "62397f0e2e381f50db5c785c2212f418c08566e9d73431a18e2b2b07f9b81fc4",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:35.122229"
+      },
+      "https://dmptool.org/plans/122525/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/122525/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0035.pdf",
+        "hash": "d5c2eb3b40ee8bfc1bd79c3eca5b4ca3469435129247c698ebb46312a4402bf4",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:35.367784"
+      },
+      "https://dmptool.org/plans/124538/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/124538/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0036.pdf",
+        "hash": "46e3c5986d610230cc51cf1dcbf75942cbddb9f7f0e3b5aa371fe7460620f37f",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:35.660244"
+      },
+      "https://dmptool.org/plans/125186/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/125186/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0037.pdf",
+        "hash": "5ce883ea8e0362e2085b2007211947bf627d47a57c9a327d22893e5d69850b56",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:35.897299"
+      },
+      "https://dmptool.org/plans/126021/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/126021/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0038.pdf",
+        "hash": "f6291f632513e86f3593164195479f1b8ffd716ba9e98f3d57060d1c642c3915",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:36.181720"
+      },
+      "https://dmptool.org/plans/128438/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/128438/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0039.pdf",
+        "hash": "97e322b40f75372743b61dbd8649812ab6978e8f30a6adeb0088b2b66a134091",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:36.438302"
+      },
+      "https://dmptool.org/plans/130840/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/130840/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0040.pdf",
+        "hash": "4d69f3abbf0d219744438217072ab98495c3d053122ad07d2552d7745d261fc6",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:36.679223"
+      },
+      "https://dmptool.org/plans/109563/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/109563/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0041.pdf",
+        "hash": "4e47413290cfc752578f3bd19d497ae3623c4ce82a43c9bb6c4fd54f59689cdd",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:38.233162"
+      },
+      "https://dmptool.org/plans/111030/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/111030/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0042.pdf",
+        "hash": "508b8019a7162ef5b7d92a40eb271fe4ec214ab990f125f84249ac37dffc834a",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:38.487726"
+      },
+      "https://dmptool.org/plans/112395/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/112395/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0043.pdf",
+        "hash": "727c0a997f68acbcdc32e87a28a3b5124ae3262e82ea917e507d29e602df9f00",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:38.740489"
+      },
+      "https://dmptool.org/plans/112940/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/112940/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0044.pdf",
+        "hash": "65456bfbc1bf44342d9d17c452cc5a6315103713154b4144d3a6b56fbc77b644",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:38.979472"
+      },
+      "https://dmptool.org/plans/113336/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/113336/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0045.pdf",
+        "hash": "30ddb7b719c2372593c89affd1080c5c2dbeea9a18c6a20ece99269493834bc1",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:39.239448"
+      },
+      "https://dmptool.org/plans/113560/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/113560/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0046.pdf",
+        "hash": "cb55855bf73f525fb40fb9d11832acb6436f34158bc9a98feb7d4a5d61bbf187",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:39.553466"
+      },
+      "https://dmptool.org/plans/113852/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/113852/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0047.pdf",
+        "hash": "60285ac9a2258650508292d54856646b98f0e34169085155019465750986a2a0",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:39.908985"
+      },
+      "https://dmptool.org/plans/113912/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/113912/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0048.pdf",
+        "hash": "ee16dcb8d0cd1039604dcec03d6b2b28daec656bf232c336d8c29f7331527957",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:40.155060"
+      },
+      "https://dmptool.org/plans/113918/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/113918/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0049.pdf",
+        "hash": "b77b41fd0e8819465bf16a39b994bc5688ae27d23c969ebc1c5dae5a0d0cc107",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:40.459690"
+      },
+      "https://dmptool.org/plans/114204/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/114204/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0050.pdf",
+        "hash": "60e5589df11e4fe2a38bdc61fc82cda9ca2643680f73de75c56b2b318a0d854c",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:40.720936"
+      },
+      "https://dmptool.org/plans/106480/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/106480/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0051.pdf",
+        "hash": "ffaccc82acf17823e2e74b58dc3b318ddf76998e56cf0090b5227a40b476ad1f",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:42.295779"
+      },
+      "https://dmptool.org/plans/106511/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/106511/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0052.pdf",
+        "hash": "9e7f4bf0aefc3889eb1bee073cd236b57d6532890667361b43ab6f543d2085a9",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:42.607063"
+      },
+      "https://dmptool.org/plans/107871/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/107871/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0053.pdf",
+        "hash": "c1a9b5fadad03464d714b593a98d07c185d36e08ffaa575971b4d62ea4c6c6f6",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:42.865610"
+      },
+      "https://dmptool.org/plans/107904/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/107904/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0054.pdf",
+        "hash": "7eb763071c7b7d2c36fce47d1d8b4c510016b2ceed27443305fec69df52dacd1",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:43.142287"
+      },
+      "https://dmptool.org/plans/108224/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/108224/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0055.pdf",
+        "hash": "c7a4b8e43e13fcf20d7adc71d9e311619f04c87d6f9aaebb587e14b77fa9b694",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:43.411428"
+      },
+      "https://dmptool.org/plans/108303/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/108303/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0056.pdf",
+        "hash": "1dc45f37a10004eb1ab1ed8835a8748193d2ee9ef3050f8638b5560528a37e31",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:43.717961"
+      },
+      "https://dmptool.org/plans/108673/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/108673/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0057.pdf",
+        "hash": "df1fa35175e636091c39e769170e2505c673f232bf58f0c827e619615d4d70ff",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:43.979826"
+      },
+      "https://dmptool.org/plans/108793/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/108793/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0058.pdf",
+        "hash": "8cd04ca2ae10587fb07337c2ba0a39792af1f52c692d19c7125f0eb69449ac1d",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:44.293726"
+      },
+      "https://dmptool.org/plans/109113/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/109113/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0059.pdf",
+        "hash": "60f91770bc6f0d347e2cbb3760388bf247d5feb481ad43a2272ad5c54c9ae372",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:44.587564"
+      },
+      "https://dmptool.org/plans/109479/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/109479/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0060.pdf",
+        "hash": "dd2ae3d460ee038bcf790a1f22ebfe7b1285ada8228cdc9acbcafac35330243e",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:44.897338"
+      },
+      "https://dmptool.org/plans/100555/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/100555/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0061.pdf",
+        "hash": "c41f26371f7b60c7565c243d84e04d61d287da571ac8aabddee6ea00dac3dc48",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:46.566573"
+      },
+      "https://dmptool.org/plans/100637/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/100637/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0062.pdf",
+        "hash": "17d197e740b996974e272889402ce3d16963078a2a79a1db9e6126fd0a0dbc1e",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:46.821510"
+      },
+      "https://dmptool.org/plans/100657/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/100657/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0063.pdf",
+        "hash": "d596e975bf0c355034ad0604e44fb69765d678cb3a74c8480dee7b6274e33ef0",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:47.059458"
+      },
+      "https://dmptool.org/plans/101008/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/101008/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0064.pdf",
+        "hash": "8d6f269f46ce65ae301a07d6557e09d8b10adeaf9d82fe924a4d37a7c269c48d",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:47.297461"
+      },
+      "https://dmptool.org/plans/101349/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/101349/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0065.pdf",
+        "hash": "59cc0972a2c883799d52c2592ffa56eb7e1080e81e485fa17af2a250d4ca7ca2",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:47.565874"
+      },
+      "https://dmptool.org/plans/103768/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/103768/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0066.pdf",
+        "hash": "5d742e412d9caa96fa53ce8e599214b0c103517f2e0f4e85d3143bb7851e2bec",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:47.845241"
+      },
+      "https://dmptool.org/plans/97540/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/97540/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0067.pdf",
+        "hash": "4d966429c7fbd4bdb6060f68a00583a5772f136bcc744887c7a155350fc940d3",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:48.095718"
+      },
+      "https://dmptool.org/plans/99557/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/99557/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0068.pdf",
+        "hash": "15c4e1e89e07cf830aaeddbdf3d9f9780de5bbbec16f5db28b700fd313f13318",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:48.333271"
+      },
+      "https://dmptool.org/plans/99876/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/99876/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0069.pdf",
+        "hash": "ca62cbc76937679f74ef4c4b7d378e0c6e1a74cc4f3a1a45e36151d83b66b04f",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:48.574483"
+      },
+      "https://dmptool.org/plans/99881/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/99881/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0070.pdf",
+        "hash": "71ba34066232f2d8f9eadc9f685adc411cb5b796aacd0c8a94f1182505676f08",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:48.820135"
+      },
+      "https://dmptool.org/plans/93542/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/93542/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0071.pdf",
+        "hash": "7a72fdc0ceedd64c7d1fa46aa3e1d157a65e4661d8c1cdd5246da8d076cc86f9",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:50.407175"
+      },
+      "https://dmptool.org/plans/93729/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/93729/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0072.pdf",
+        "hash": "df612decfe01b1d776bba7b820061fce710b18a77715d688e50563a5e6ab71a7",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:50.657136"
+      },
+      "https://dmptool.org/plans/93982/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/93982/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0073.pdf",
+        "hash": "7c4123faf6a96a941e912de0368f9c524e01815d740e21a3a2de09516eae5dd5",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:50.909741"
+      },
+      "https://dmptool.org/plans/94003/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/94003/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0074.pdf",
+        "hash": "d6763124d5daf57cdddc35c289d9ae1c4bf984e7e38b7eea19393c16c942fc1a",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:51.156191"
+      },
+      "https://dmptool.org/plans/94818/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/94818/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0075.pdf",
+        "hash": "783d5aa318d53f1a8396a0253d89c5a3bd80d339e83392f422db753da037da48",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:51.419610"
+      },
+      "https://dmptool.org/plans/95007/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/95007/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0076.pdf",
+        "hash": "e923e917983b01b7bd2be3832cc1f95da778ebd53c77962b8a4761373397227d",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:51.667650"
+      },
+      "https://dmptool.org/plans/95423/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/95423/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0077.pdf",
+        "hash": "159e8b624c7e9c89c93b86f2029d6657775488ef08140ce32f68b8bb385f44e0",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:51.922329"
+      },
+      "https://dmptool.org/plans/95483/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/95483/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0078.pdf",
+        "hash": "20247d73fca8754757e3e058ff31a652c956f32c5dd18558a43479e0bd633e6e",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:52.187690"
+      },
+      "https://dmptool.org/plans/95697/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/95697/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0079.pdf",
+        "hash": "ff36b730cd32fa00da5c26ca841220d9de5ba4490e7c1e0eb7147b2526d913ec",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:52.447638"
+      },
+      "https://dmptool.org/plans/96509/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/96509/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0080.pdf",
+        "hash": "6006dea8df60b839cb1ce5a0cd1522138dfa47c759537601fb3465e65dfb5b7a",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:52.703169"
+      },
+      "https://dmptool.org/plans/89584/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/89584/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0081.pdf",
+        "hash": "35fab473157bd4cf6f833a1c3eb6bc6bc33056998c1306ea61052a34e9384143",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:54.277814"
+      },
+      "https://dmptool.org/plans/90136/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/90136/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0082.pdf",
+        "hash": "4e6c384508e6d768286189750f1341ccbfcdaae339904ce167e210edad12c3d0",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:54.520821"
+      },
+      "https://dmptool.org/plans/90237/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/90237/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0083.pdf",
+        "hash": "d859f4371f83f99a15a187afce79b9036720851b8f1c084e540f80afea1e38b9",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:54.801765"
+      },
+      "https://dmptool.org/plans/90752/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/90752/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0084.pdf",
+        "hash": "8b41e92bcd785e6f83f4d099e1ea919684916bc20a7c8ce39dcfaac46976a7c4",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:55.056038"
+      },
+      "https://dmptool.org/plans/91844/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/91844/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0085.pdf",
+        "hash": "4fe89af1e4af01644d7d3ca13859548fe43da7d26578b0e312bf2c843d890922",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:55.300783"
+      },
+      "https://dmptool.org/plans/92019/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/92019/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0086.pdf",
+        "hash": "887de460c05d019ee5184dfc45217ab4a786a32557764bf3373d975b3975c51d",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:55.618921"
+      },
+      "https://dmptool.org/plans/92597/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/92597/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0087.pdf",
+        "hash": "33e8a8b0d2f143415fe522b5e0b0c341cfd66d099c2a3562257e35a753dfb7ad",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:55.891999"
+      },
+      "https://dmptool.org/plans/92826/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/92826/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0088.pdf",
+        "hash": "6d1b92c7ccf40039a58bb262ebb1149e5ec00de91414f2c833a4cc65e1b47b4f",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:56.134345"
+      },
+      "https://dmptool.org/plans/93377/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/93377/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0089.pdf",
+        "hash": "3dabc854ed729bf6978357b515de543e5a0bed4baa37f5de729cecd114657afa",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:56.366963"
+      },
+      "https://dmptool.org/plans/93420/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/93420/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0090.pdf",
+        "hash": "5c21ad62ccc174c316182dbb27220d495f93df2bcfd71d11c46cde9fb29abaac",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:56.615229"
+      },
+      "https://dmptool.org/plans/28331/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/28331/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0091.pdf",
+        "hash": "b1b28de89e3dee0a8c36060654c16f81defb20f962f3dee2cc72c7455c087903",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:58.126238"
+      },
+      "https://dmptool.org/plans/36805/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/36805/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0092.pdf",
+        "hash": "efdd907c6512354582b86613d7ac60ce3153d502418de7f871d15d88775b35c6",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:58.335137"
+      },
+      "https://dmptool.org/plans/69490/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/69490/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0093.pdf",
+        "hash": "e5856c2506c7f976ebc4da2970894c1762642d68122b4ffabc2902a2b6aa9e50",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:58.580801"
+      },
+      "https://dmptool.org/plans/80689/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/80689/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0094.pdf",
+        "hash": "4b11ada36ba93b6a59ba0b315eb6b1978269e86f4d528b6d4c4c8cb705556aa0",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:58.807874"
+      },
+      "https://dmptool.org/plans/81814/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/81814/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0095.pdf",
+        "hash": "fd5126f1a6eddd15de19feefe5affc88943d76f644fd9103d9fb3d4e55bfa18c",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:59.024719"
+      },
+      "https://dmptool.org/plans/83340/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/83340/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0096.pdf",
+        "hash": "864af2a0532a088c64480594b981809c48aa48909fb53a10e76ebff2a8c69ed4",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:59.241092"
+      },
+      "https://dmptool.org/plans/83769/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/83769/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0097.pdf",
+        "hash": "9c67bdb45cb448ac5c4ed61ae83bdf511d633a5acb72416a1a2e1c451745a805",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:59.473594"
+      },
+      "https://dmptool.org/plans/87996/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/87996/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0098.pdf",
+        "hash": "c7ad5e34b68ff0cd6047180bfd39014f43cd7c356bb83a5bf1da89a3c4278a9b",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:48:59.753009"
+      },
+      "https://dmptool.org/plans/88689/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/88689/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0099.pdf",
+        "hash": "072739c8c9486067bb441316e5d65cc2fd1c00c33abba53c564a9c656519d7cb",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:49:00.048808"
+      },
+      "https://dmptool.org/plans/14312/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/14312/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0100.pdf",
+        "hash": "7329a4c1d6b76e92843c3a09c23e75d6b433ed7fcb157cecba97f3daf91cc4d3",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:49:01.811256"
+      },
+      "https://dmptool.org/plans/17259/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/17259/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0101.pdf",
+        "hash": "a08d6b4f015848270fe76476887896b048ad31c371db5e5767bcd291fedb965f",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:49:02.380443"
+      },
+      "https://dmptool.org/plans/18699/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/18699/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0102.pdf",
+        "hash": "9d4925316b2e52bd094341dfcc632259fb25612ed07b1cf3854e6b1ca463fa0a",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:49:02.648162"
+      },
+      "https://dmptool.org/plans/20115/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/20115/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0103.pdf",
+        "hash": "c81734e35085b440e643f9a3dca5db40275624c31f99f682529fe28496815d29",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:49:02.888495"
+      },
+      "https://dmptool.org/plans/20505/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/20505/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0104.pdf",
+        "hash": "8a676817b2612ccb444221146fea7423a5140b54bd25fcda530e043d7b1d7d13",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:49:03.093139"
+      },
+      "https://dmptool.org/plans/26960/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true": {
+        "url": "https://dmptool.org/plans/26960/export.pdf?export%5Bpub%5D=true&export%5Bquestion_headings%5D=true",
+        "file": "C:\\Users\\Nahid\\dmpchef\\data\\data_ingestion\\2026_02_07_NIH_ingestion_20260207_034817\\dmptool.org\\pdfs\\dmptool_dmp_0105.pdf",
+        "hash": "8b2bab1132c9e8c6177e72c9b0351ee9a11a3376dd493ff927e1760a005d15d1",
+        "type": "pdf",
+        "last_updated": "2026-02-07T11:49:03.307201"
+      }
+    }
+  }
+}
