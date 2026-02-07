@@ -127,7 +127,7 @@ pip install -e .
 ### Option A — Jupyter demo
 Use **[`demo_import.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)**.
 
-### Option B — CLI-— Command-line entry point for running the pipeline end-to-end
+### Option B — CLI: Command-line entry point for running the pipeline end-to-end
 
 Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** 
 
