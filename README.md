@@ -21,73 +21,76 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 
 
 ## Main files
-- **[`src/NIH_data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/NIH_data_ingestion.py)** — Loads, cleans, and chunks documents; builds the vector index.
-- **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core RAG pipeline logic (retrieve → prompt → generate).
+## Main files
+
+- **[`dmpchef/api.py`](https://github.com/fairdataihub/dmpchef/blob/main/dmpchef/api.py)** — Public, importable API:
+  - `generate()` / `draft()` to produce DMP outputs (Markdown, DOCX, DMPTool JSON, optional PDF)
+  - `prepare_nih_corpus()` to prepare NIH reference PDFs for RAG (one-time)
+- **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core generation logic (RAG vs No-RAG; retrieval → prompt → generate).
+- **[`src/NIH_data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/NIH_data_ingestion.py)** — NIH/DMPTool ingestion to collect reference PDFs for RAG
 - **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** — Command-line entry point for running the pipeline end-to-end.
+- **[`demo_import.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)** — Jupyter demo showing.
+
 
 ---
 
 ## Repository Structure
 ```text
 dmpchef/
-│── main.py                 # Main script for running the pipeline end-to-end
-│── README.md               # Project overview, setup instructions, usage examples, API docs
-│── requirements.txt        # Python dependencies for `pip install -r requirements.txt`
-│── setup.py                # Optional packaging config (enables `pip install -e .` for editable installs)
-│── .env                    # Local environment variables (keys/config) — keep private; DO NOT commit
-│── .gitignore              # Git ignore rules (e.g., venv, __pycache__, logs, .env, local data)
+│── main.py                 # CLI entry point (run pipeline end-to-end)
+│── README.md               # Project overview + usage
+│── requirements.txt        # Python dependencies
+│── setup.py                # Packaging (editable installs via pip install -e .)
+│── pyproject.toml          # Build system config (wheel builds)
+│── MANIFEST.in             # Include non-code files in distributions
+│── demo_import.ipynb       # Notebook demo: import + run generate()
+│── LICENSE
+│── .gitignore
+│── .env                    # Local env vars (do not commit)
 │
-├── config/                 # App/pipeline configuration
-│   ├── __init__.py         # Makes `config` importable as a package
-│   ├── config.yaml         # Main settings (models, paths, chunking, retriever params, etc.)
-│   └── config_schema.py    # Schema/validation for config (pydantic/dataclasses validation)
+├── dmpchef/                # ✅ Installable Python package (public API)
+│   ├── __init__.py         # Exports: generate, draft, prepare_nih_corpus
+│   └── api.py              # Importable API used by notebooks/backends
 │
-├── data/                   # Input documents / datasets / outputs
-│   ├── inputs/             # User-facing templates + example inputs
-│   │   ├── dmp-template.md                 # Markdown prompt template used by the LLM
-│   │   ├── nih-dms-plan-template.docx      # NIH blank DOCX template (used to preserve exact Word formatting)
-│   │   └── inputs.json                     # hson schema DMPtools
-│   ├── pdfs/               # NIH guidance PDFs used for RAG (config.paths.data_pdfs points here)
-│   └── outputs/            # Generated artifacts
-│       ├── md/             # Generated Markdown DMPs (NIH format)
-│       ├── docx/           # Generated DOCX DMPs (NIH Format)
-│       └── json/           # Generated JSON outputs (dmptool schema) 
+├── config/                 # Configuration
+│   ├── config.yaml         # Main settings (models, paths, retriever params)
+│   └── config_schema.py    # Validation/schema helpers (if used)
 │
-├── model/                  # Model-related code + (optionally) persisted artifacts
-│   ├── __init__.py         # Makes `model` importable
-│   └── models.py           # Model definitions / wrappers (LLM + embeddings config objects, etc.)
+├── data/                   # Local data + artifacts (not guaranteed in wheel)
+│   ├── inputs/             # Templates + examples
+│   │   ├── nih-dms-plan-template.docx  # NIH blank Word template
+│   │   └── input.json                 # Example request file
+│   ├── NIH_95/             # Reference PDFs collected for NIH RAG (optional)
+│   ├── index/              # Vector index artifacts (e.g., FAISS)
+│   ├── outputs/            # Generated artifacts
+│   │   ├── markdown/       # Generated Markdown DMPs
+│   │   ├── docx/           # Generated DOCX DMPs (template-preserving)
+│   │   ├── json/           # DMPTool-compatible JSON outputs
+│   │   ├── pdf/            # Optional PDFs converted from DOCX
+│   │   └── debug/          # Optional retrieval debug outputs
+│   └── data_ingestion/     # Session folders + manifests from crawling
 │
-├── src/                    # Main application source code (core pipeline + reusable modules)
-│   ├── __init__.py         # Package marker for `src`
-│   ├── core_pipeline.py    # Main RAG pipeline logic invoked by main.py(retrieve → prompt → generate)
-│   └── NIH_data_ingestion.py   # Ingestion + preprocessing + indexing utilities (load PDFs, chunk, embed, store)
+├── src/                    # Core implementation
+│   ├── __init__.py
+│   ├── core_pipeline.py    # Pipeline logic (RAG/no-RAG)
+│   └── NIH_data_ingestion.py # NIH/DMPTool crawl → export PDFs to data/NIH_95
 │
-├── prompt/                 # Prompt templates and prompt utilities
-│   ├── __init__.py         # Package marker for `prompt`
-│   └── prompt_library.py   # Centralized prompt templates (system/user prompts, formatting, guardrails)
+├── prompt/                 # Prompt templates/utilities
+│   └── prompt_library.py
 │
-├── logger/                 # Custom logging utilities
-│   ├── __init__.py         # Package marker for `logger`
-│   └── custom_logger.py    # Logger setup (formatters, handlers, file/console logging)
+├── utils/                  # Shared helpers
+│   ├── config_loader.py
+│   ├── model_loader.py
+│   ├── dmptool_json.py
+│   └── nih_docx_writer.py
 │
-├── exception/              # Custom exception definitions
-│   ├── __init__.py         # Package marker for `exception`
-│   └── custom_exception.py # Custom error classes for clearer debugging and error handling
-│
-├── utils/                  # Shared helpers used across the project
-│   ├── __init__.py         # Package marker for `utils`
-│   ├── config_loader.py    # Loads/validates configuration (YAML/env), provides defaults
-│   ├── model_loader.py     # Loads LLM/embeddings clients and related model settings
-│   ├── dmptool_json.py     # Builds dmptool JSON output schema (used by core_pipeline)
-│   └── nih_docx_writer.py  # Fills NIH blank DOCX template to preserve exact Word formatting
-│
-├── notebook_DMP_RAG/       # Notebooks / experiments / prototypes (not production code)
-└── venv/                   # Local virtual environment — ignore in git
+├── logger/                 # Logging utilities
+├── exception/              # Custom exceptions
+├── notebook_DMP_RAG/       # Notebooks/experiments (non-production)
+└── venv/                   # Local virtualenv (ignore in git)
 
 
 ```
----
-
 ## Setup (Local Development)
 
 ### Step 1 — Clone the repository
@@ -96,6 +99,7 @@ git clone https://github.com/fairdataihub/dmpchef.git
 cd dmpchef
 code .
 ```
+
 ### Step 2 — Create and activate a virtual environment
 
 **Windows (cmd):**
@@ -103,6 +107,7 @@ code .
 python -m venv venv
 venv\Scripts\activate.bat
 ```
+
 **macOS/Linux:**
 ```bash
 python -m venv venv
@@ -112,29 +117,23 @@ source venv/bin/activate
 ### Step 3 — Install dependencies
 ```bash
 pip install -r requirements.txt
+# or (recommended for local dev)
+pip install -e .
 ```
----
-
-### Step 4 — Build the Index (One-time setup)
-**When to run this:** Run ingestion **once** during initial setup (or anytime you add/update reference documents or change chunking/embedding settings).
-
-**What happens:** the app reads documents in `data/`, splits them into chunks, and builds an index (vector store) for retrieval.
-
-**Workflow**
-1. Add reference documents to: `data/`
-2. Run `src/NIH_data_ingestion.py` once to build the index (or enable rebuild)
-
-**Rebuild the index (if needed)**
-- Set `force_rebuild_index=True` in your config/YAML, **or**
-- Delete the saved index folder (often `data/index/`) and run ingestion again
 
 ---
-### Step 5 — Run the pipeline
 
+## Run DMP Chef
+
+### Option A — Jupyter demo
+Use **[`demo_import.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)**.
+
+### Option B — CLI
 ```bash
 python main.py
 ```
 ---
+```
 
 ## Inputs
 
