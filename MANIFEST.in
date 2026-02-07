@@ -1,0 +1,6 @@
+include README.md
+include requirements.txt
+recursive-include config *.yaml
+recursive-include data/inputs *.docx *.md *.txt *.pdf
+recursive-include data/NIH_95 *.pdf *.PDF
+

@@ -102,6 +102,9 @@ streamlit
 webdriver-manager
 
 
+setuptools 
+wheel 
+build
 python-docx
 docx2pdf
 #############################################
