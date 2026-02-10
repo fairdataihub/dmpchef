@@ -55,6 +55,8 @@ faiss_index/
 data/
 data-Copy/
 outputs/
+outputs1/
+outputs-llama/
 archive/
 main_archive/
 *.pdf
