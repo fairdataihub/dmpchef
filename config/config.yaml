@@ -1,7 +1,7 @@
 root_dir: ./DMPCHEF
 
 paths:
-  data_pdfs: data/NIH_95
+  data_pdfs: data/database
   index_dir: data/index
   excel_path: data/inputs/inputs.xlsx
   output_md: data/outputs/markdown

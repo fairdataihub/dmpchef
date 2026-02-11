@@ -47,7 +47,7 @@ dmpchef/
 │── .gitignore
 │── .env                    # Local env vars (do not commit)
 │
-├── dmpchef/                # ✅ Installable Python package (public API)
+├── dmpchef/                # Installable Python package (public API)
 │   ├── __init__.py         # Exports: generate, draft, prepare_nih_corpus
 │   └── api.py              # Importable API used by notebooks/backends
 │
@@ -60,7 +60,7 @@ dmpchef/
 │   │   ├── nih-dms-plan-template.docx  # NIH blank Word template
 │   │   └── input.json                  # Example request file
 │   ├── web_links.json      # Seed links for NIH/DMPTool ingestion (used by src/NIH_data_ingestion.py)
-│   ├── NIH_95/             # Reference PDFs collected for NIH RAG (optional)
+│   ├── database/             # Reference PDFs collected for NIH RAG (optional)
 │   ├── index/              # Vector index artifacts (e.g., FAISS)
 │   ├── outputs/            # Generated artifacts
 │   │   ├── markdown/       # Generated Markdown DMPs

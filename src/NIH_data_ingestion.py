@@ -23,26 +23,17 @@ from logger.custom_logger import GLOBAL_LOGGER as log
 
 class UnifiedWebIngestion:
     """
-    🌐 Unified NIH Grants + DMPTool Ingestion (Cross-Session Deduplication + Copy Forward)
+     Unified NIH Grants + DMPTool Ingestion (Cross-Session Deduplication + Copy Forward)
     --------------------------------------------------------------------
-    ✅ Loads hashes from previous sessions
-    ✅ Deduplicates across sessions by file hash
-    ✅ Saves per-domain + master manifests safely
-    ✅ Skips duplicate PDFs and login/signup/account pages
-    ✅ Extracts meaningful content for RAG
-    ✅ Exports PDFs after run into <data_root>/<export_pdf_folder> (default: NIH_95)
-    ✅ Robustly resolves json_links path regardless of where you run the script from
+     Loads hashes from previous sessions
+     Deduplicates across sessions by file hash
+     Saves per-domain + master manifests safely
+     Skips duplicate PDFs and login/signup/account pages
+     Extracts meaningful content for RAG
+     Exports PDFs after run into <data_root>/<export_pdf_folder> (default: NIH_95)
+     Robustly resolves json_links path regardless of where you run the script from
 
-    ✅ FIXES:
-      - COPY-FORWARD: copies previous session PDFs/texts into this session BEFORE crawl
-        so export still works even if all downloads are deduped.
-      - Adds "already_have" stats (dedupe count) so logs are truthful.
-      - Cleanup happens AFTER copy-forward.
-      - ✅ EXPORT FIX: prevents *_001 duplicates by skipping export when PDF already exists in NIH_95 (by hash).
-
-    ✅ UPDATE (this request):
-      - data_root is now OPTIONAL and auto-resolves to <project_root>/data
-        based on this file location (<project>/src/...).
+    
     """
 
     def __init__(
@@ -52,7 +43,7 @@ class UnifiedWebIngestion:
         max_depth: int = 5,
         crawl_delay: float = 1.2,
         max_pages: int = 18000,
-        export_pdf_folder: str = "NIH_95",   # relative to data_root
+        export_pdf_folder: str = "database",   # relative to data_root
         export_mode: str = "move",           # "move" or "copy"
         update_manifest_paths: bool = False, # if True, rewrite master manifest 'file' paths after export
         dmptool_require_nih_filter: bool = True,  # abort if NIH facet not in URL
@@ -60,7 +51,7 @@ class UnifiedWebIngestion:
         keep_last_n_sessions: int = 2,             # keep current + previous by default
         copy_forward_previous: bool = True,        # copy forward previous PDFs/texts into current session
     ):
-        # ✅ Auto-detect <project_root>/data if not provided
+        #  Auto-detect <project_root>/data if not provided
         if data_root is None:
             # Assumes this file is at <project_root>/src/...
             project_root = Path(__file__).resolve().parents[1]
@@ -103,8 +94,8 @@ class UnifiedWebIngestion:
             "grants.nih.gov": {"pages": 0, "pdfs": 0, "skipped": 0, "already_have": 0},
         }
 
-        print(f"\n✅ data_root: {self.data_root.resolve()}")
-        print(f"✅ Session Folder Created: {self.session_folder}\n")
+        print(f"\n data_root: {self.data_root.resolve()}")
+        print(f" Session Folder Created: {self.session_folder}\n")
 
     # --------------------------------------------------------
     # Folder setup
@@ -151,16 +142,16 @@ class UnifiedWebIngestion:
                     with open(cand, "r", encoding="utf-8") as f:
                         data = json.load(f)
                     sources = data.get("sources", [])
-                    print(f"✅ Loaded links from: {cand} (sources={len(sources)})")
+                    print(f" Loaded links from: {cand} (sources={len(sources)})")
                     if not isinstance(sources, list):
-                        print("⚠️ 'sources' is not a list in web_links.json")
+                        print(" 'sources' is not a list in web_links.json")
                         return []
                     return sources
                 except Exception as e:
-                    print(f"⚠️ Failed reading {cand}: {e}")
+                    print(f" Failed reading {cand}: {e}")
                     return []
 
-        print(f"⚠️ Failed to load {path}. Tried:\n  - " + "\n  - ".join(str(c) for c in candidates))
+        print(f" Failed to load {path}. Tried:\n  - " + "\n  - ".join(str(c) for c in candidates))
         return []
 
     # --------------------------------------------------------
@@ -178,11 +169,11 @@ class UnifiedWebIngestion:
         """
         sessions = self._list_sessions()
         if len(sessions) < 2:
-            print("ℹ️ No previous session to copy forward.")
+            print(" No previous session to copy forward.")
             return
 
         prev = sessions[1]
-        print(f"♻️ Copy-forward from previous session: {prev.name}")
+        print(f" Copy-forward from previous session: {prev.name}")
 
         for domain_dir in prev.iterdir():
             if not domain_dir.is_dir():
@@ -203,9 +194,9 @@ class UnifiedWebIngestion:
                         try:
                             shutil.copy2(file, target)
                         except Exception as e:
-                            print(f"⚠️ Failed copy {file} -> {target}: {e}")
+                            print(f" Failed copy {file} -> {target}: {e}")
 
-        print("✅ Copy-forward complete.")
+        print(" Copy-forward complete.")
 
     def _cleanup_old_sessions(self):
         """
@@ -213,19 +204,19 @@ class UnifiedWebIngestion:
         """
         sessions = self._list_sessions()
         if len(sessions) <= self.keep_last_n_sessions:
-            print("ℹ️ No old sessions to clean.")
+            print(" No old sessions to clean.")
             return
 
-        print(f"🧹 Cleaning up old sessions — keeping last {self.keep_last_n_sessions}:")
+        print(f" Cleaning up old sessions — keeping last {self.keep_last_n_sessions}:")
         for s in sessions[: self.keep_last_n_sessions]:
-            print(f"   ✅ keep: {s.name}")
+            print(f"    keep: {s.name}")
 
         for old in sessions[self.keep_last_n_sessions :]:
             try:
                 shutil.rmtree(old)
-                print(f"🗑️ Removed old session: {old}")
+                print(f" Removed old session: {old}")
             except Exception as e:
-                print(f"⚠️ Failed to remove {old}: {e}")
+                print(f" Failed to remove {old}: {e}")
 
     # --------------------------------------------------------
     # Load previous manifests (hash index)
@@ -233,7 +224,7 @@ class UnifiedWebIngestion:
     def _load_previous_manifests(self) -> dict[str, set[str]]:
         sessions = self._list_sessions()
         if len(sessions) <= 1:
-            print("ℹ️ No previous sessions found — starting fresh.")
+            print(" No previous sessions found — starting fresh.")
             return {}
 
         hash_index: dict[str, set[str]] = {}
@@ -250,14 +241,14 @@ class UnifiedWebIngestion:
                         {v.get("hash") for v in files.values() if isinstance(v, dict) and "hash" in v}
                     )
             except Exception as e:
-                print(f"⚠️ Failed to load {manifest_path}: {e}")
+                print(f" Failed to load {manifest_path}: {e}")
 
         if hash_index:
-            print("♻️ Loaded previous session hashes:")
+            print(" Loaded previous session hashes:")
             for d, c in hash_index.items():
                 print(f"   - {d}: {len(c)} known hashes")
         else:
-            print("⚠️ No previous manifest found — starting fresh.")
+            print(" No previous manifest found — starting fresh.")
         return hash_index
 
     # --------------------------------------------------------
@@ -276,9 +267,9 @@ class UnifiedWebIngestion:
             with open(self.master_manifest, "w", encoding="utf-8") as f:
                 json.dump(self.global_manifest, f, indent=2)
 
-            print(f"✅ Manifest written: {manifest_path}")
+            print(f" Manifest written: {manifest_path}")
         except Exception as e:
-            print(f"❌ Manifest save error for {domain}: {e}")
+            print(f" Manifest save error for {domain}: {e}")
 
     # --------------------------------------------------------
     # Text filters
@@ -382,7 +373,7 @@ class UnifiedWebIngestion:
             self.stats[domain]["pdfs"] += 1
 
         except Exception as e:
-            print(f"⚠️ PDF download failed: {href} | {e}")
+            print(f" PDF download failed: {href} | {e}")
 
     # --------------------------------------------------------
     # NIH Crawl
@@ -395,7 +386,7 @@ class UnifiedWebIngestion:
             "profile", "cart", "donate", "feedback", "subscribe", "unsubscribe"
         ]
 
-        print(f"🌐 Crawling NIH site: {start_url}")
+        print(f" Crawling NIH site: {start_url}")
         with tqdm(total=self.max_pages, desc="NIH Pages", unit="page") as pbar:
             while queue and len(visited) < self.max_pages:
                 url, depth = queue.pop(0)
@@ -440,20 +431,20 @@ class UnifiedWebIngestion:
                     time.sleep(self.crawl_delay)
 
                 except Exception as e:
-                    print(f"⚠️ Crawl failed for {url}: {e}")
+                    print(f" Crawl failed for {url}: {e}")
 
         self._save_manifest(manifest_path, manifest, domain)
         domain_pages = self.stats.get(domain, {}).get("pages", 0)
         domain_pdfs = self.stats.get(domain, {}).get("pdfs", 0)
         already = self.stats.get(domain, {}).get("already_have", 0)
-        print(f"✅ NIH crawl completed — pages={domain_pages} downloaded_pdfs={domain_pdfs} already_have={already}")
+        print(f" NIH crawl completed — pages={domain_pages} downloaded_pdfs={domain_pdfs} already_have={already}")
 
     # --------------------------------------------------------
     # DMPTool Crawl
     # --------------------------------------------------------
     def _crawl_dmptool(self, start_url: str, domain: str):
         _, pdf_dir, manifest_path, manifest = self._prepare_site_dirs(domain)
-        print(f"🌐 Crawling DMPTool: {start_url}")
+        print(f" Crawling DMPTool: {start_url}")
 
         options = Options()
         options.add_argument("--headless=new")
@@ -469,15 +460,15 @@ class UnifiedWebIngestion:
             time.sleep(1)
 
             cur = driver.current_url
-            print("🔎 Current URL:", cur)
+            print(" Current URL:", cur)
 
             if any(w in cur.lower() for w in ["login", "signin", "signup", "register", "account"]):
-                print(f"⏭️ Skipping auth-related DMPTool page: {cur}")
+                print(f" Skipping auth-related DMPTool page: {cur}")
                 return
 
             if self.dmptool_require_nih_filter:
                 if "facet%5Bfunder_ids%5D%5B%5D=123" not in cur and "facet[funder_ids][]=123" not in cur:
-                    print("⚠️ NIH filter NOT present in current URL. Stopping to avoid downloading all public plans.")
+                    print(" NIH filter NOT present in current URL. Stopping to avoid downloading all public plans.")
                     return
 
             total_expected = None
@@ -486,7 +477,7 @@ class UnifiedWebIngestion:
                 m = re.search(r"Plans\s*\((\d+)\)", h2.text)
                 if m:
                     total_expected = int(m.group(1))
-                    print(f"✅ Detected filtered plan count: {total_expected}")
+                    print(f" Detected filtered plan count: {total_expected}")
             except Exception:
                 pass
 
@@ -516,10 +507,10 @@ class UnifiedWebIngestion:
                         pbar.update(1)
 
                     if total_expected is not None and len(seen) >= total_expected:
-                        print(f"✅ Reached detected total ({total_expected}). Stopping.")
+                        print(f" Reached detected total ({total_expected}). Stopping.")
                         break
                     if stagnant_pages >= 2:
-                        print("⚠️ No new PDFs on 2 consecutive pages. Stopping to avoid looping.")
+                        print(" No new PDFs on 2 consecutive pages. Stopping to avoid looping.")
                         break
 
                     next_btn = None
@@ -560,16 +551,16 @@ class UnifiedWebIngestion:
                     time.sleep(1)
 
                     if page_num >= self.dmptool_safety_max_pages:
-                        print("⚠️ Safety stop: too many pages. Stopping.")
+                        print(" Safety stop: too many pages. Stopping.")
                         break
 
             self._save_manifest(manifest_path, manifest, domain)
             downloaded = self.stats.get(domain, {}).get("pdfs", 0)
             already = self.stats.get(domain, {}).get("already_have", 0)
-            print(f"✅ DMPTool crawl completed — downloaded={downloaded} already_have={already}")
+            print(f" DMPTool crawl completed — downloaded={downloaded} already_have={already}")
 
         except TimeoutException:
-            print("⚠️ Timeout while loading DMPTool pages.")
+            print(" Timeout while loading DMPTool pages.")
         finally:
             driver.quit()
 
@@ -582,7 +573,7 @@ class UnifiedWebIngestion:
 
         pdfs = list(self.session_folder.rglob("*.pdf"))
         if not pdfs:
-            print("ℹ️ No PDFs found to export.")
+            print("ℹ No PDFs found to export.")
             return
 
         # Hash what already exists in the destination to prevent *_001 duplicates
@@ -618,7 +609,7 @@ class UnifiedWebIngestion:
 
                 h = self._compute_hash(b)
 
-                # ✅ If already present in NIH_95, skip export (prevents *_001 duplicates)
+                #  If already present in NIH_95, skip export (prevents *_001 duplicates)
                 if h in existing_hashes:
                     skipped_existing += 1
                     continue
@@ -635,10 +626,10 @@ class UnifiedWebIngestion:
                 existing_hashes.add(h)  # prevent duplicates within the same run too
 
             except Exception as e:
-                print(f"⚠️ Failed to {mode} {src}: {e}")
+                print(f" Failed to {mode} {src}: {e}")
 
-        print(f"✅ Exported {exported} NEW PDFs to: {dest_dir}")
-        print(f"♻️ Skipped {skipped_existing} PDFs already in destination (by hash)")
+        print(f" Exported {exported} NEW PDFs to: {dest_dir}")
+        print(f" Skipped {skipped_existing} PDFs already in destination (by hash)")
 
         if self.update_manifest_paths and exported_map:
             self._rewrite_master_manifest_pdf_paths(exported_map)
@@ -667,17 +658,17 @@ class UnifiedWebIngestion:
                     f.flush()
                     os.fsync(f.fileno())
                 tmp.replace(self.master_manifest)
-                print(f"✅ Updated master manifest PDF paths: {changed} entries")
+                print(f" Updated master manifest PDF paths: {changed} entries")
 
         except Exception as e:
-            print(f"⚠️ Failed to update master manifest paths: {e}")
+            print(f" Failed to update master manifest paths: {e}")
 
     # --------------------------------------------------------
     # Run all
     # --------------------------------------------------------
     def run_all(self):
         if not self.urls:
-            print("⚠️ No URLs loaded from web_links.json. Nothing to crawl.")
+            print(" No URLs loaded from web_links.json. Nothing to crawl.")
             return
 
         # copy-forward BEFORE cleanup + crawl
@@ -687,7 +678,7 @@ class UnifiedWebIngestion:
         # cleanup AFTER copy-forward
         self._cleanup_old_sessions()
 
-        print("🚀 Starting crawl.")
+        print(" Starting crawl.")
 
         for url in self.urls:
             domain = urlparse(url).netloc
@@ -696,20 +687,20 @@ class UnifiedWebIngestion:
             elif "nih.gov" in domain:
                 self._crawl_nih(url, domain)
             else:
-                print(f"⚠️ Skipped unsupported domain: {domain}")
+                print(f" Skipped unsupported domain: {domain}")
 
         self._export_pdfs_to_folder(dest_rel=self.export_pdf_folder, mode=self.export_mode)
-        print("🏁 All crawls complete.")
+        print(" All crawls complete.")
 
 
 if __name__ == "__main__":
     crawler = UnifiedWebIngestion(
-        data_root=None,  # ✅ auto-resolves to <project_root>/data
+        data_root=None,  #  auto-resolves to <project_root>/data
         json_links=r"data\web_links.json",
         max_depth=5,
         crawl_delay=1.2,
         max_pages=18000,
-        export_pdf_folder="NIH_95",
+        export_pdf_folder="database",
         export_mode="move",
         update_manifest_paths=False,
         dmptool_require_nih_filter=True,
