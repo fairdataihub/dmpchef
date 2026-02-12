@@ -39,100 +39,15 @@ def _norm_ws(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").strip()).lower()
 
 
-def _strip_markdown_light(md: str) -> str:
-    if not md:
-        return ""
-    text = md.replace("\r\n", "\n").replace("\r", "\n")
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)  # [text](url) -> text
-    text = text.replace("**", "").replace("*", "")
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.strip()
-
-
 def _clean_answer(text: str) -> str:
     text = _clean(text)
     if not text:
         return ""
+    # trim common footers
     text = re.split(r"(?mi)^\s*---\s*$", text, maxsplit=1)[0]
     text = re.split(r"(?mi)^\s*please note\b.*$", text, maxsplit=1)[0]
     text = re.split(r"(?mi)^\s*i hope\b.*$", text, maxsplit=1)[0]
     return text.strip()
-
-
-# ============================================================
-# Markdown parsing (order-based for 1/2/3 or A/B/C)
-# ============================================================
-_ELEMENT_RE = re.compile(r"(?mi)^\s*(?:\*\*)?\s*element\s*(?P<num>[1-6])\s*[:\-]\s*(?P<title>.+?)\s*(?:\*\*)?\s*$")
-_SUBQ_RE = re.compile(r"(?mi)^\s*(?P<k>\d{1,2}|[A-C])\.\s+.*$")
-
-
-def _slice_elements(text: str) -> Dict[int, str]:
-    text = _clean(text)
-    ms = list(_ELEMENT_RE.finditer(text))
-    out: Dict[int, str] = {}
-    for i, m in enumerate(ms):
-        num = int(m.group("num"))
-        start = m.end()
-        end = ms[i + 1].start() if i + 1 < len(ms) else None
-        out[num] = (text[start:end] if end is not None else text[start:]).strip()
-    return out
-
-
-def _split_subquestion_chunks(block: str) -> List[str]:
-    block = _clean(block)
-    if not block:
-        return []
-
-    lines = block.split("\n")
-    starts: List[int] = []
-    for i, ln in enumerate(lines):
-        if _SUBQ_RE.match(ln.strip()):
-            starts.append(i)
-
-    if not starts:
-        return []
-
-    chunks: List[str] = []
-    for idx, s in enumerate(starts):
-        e = starts[idx + 1] if idx + 1 < len(starts) else len(lines)
-        body_lines = lines[s + 1 : e]
-        chunks.append(_clean("\n".join(body_lines)))
-    return chunks
-
-
-def _extract_blocks_from_markdown(generated_markdown: str) -> Dict[str, str]:
-    plain = _strip_markdown_light(generated_markdown)
-    elements = _slice_elements(plain)
-
-    out: Dict[str, str] = {
-        "e1_q1": "", "e1_q2": "", "e1_q3": "",
-        "e2_q1": "", "e3_q1": "",
-        "e4_q1": "", "e4_q2": "", "e4_q3": "",
-        "e5_q1": "", "e5_q2": "", "e5_q3": "",
-        "e6_q1": "",
-    }
-
-    e1 = _split_subquestion_chunks(elements.get(1, ""))
-    if len(e1) >= 1: out["e1_q1"] = _clean_answer(e1[0])
-    if len(e1) >= 2: out["e1_q2"] = _clean_answer(e1[1])
-    if len(e1) >= 3: out["e1_q3"] = _clean_answer(e1[2])
-
-    out["e2_q1"] = _clean_answer(elements.get(2, ""))
-    out["e3_q1"] = _clean_answer(elements.get(3, ""))
-
-    e4 = _split_subquestion_chunks(elements.get(4, ""))
-    if len(e4) >= 1: out["e4_q1"] = _clean_answer(e4[0])
-    if len(e4) >= 2: out["e4_q2"] = _clean_answer(e4[1])
-    if len(e4) >= 3: out["e4_q3"] = _clean_answer(e4[2])
-
-    e5 = _split_subquestion_chunks(elements.get(5, ""))
-    if len(e5) >= 1: out["e5_q1"] = _clean_answer(e5[0])
-    if len(e5) >= 2: out["e5_q2"] = _clean_answer(e5[1])
-    if len(e5) >= 3: out["e5_q3"] = _clean_answer(e5[2])
-
-    out["e6_q1"] = _clean_answer(elements.get(6, ""))
-
-    return out
 
 
 # ============================================================
@@ -223,7 +138,7 @@ def _is_instruction_paragraph(text: str) -> bool:
 def _remove_instruction_paragraphs_after(doc: Document, anchor_idx: int) -> None:
     """
     Delete consecutive instruction paragraphs immediately after the prompt.
-    Stop on blank OR next Element heading OR next A/B/C label.
+    Stop on blank OR next Element heading OR next label-ish line.
     """
     j = anchor_idx + 1
     while j < len(doc.paragraphs):
@@ -233,8 +148,6 @@ def _remove_instruction_paragraphs_after(doc: Document, anchor_idx: int) -> None
         if txt == "":
             break
         if re.match(r"(?i)^\s*element\s+\d+\b", txt):
-            break
-        if re.match(r"(?i)^\s*[A-C]\.\s*", txt):
             break
 
         if _is_instruction_paragraph(txt) or ("see selecting a data repository" in _norm_ws(txt)):
@@ -268,9 +181,7 @@ def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: 
     style_name = anchor_p.style.name if anchor_p.style else None
     format_source = anchor_p
 
-    # IMPORTANT FIX:
-    # If the template has a blank answer line right after the prompt,
-    # REUSE it instead of deleting it.
+    # If template has a blank answer line right after the prompt, reuse it
     first_answer_para: Optional[Paragraph] = None
     if idx + 1 < len(doc.paragraphs):
         nxt = doc.paragraphs[idx + 1]
@@ -288,6 +199,7 @@ def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: 
             _add_answer_paragraph_after(anchor_p, "", style_name, format_source)
         return
 
+    # Split into paragraphs; normalize list markers into plain paragraphs
     raw_lines = [ln.rstrip() for ln in answer.split("\n")]
     paragraphs: List[str] = []
     buf: List[str] = []
@@ -314,9 +226,6 @@ def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: 
 
     flush_buf()
 
-    # Write:
-    # - if we have the template's blank answer line, fill it with the first paragraph
-    # - remaining paragraphs become inserted paragraphs after it
     if first_answer_para is not None:
         first_answer_para.text = ""
         if paragraphs:
@@ -335,18 +244,90 @@ def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: 
     _add_answer_paragraph_after(last_p, "", style_name, format_source)
 
 
+# ============================================================
+# DMPTool JSON -> blocks
+# ============================================================
+def _extract_blocks_from_dmptool_json(plan_json: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Expects shape like:
+      plan_json["dmptool"]["narrative"]["section"] -> list
+      section[i]["order"] -> 1..6
+      section[i]["question"] -> list with question[j]["order"] -> 1..3
+      question[j]["answer"]["json"]["answer"] -> string
+    """
+    blocks = {
+        "e1_q1": "", "e1_q2": "", "e1_q3": "",
+        "e2_q1": "", "e3_q1": "",
+        "e4_q1": "", "e4_q2": "", "e4_q3": "",
+        "e5_q1": "", "e5_q2": "", "e5_q3": "",
+        "e6_q1": "",
+    }
+
+    section_list = (
+        (plan_json or {})
+        .get("dmptool", {})
+        .get("narrative", {})
+        .get("section", [])
+    )
+    if not isinstance(section_list, list):
+        return blocks
+
+    key_map = {
+        (1, 1): "e1_q1", (1, 2): "e1_q2", (1, 3): "e1_q3",
+        (2, 1): "e2_q1",
+        (3, 1): "e3_q1",
+        (4, 1): "e4_q1", (4, 2): "e4_q2", (4, 3): "e4_q3",
+        (5, 1): "e5_q1", (5, 2): "e5_q2", (5, 3): "e5_q3",
+        (6, 1): "e6_q1",
+    }
+
+    for sec in section_list:
+        if not isinstance(sec, dict):
+            continue
+        s_order = sec.get("order")
+        q_list = sec.get("question", [])
+        if not isinstance(s_order, int) or not isinstance(q_list, list):
+            continue
+
+        for q in q_list:
+            if not isinstance(q, dict):
+                continue
+            q_order = q.get("order")
+            if not isinstance(q_order, int):
+                continue
+
+            ans = (
+                (q.get("answer") or {})
+                .get("json", {})
+                .get("answer", "")
+            )
+            k = key_map.get((s_order, q_order))
+            if k:
+                blocks[k] = _clean_answer(ans)
+
+    return blocks
+
+
+# ============================================================
+# Public API
+# ============================================================
 def build_nih_docx_from_template(
     template_docx_path: str,
     output_docx_path: str,
     project_title: str,  # kept for backward compatibility; not inserted
     generated_markdown: str = "",
     *,
-    plan_json: Optional[Dict[str, Any]] = None,  # ignored (markdown-only)
+    plan_json: Optional[Dict[str, Any]] = None,
 ) -> None:
     doc = Document(str(template_docx_path))
-    blocks = _extract_blocks_from_markdown(generated_markdown or "")
 
     _remove_placeholder_only_paragraphs(doc)
+
+    if plan_json:
+        blocks = _extract_blocks_from_dmptool_json(plan_json)
+    else:
+        # fallback (old behavior): just dump markdown as-is into answers via your markdown parser if needed
+        raise ValueError("plan_json is required for DOCX generation in this mode.")
 
     for key, aliases in PROMPT_ANCHORS:
         answer = (blocks.get(key, "") or "").strip()

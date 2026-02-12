@@ -178,6 +178,80 @@ def _strip_footer_notes(text: str) -> str:
     return text.strip()
 
 
+# ✅ NEW: strip markdown artifacts that leak into JSON answers
+_BULLET_PREFIX_RE = re.compile(r"(?m)^\s*(?:[-+*•]\s+)")
+_STANDALONE_STAR_RE = re.compile(r"(?m)^\s*\*\s*$")
+
+
+def _strip_wrapping_italics(text: str) -> str:
+    """
+    If the whole answer is wrapped like *...* or **...**, remove only the wrapper.
+    Fixes cases like: "*The proposed research aims ... files.*"
+    """
+    text = _clean(text)
+    if not text:
+        return ""
+
+    for _ in range(3):
+        t = text.strip()
+
+        # unwrap **...**
+        if len(t) >= 4 and t.startswith("**") and t.endswith("**"):
+            inner = t[2:-2].strip()
+            if inner:
+                text = inner
+                continue
+
+        # unwrap *...*
+        if len(t) >= 2 and t.startswith("*") and t.endswith("*"):
+            inner = t[1:-1].strip()
+            if inner:
+                text = inner
+                continue
+
+        break
+
+    return text
+
+
+def _strip_inline_md_emphasis(text: str) -> str:
+    """
+    Remove remaining **bold** and *italic* markers (best-effort).
+    """
+    text = _clean(text)
+    if not text:
+        return ""
+
+    # **bold** -> bold
+    text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
+
+    # *italic* -> italic (best-effort; does not try to be a full markdown parser)
+    text = re.sub(r"(?s)\*(?!\s)([^*\n]+?)(?<!\s)\*", r"\1", text)
+
+    return text
+
+
+def _strip_bullet_prefixes(text: str) -> str:
+    """
+    Remove list bullet prefixes at start of lines.
+    """
+    text = _clean(text)
+    if not text:
+        return ""
+    text = _BULLET_PREFIX_RE.sub("", text)
+    text = _STANDALONE_STAR_RE.sub("", text)
+    return text
+
+
+def _collapse_whitespace(text: str) -> str:
+    text = _clean(text)
+    if not text:
+        return ""
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"[ \t]{2,}", " ", text)
+    return text.strip()
+
+
 def _final_answer_clean(text: str) -> str:
     """
     Final standardized cleanup for any extracted answer.
@@ -185,6 +259,13 @@ def _final_answer_clean(text: str) -> str:
     text = _strip_setext_underlines(text)
     text = _strip_leading_instruction(text)
     text = _strip_footer_notes(text)
+
+    # ✅ remove markdown artifacts
+    text = _strip_wrapping_italics(text)
+    text = _strip_inline_md_emphasis(text)
+    text = _strip_bullet_prefixes(text)
+    text = _collapse_whitespace(text)
+
     return _clean(text)
 
 
@@ -280,8 +361,12 @@ def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, s
 
     # Element 1
     e1 = elements.get(1, "")
-    answers["1.1"] = _extract_under_prompt(e1, "Types and amount of scientific data expected to be generated in the project")
-    answers["1.2"] = _extract_under_prompt(e1, "Scientific data that will be preserved and shared, and the rationale for doing so")
+    answers["1.1"] = _extract_under_prompt(
+        e1, "Types and amount of scientific data expected to be generated in the project"
+    )
+    answers["1.2"] = _extract_under_prompt(
+        e1, "Scientific data that will be preserved and shared, and the rationale for doing so"
+    )
     answers["1.3"] = _extract_under_prompt(e1, "Metadata, other relevant data, and associated documentation")
 
     # Element 2
@@ -298,14 +383,18 @@ def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, s
 
     # Element 5
     e5 = elements.get(5, "")
-    answers["5.1"] = _extract_under_prompt(e5, "Factors affecting subsequent access, distribution, or reuse of scientific data")
+    answers["5.1"] = _extract_under_prompt(
+        e5, "Factors affecting subsequent access, distribution, or reuse of scientific data"
+    )
     answers["5.2"] = _extract_under_prompt(e5, "Whether access to scientific data will be controlled")
-    answers["5.3"] = _extract_under_prompt(e5, "Protections for privacy, rights, and confidentiality of human research participants")
+    answers["5.3"] = _extract_under_prompt(
+        e5, "Protections for privacy, rights, and confidentiality of human research participants"
+    )
 
     # Element 6
     answers["6.1"] = _best_effort_element_body(elements.get(6, ""))
 
-    # Final clean
+    # Final clean (important if anything slipped through)
     for k, v in list(answers.items()):
         answers[k] = _final_answer_clean(v)
 
@@ -336,23 +425,18 @@ def build_dmptool_json(
         "1.1": ["types_and_amount", "data_types_and_amount", "data_types", "data_volume"],
         "1.2": ["preserved_shared_rationale", "data_preserved_shared", "share_rationale"],
         "1.3": ["metadata_docs", "metadata_and_docs", "documentation"],
-
         # Element 2
         "2.1": ["tools_software_code", "tools", "software_code"],
-
         # Element 3
         "3.1": ["standards", "data_standards"],
-
         # Element 4
         "4.1": ["repository", "repositories", "data_repository"],
         "4.2": ["findable_identifiable", "identifiers", "pids_indexing"],
         "4.3": ["availability_timeline", "timeline", "retention_period"],
-
         # Element 5
         "5.1": ["reuse_factors", "limitations", "access_distribution_reuse_factors"],
         "5.2": ["controlled_access", "access_controlled"],
         "5.3": ["privacy_protections", "human_subjects_protections", "confidentiality"],
-
         # Element 6
         "6.1": ["oversight", "compliance_oversight", "roles_responsibilities"],
     }
@@ -371,6 +455,9 @@ def build_dmptool_json(
             answer = parsed.get(map_key, "")
             if not answer:
                 answer = _first_nonempty(form_inputs, FIELD_MAP.get(map_key, []))
+
+            # ✅ ensure final clean even for form_inputs fallback
+            answer = _final_answer_clean(answer)
 
             questions_out.append(_question(q_order, q_text, answer, "textArea"))
 

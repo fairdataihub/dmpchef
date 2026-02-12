@@ -221,10 +221,11 @@ def main(
     run_stem = _prefix_run_stem_with_funding(run_stem, funding_agency, funding_subagency)
     pipeline.last_run_stem = run_stem
 
+    # Save Markdown
     md_path = out_md / f"{run_stem}.md"
     md_path.write_text(md_text, encoding="utf-8")
 
-    # DMPTool JSON (project_title removed inside build_dmptool_json)
+    # Build DMPTool JSON (this is the structured answers we will use for DOCX)
     dmptool_payload = build_dmptool_json(
         template_title="NIH Data Management and Sharing Plan",
         project_title=title,  # harmless even if empty; not emitted anymore
@@ -232,6 +233,8 @@ def main(
         generated_markdown=md_text,
         provenance="dmpchef",
     )
+
+    # Save JSON
     dmptool_json_path = out_json / f"{run_stem}.dmptool.json"
     cleanup_title_json(out_json, run_stem)
     dmptool_json_path.write_text(
@@ -246,14 +249,17 @@ def main(
             f'Fix: python main.py --nih_template "PATH\\TO\\nih-dms-plan-template.docx"'
         )
 
+    # ✅ DOCX: use dmptool_json (plan_json) instead of markdown parsing
     docx_path = out_docx / f"{run_stem}.docx"
     build_nih_docx_from_template(
         template_docx_path=str(template_path),
         output_docx_path=str(docx_path),
-        project_title=title,  # kept for backwards compat; function no longer inserts it
-        generated_markdown=md_text,
+        project_title=title,          # kept for backwards compat; not inserted
+        
+        plan_json=dmptool_payload,    
     )
 
+    # PDF
     pdf_path = out_pdf / f"{run_stem}.pdf"
     make_pdf_from_docx(docx_path, pdf_path)
 

@@ -240,6 +240,24 @@ class DMPPipeline:
 
         raise FileNotFoundError(f"Template not found for funder: {spec.key} (missing {path})")
 
+    # --- NEW: allow overriding Ollama model name from input.json ---
+    def _maybe_override_llm(self, llm_model_name: Optional[str]) -> None:
+        """
+        Keep YAML as default, but if input.json provides a model name,
+        swap the Ollama model for this run.
+        """
+        name = (llm_model_name or "").strip()
+        if not name:
+            return
+
+        # no-op if same model
+        if (self.llm_name or "").strip() == name:
+            return
+
+        self.llm_name = name
+        self.llm = Ollama(model=self.llm_name)
+        log.info("LLM overridden from inputs", llm=self.llm_name)
+
     # No-RAG chain (kept from your original code)
     def _build_no_rag_chain(self, prompt_template):
         try:
@@ -400,16 +418,11 @@ class DMPPipeline:
         form_inputs: dict,
         use_rag: Optional[bool] = None,
         funding_agency: str = "NIH",
+        llm_model_name: Optional[str] = None,  # <-- NEW (from input.json)
     ) -> str:
         """
-        Returns the generated Markdown text only.
-        main.py writes MD/DOCX/PDF/JSON.
-
-        New input.json behavior:
-        - title is optional
-        - no role text
-        - no icons/emojis in logs
-        - no-rag uses the same prompt formatting path as rag
+        Returns generated Markdown only.
+        YAML remains the default for LLM model, but input.json can override using `llm_model_name`.
         """
         try:
             # Select funder spec (NIH default)
@@ -422,6 +435,9 @@ class DMPPipeline:
                 template_md=str(spec.template_md),
                 retrieval_hint=spec.retrieval_hint,
             )
+
+            # --- NEW: input.json can override YAML model name ---
+            self._maybe_override_llm(llm_model_name)
 
             # Load prompt + markdown template
             prompt_template = self._get_prompt_template(spec)
