@@ -23,12 +23,10 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 ## Main files
 
 - **[`dmpchef/api.py`](https://github.com/fairdataihub/dmpchef/blob/main/dmpchef/api.py)** — Public, importable API:
-  - `generate()` / `draft()` to produce DMP outputs (Markdown, DOCX, DMPTool JSON, optional PDF)
-  - `prepare_nih_corpus()` to prepare NIH reference PDFs for RAG (one-time)
 - **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core generation logic (RAG vs No-RAG; retrieval → prompt → generate).
 - **[`src/NIH_data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/NIH_data_ingestion.py)** — NIH/DMPTool ingestion to collect reference PDFs for RAG
 - **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** — Command-line entry point for running the pipeline end-to-end.
-- **[`demo_import.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)** — Jupyter demo showing.
+- **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)** — Jupyter demo showing.
 
 
 ---
@@ -42,7 +40,7 @@ dmpchef/
 │── setup.py                # Packaging (editable installs via pip install -e .)
 │── pyproject.toml          # Build system config (wheel builds)
 │── MANIFEST.in             # Include non-code files in distributions
-│── demo.ipynb       # Notebook demo: import + run generate()
+│── demo.ipynb              # Notebook demo: import + run generate()
 │── LICENSE
 │── .gitignore
 │── .env                    # Local env vars (do not commit)
@@ -142,20 +140,28 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 ---
 
 ## Inputs
+- **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate.
+ **Top-level fields**
 
-- **Reference documents**: guidance PDFs (and other funder instructions) placed in your configured `paths.data_pdfs` folder.  
-  These are used **only when `use_rag=true`** to retrieve funder-aligned language and examples.
+```json
+{
+  "config": { ... },
+  "inputs": { ... }
+}
+```
+### `config` (Execution Settings)
 
-- **Request JSON**: a single “job request” file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate.
+- **config.funding.agency**: Funder key (e.g., `NIH`; future-ready for others like `NSF`).
+- **config.funding.subagency**: Optional sub-agency (e.g., `NIMH`).
+- **config.pipeline.rag**: `true` / `false` (optional). If omitted, the pipeline uses the YAML default (`rag.enabled`).
+- **config.pipeline.llm**: LLM settings (e.g., `provider`, `model_name`).
+- **config.export**: Output toggles (`md`, `docx`, `pdf`, `dmptool_json`).
 
-  **Top-level fields**
-  - **title**: Project title (also used for output filenames).
-  - **funding_agency**: Funder key (e.g., `NIH`; future-ready for others like `NSF`); 
-  - **use_rag**: `true` / `false` (optional). If omitted, the pipeline uses the YAML default `rag.enabled`.
-  - **inputs**: A dictionary of user/project fields used to draft the plan (free-form keys are allowed). Common examples include:
-    - `research_context`, `data_types`, `data_source`, `human_subjects`, `consent_status`, `data_volume`, etc.
+### `inputs` 
+- **inputs**: A dictionary of user/project fields used to draft the plan include:
+  - `research_context`, `data_types`, `data_source`, `human_subjects`, `consent_status`, `data_volume`, etc.
 
-## Outputs
+## Outputs (Project Fields)
 
 - **Markdown**: the generated funder-aligned DMP narrative (currently NIH structure).
 - **DOCX**: generated using the funder template (NIH template today) to preserve official formatting.
