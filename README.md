@@ -141,7 +141,7 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 
 ## Inputs
 - **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate.
- **Top-level fields**
+
 
 ```json
 {
@@ -149,6 +149,7 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
   "inputs": { ... }
 }
 ```
+ **Top-level fields**
 ### `config` (Execution Settings)
 
 - **config.funding.agency**: Funder key (e.g., `NIH`; future-ready for others like `NSF`).
