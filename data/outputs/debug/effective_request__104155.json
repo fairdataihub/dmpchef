@@ -1,0 +1,45 @@
+{
+  "config": {
+    "funding": {
+      "agency": "NIH",
+      "subagency": "NIMH"
+    },
+    "pipeline": {
+      "rag": true,
+      "llm": {
+        "provider": "ollama",
+        "model_name": "llama3.3:latest"
+      }
+    },
+    "export": {
+      "md": true,
+      "docx": true,
+      "pdf": true,
+      "dmptool_json": true
+    }
+  },
+  "funding_agency": "NIH",
+  "funding_subagency": "NIMH",
+  "use_rag": false,
+  "run_id": "req_8f03ec1fc5",
+  "original_inputs": {
+    "research_area": "Autism and social communication",
+    "research_context": "This study examines social communication and neurodevelopmental profiles in youth with autism compared to typically developing peers using behavioral, clinical, and neurobiological measures. NDA GUID elements will be collected for submission to the NIMH Data Archive (NDA).",
+    "data_types": "Demographic and clinical datasets; behavioral and cognitive assessments; neuroimaging and/or physiological measures; derived variables; documentation (protocols, data dictionary, README).",
+    "data_source": "IRB-approved human participant study using standardized assessments and research data capture systems.",
+    "human_subjects": "Yes",
+    "consent_status": "Broad data sharing consent/assent obtained as appropriate.",
+    "data_volume": "Multi-modal datasets from youth participants; neurobiological data represent the largest portion of storage."
+  },
+  "inputs": {
+    "research_area": "Autism and social communication",
+    "research_context": "This study examines social communication and neurodevelopmental profiles in youth with autism compared to typically developing peers using behavioral, clinical, and neurobiological measures. NDA GUID elements will be collected for submission to the NIMH Data Archive (NDA).",
+    "data_types": "Demographic and clinical datasets; behavioral and cognitive assessments; neuroimaging and/or physiological measures; derived variables; documentation (protocols, data dictionary, README).",
+    "data_source": "IRB-approved human participant study using standardized assessments and research data capture systems.",
+    "human_subjects": "Yes",
+    "consent_status": "Broad data sharing consent/assent obtained as appropriate.",
+    "data_volume": "Multi-modal datasets from youth participants; neurobiological data represent the largest portion of storage.",
+    "funding_agency": "NIH",
+    "funding_subagency": "NIMH"
+  }
+}
