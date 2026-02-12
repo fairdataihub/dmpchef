@@ -14,7 +14,7 @@
               "text": "Types and amount of scientific data expected to be generated in the project",
               "answer": {
                 "json": {
-                  "answer": "The types of scientific data expected to be generated include:\n\n* Tabular demographic/clinical data\n* MRI imaging data (structural MRI, fMRI, and 1H fMRS)\n* Derived measures (e.g., brain function, structure, and metabolism metrics)\n* Documentation (data dictionaries, protocols, README)\n\nThe estimated amount of scientific data expected to be generated is approximately 220 participants' worth, including tabular measures and multi-modal MRI imaging files.",
+                  "answer": "The types of scientific data expected to be generated in this project include tabular demographic/clinical data, MRI imaging data (structural MRI, fMRI, and 1H fMRS), plus derived measures and documentation (data dictionaries, protocols, README). Estimated data volume will be approximately 220 participants, including multi-modal MRI imaging files. Imaging data will comprise the largest share.",
                   "type": "textArea"
                 }
               }
@@ -24,7 +24,7 @@
               "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
               "answer": {
                 "json": {
-                  "answer": "All de-identified demographic/clinical data and MRI imaging data will be preserved and shared. The rationale for this decision is to facilitate collaboration, replication, and advancement of research in the field.",
+                  "answer": "All scientific data generated in this project, including demographic/clinical data, MRI imaging data, derived measures, and documentation, will be preserved and shared to facilitate interpretation of the results and potential future research. This decision is justified by the importance of making research findings publicly available and contributing to the advancement of knowledge.",
                   "type": "textArea"
                 }
               }
@@ -34,7 +34,7 @@
               "text": "Metadata, other relevant data, and associated documentation",
               "answer": {
                 "json": {
-                  "answer": "The following metadata, other relevant data, and associated documentation will be made accessible:\n\n* Data dictionaries\n* Protocols\n* README files\n* Study instruments\n* MRI scan protocols\n\nThese materials will enable researchers to understand the context and methods used in the study, facilitating interpretation of the scientific data.",
+                  "answer": "Metadata, including study protocols, data collection instruments, and README files, will be made accessible to facilitate interpretation of the scientific data.",
                   "type": "textArea"
                 }
               }
@@ -51,7 +51,7 @@
               "text": "Element 2: Related Tools, Software and/or Code",
               "answer": {
                 "json": {
-                  "answer": "State whether specialized tools, software, and/or code are needed to access or manipulate shared scientific data:\nYes. Specialized tools and software will be necessary for accessing and manipulating the MRI imaging data (e.g., BIDS, AFNI, FSL). The specific tools and software required will be identified as part of the project's research plan.",
+                  "answer": "Not applicable. Specialized tools, software, or code are not needed to access or manipulate shared scientific data.",
                   "type": "textArea"
                 }
               }
@@ -68,7 +68,7 @@
               "text": "Element 3: Standards",
               "answer": {
                 "json": {
-                  "answer": "State what common data standards will be applied to the scientific data and associated metadata:\nThe following data standards will be applied:\n\n* Dublin Core standard for metadata (with exceptions for MRI data, which will follow the BIDS standard)\n* NIMH Data Archive (NDA) standards for data submission and preservation\n\nThese standards enable interoperability of datasets and resources, facilitating collaboration and data sharing.",
+                  "answer": "The following common data standards will be applied to the scientific data and associated metadata:\n\n* For MRI imaging data, headers will be derived from the Dublin Core standard, with the exception of MRI data, which will be organized and named according to the BIDS (Brain Imaging Data Structure) standard.\n* No consensus standards exist for demographic/clinical data.",
                   "type": "textArea"
                 }
               }
@@ -85,7 +85,7 @@
               "text": "Repository where scientific data and metadata will be archived",
               "answer": {
                 "json": {
-                  "answer": "The primary data repository for this project will be the Open Science Framework (OSF), which has been approved by the NIMH as meeting NIH policy for data sharing and management. Within this repository, links to relevant data and resources will be provided.",
+                  "answer": "The primary data repository for data sharing will be the Open Science Framework (OSF), which has been approved by the HEAL initiative as meeting NIH policy for data sharing and management.",
                   "type": "textArea"
                 }
               }
@@ -95,7 +95,7 @@
               "text": "How scientific data will be findable and identifiable",
               "answer": {
                 "json": {
-                  "answer": "The scientific data will be made findable and identifiable through:\n\n* Unique identifiers assigned to each participant (for use in the NDA)\n* Persistent unique identifier for each dataset\n* Standard indexing tools (e.g., Dublin Core metadata)",
+                  "answer": "Scientific data will be made available via a persistent unique identifier, enabling efficient searching and retrieval.",
                   "type": "textArea"
                 }
               }
@@ -105,7 +105,7 @@
               "text": "When and how long the scientific data will be made available",
               "answer": {
                 "json": {
-                  "answer": "The scientific data will be made available as soon as possible after publication of study results, but no later than the end of the performance period. The data will remain available indefinitely.",
+                  "answer": "The scientific data will be made available to other users no later than the end of the performance period, approximately 2 years from project initiation.",
                   "type": "textArea"
                 }
               }
@@ -122,7 +122,7 @@
               "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
               "answer": {
                 "json": {
-                  "answer": "* Informed consent forms reflect participants' willingness for broad data sharing\n* De-identified participant-level data will be used to minimize risks associated with human subjects research\n\nNo special considerations are applicable that would limit the extent of data sharing.",
+                  "answer": "Human research participants have provided consent for broad data sharing, and all applicable factors or data use limitations will be taken into consideration when making the scientific data available.",
                   "type": "textArea"
                 }
               }
@@ -132,7 +132,7 @@
               "text": "Whether access to scientific data will be controlled",
               "answer": {
                 "json": {
-                  "answer": "Access to the shared scientific data will not be controlled, as the data has been de-identified and consented for broad sharing. However, the NIMH Data Archive (NDA) may impose controls on access based on user requests and institutional policies.",
+                  "answer": "Access to the human datasets in NeMO (National Mouse Xenograft) is controlled through the NIMH Data Archive Data Access Committee.",
                   "type": "textArea"
                 }
               }
@@ -142,7 +142,7 @@
               "text": "Protections for privacy, rights, and confidentiality of human research participants",
               "answer": {
                 "json": {
-                  "answer": "The following protections are in place:\n\n* De-identification of participant-level data\n* Assignment of unique identifiers to each participant (for use in the NDA)\n* Informed consent forms reflect participants' willingness for broad data sharing\n\nThese measures protect the privacy, rights, and confidentiality of human research participants.",
+                  "answer": "The privacy, rights, and confidentiality of human research participants will be protected through de-identification, Certificates of Confidentiality, and other protective measures.",
                   "type": "textArea"
                 }
               }
@@ -159,7 +159,7 @@
               "text": "Element 6: Oversight of Data Management and Sharing",
               "answer": {
                 "json": {
-                  "answer": "Compliance with this Plan will be monitored and managed through regular meetings between the PI (Laura Simons) and relevant personnel. The frequency of oversight is bi-weekly, with annual reviews to ensure compliance.\n\nThe lead PI will be responsible for day-to-day oversight of data management activities, ensuring that all aspects of the plan are implemented effectively.",
+                  "answer": "Compliance with this Plan will be monitored and managed by the Lead PI (Laura Simons) who is responsible for day-to-day oversight of data management activities. Regular meetings with the research team will ensure that all aspects of data sharing are implemented as planned.\n\nThis plan is based on NIH's guidelines and policies regarding data management and sharing, specifically:\n\n* NIH's stewardship of human genomic data\n* Informed consent under which the data or samples were collected\n* Use of repositories such as Open Science Framework (OSF) and NIMH Data Archive (NDA)\n* Protections for privacy, rights, and confidentiality of human research participants\n\nThis plan will be regularly reviewed and updated to ensure compliance with NIH's policies and guidelines.",
                   "type": "textArea"
                 }
               }

@@ -5,6 +5,9 @@ import re
 from typing import Any, Dict, List, Optional
 
 
+# ----------------------------
+# Basic helpers
+# ----------------------------
 def _clean(s: Any) -> str:
     if not isinstance(s, str):
         return ""
@@ -33,7 +36,7 @@ def _question(order: int, text: str, answer: str, qtype: str = "textArea") -> Di
 
 
 # ============================================================
-# Template structure (ends at Element 6)
+# NIH template structure (ends at Element 6)
 # ============================================================
 NIH_SECTIONS: List[Dict[str, Any]] = [
     {
@@ -88,48 +91,116 @@ NIH_SECTIONS: List[Dict[str, Any]] = [
 
 
 # ============================================================
-# Markdown parsing helpers
-# Goal: map generated markdown -> answers for (sec.order, q.order)
-# Keys returned: "1.1", "1.2", ..., "6.1"
+# Markdown parsing regexes
 # ============================================================
 
+# Element heading: forgiving
+# Matches:
+#   **Element 1: Title**
+#   **Element 1 - Title**
+#   ## Element 1: Title
+#   Element 1: Title
 _ELEMENT_HEADING_RE = re.compile(
-    r"(?m)^\*\*Element\s*(?P<num>[1-6])\s*:\s*(?P<title>.+?)\*\*\s*$"
+    r"(?mi)^(?:\*\*|##\s*|#\s*)?\s*Element\s*(?P<num>[1-6])\s*[:\-]\s*(?P<title>.+?)\s*(?:\*\*)?\s*$"
 )
 
-_SUBHEADING_RE = re.compile(r"(?m)^###\s*(?P<h>.+?)\s*$")
+# Subheading boundary (any heading level 2-4)
+_SUBHEADING_RE = re.compile(r"(?m)^#{2,4}\s*(?P<h>.+?)\s*$")
 
-# Markdown "setext" underline lines: ----- or =====
+# Markdown underline lines: ----- or =====
 _SETEXT_UNDERLINE_RE = re.compile(r"(?m)^\s*[-=]{3,}\s*$")
 
 
+# ============================================================
+# Cleanup layers (make JSON answers cleaner)
+# ============================================================
+def _strip_setext_underlines(text: str) -> str:
+    text = _clean(text)
+    if not text:
+        return ""
+    text = _SETEXT_UNDERLINE_RE.sub("", text)
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    return text
+
+
+def _strip_leading_instruction(text: str) -> str:
+    """
+    Remove common instruction blocks LLMs include, e.g.
+    *State whether ...*
+    State what common data standards ...
+    Describe how compliance ...
+    """
+    text = _clean(text)
+    if not text:
+        return ""
+
+    # Remove first italic paragraph if it looks like an instruction
+    # (kept broad but bounded so we don't delete real content)
+    text = re.sub(
+        r"(?s)^\s*\*(?:state|describe|indicate|provide|explain)\b[^*]{10,600}\*\s*\n+",
+        "",
+        text,
+        count=1,
+    )
+
+    # Remove first plain-text instruction line (non-italic)
+    text = re.sub(
+        r"(?mi)^\s*(state|describe|indicate|provide|explain)\b[^\n]{10,600}\n+",
+        "",
+        text,
+        count=1,
+    )
+
+    return text.strip()
+
+
+def _strip_footer_notes(text: str) -> str:
+    """
+    Cut off common footers:
+      --- separator
+      "Please note ..." disclaimers
+      "I hope this ..." closings
+    """
+    text = _clean(text)
+    if not text:
+        return ""
+
+    # Stop at horizontal rule
+    parts = re.split(r"(?mi)^\s*---\s*$", text, maxsplit=1)
+    text = parts[0]
+
+    # Remove trailing "Please note ..." block
+    text = re.split(r"(?mi)^\s*please note\b.*$", text, maxsplit=1)[0]
+
+    # Remove trailing "I hope ..." closing
+    text = re.split(r"(?mi)^\s*i hope\b.*$", text, maxsplit=1)[0]
+
+    return text.strip()
+
+
+def _final_answer_clean(text: str) -> str:
+    """
+    Final standardized cleanup for any extracted answer.
+    """
+    text = _strip_setext_underlines(text)
+    text = _strip_leading_instruction(text)
+    text = _strip_footer_notes(text)
+    return _clean(text)
+
+
+# ============================================================
+# Parsing helpers
+# ============================================================
 def _slice_between(text: str, start_idx: int, end_idx: Optional[int]) -> str:
     if end_idx is None:
         return text[start_idx:]
     return text[start_idx:end_idx]
 
 
-def _strip_setext_underlines(text: str) -> str:
-    """
-    Remove markdown underline lines made of only '-' or '='.
-    Helps clean answers when model outputs:
-        Heading
-        --------
-    """
-    text = _clean(text)
-    if not text:
-        return ""
-    # remove these lines anywhere (safe)
-    text = _SETEXT_UNDERLINE_RE.sub("", text)
-    # collapse excessive blank lines
-    text = re.sub(r"\n{3,}", "\n\n", text).strip()
-    return text
-
-
 def _parse_elements(md: str) -> Dict[int, str]:
     """
     Returns {1: "<element1 body>", 2: "<element2 body>", ...}
-    Body excludes the **Element X: ...** line.
+    Body excludes the element heading line.
     """
     md = _clean(md)
     matches = list(_ELEMENT_HEADING_RE.finditer(md))
@@ -140,38 +211,61 @@ def _parse_elements(md: str) -> Dict[int, str]:
         body_start = m.end()
         body_end = matches[i + 1].start() if i + 1 < len(matches) else None
         body = _slice_between(md, body_start, body_end).strip()
-        body = _strip_setext_underlines(body)
-        out[num] = body
+        out[num] = _strip_setext_underlines(body)
 
     return out
 
 
-def _extract_under_subheading(block: str, subheading_text: str) -> str:
+def _extract_under_prompt(block: str, prompt_text: str) -> str:
     """
-    In a block (one element body), find '### {subheading_text}' and capture text until next ### or end.
-    Returns "" if not found.
+    Extract answer text under either:
+      1) ##/###/#### prompt_text
+      2) 1. **prompt_text:**   (colon inside bold)
+      3) 1. **prompt_text**:   (colon after bold)
+
+    Captures until the next heading or next bold-question line.
     """
     block = _strip_setext_underlines(block)
-    # exact-ish match but forgiving whitespace/case
-    pat = re.compile(
-        rf"(?mi)^###\s*{re.escape(subheading_text)}\s*:\s*$|(?mi)^###\s*{re.escape(subheading_text)}\s*$"
+    if not block:
+        return ""
+
+    # 1) Heading form
+    h_pat = re.compile(rf"(?mi)^#{{2,4}}\s*{re.escape(prompt_text)}\s*:?\s*$")
+
+    # 2/3) numbered/bulleted bold form (colon inside OR after bold)
+    b_pat = re.compile(
+        rf"(?mi)^\s*(?:\d+\.\s+|[-*]\s+)\*\*{re.escape(prompt_text)}(?:\s*:)?\*\*\s*:?\s*$"
     )
-    m = pat.search(block)
+
+    m = h_pat.search(block) or b_pat.search(block)
     if not m:
         return ""
 
     start = m.end()
-    next_m = _SUBHEADING_RE.search(block, pos=start)
-    end = next_m.start() if next_m else None
-    return _strip_setext_underlines(_slice_between(block, start, end).strip())
+    rest = block[start:]
+
+    # Next boundary: heading or next bold-question line
+    next_heading = re.search(r"(?mi)^#{2,4}\s+.+$", rest)
+    next_boldq = re.search(
+        r"(?mi)^\s*(?:\d+\.\s+|[-*]\s+)\*\*.+?(?:\s*:)?\*\*\s*:?\s*$",
+        rest,
+    )
+
+    candidates: List[int] = []
+    if next_heading:
+        candidates.append(start + next_heading.start())
+    if next_boldq:
+        candidates.append(start + next_boldq.start())
+
+    end = min(candidates) if candidates else None
+    return _final_answer_clean(_slice_between(block, start, end).strip())
 
 
 def _best_effort_element_body(block: str) -> str:
     """
-    For elements without ### subheadings (2,3,6), just return the body,
-    but clean out underline artifacts.
+    For elements without explicit sub-questions (2,3,6), return the whole body.
     """
-    return _strip_setext_underlines(block)
+    return _final_answer_clean(block)
 
 
 def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, str]:
@@ -184,48 +278,43 @@ def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, s
 
     answers: Dict[str, str] = {}
 
-    # Element 1: three ### subsections
+    # Element 1
     e1 = elements.get(1, "")
-    answers["1.1"] = _extract_under_subheading(
-        e1, "Types and amount of scientific data expected to be generated in the project"
-    )
-    answers["1.2"] = _extract_under_subheading(
-        e1, "Scientific data that will be preserved and shared, and the rationale for doing so"
-    )
-    answers["1.3"] = _extract_under_subheading(e1, "Metadata, other relevant data, and associated documentation")
+    answers["1.1"] = _extract_under_prompt(e1, "Types and amount of scientific data expected to be generated in the project")
+    answers["1.2"] = _extract_under_prompt(e1, "Scientific data that will be preserved and shared, and the rationale for doing so")
+    answers["1.3"] = _extract_under_prompt(e1, "Metadata, other relevant data, and associated documentation")
 
-    # Element 2: whole body
+    # Element 2
     answers["2.1"] = _best_effort_element_body(elements.get(2, ""))
 
-    # Element 3: whole body
+    # Element 3
     answers["3.1"] = _best_effort_element_body(elements.get(3, ""))
 
-    # Element 4: three ### subsections
+    # Element 4
     e4 = elements.get(4, "")
-    answers["4.1"] = _extract_under_subheading(e4, "Repository where scientific data and metadata will be archived")
-    answers["4.2"] = _extract_under_subheading(e4, "How scientific data will be findable and identifiable")
-    answers["4.3"] = _extract_under_subheading(e4, "When and how long the scientific data will be made available")
+    answers["4.1"] = _extract_under_prompt(e4, "Repository where scientific data and metadata will be archived")
+    answers["4.2"] = _extract_under_prompt(e4, "How scientific data will be findable and identifiable")
+    answers["4.3"] = _extract_under_prompt(e4, "When and how long the scientific data will be made available")
 
-    # Element 5: three ### subsections
+    # Element 5
     e5 = elements.get(5, "")
-    answers["5.1"] = _extract_under_subheading(
-        e5, "Factors affecting subsequent access, distribution, or reuse of scientific data"
-    )
-    answers["5.2"] = _extract_under_subheading(e5, "Whether access to scientific data will be controlled")
-    answers["5.3"] = _extract_under_subheading(
-        e5, "Protections for privacy, rights, and confidentiality of human research participants"
-    )
+    answers["5.1"] = _extract_under_prompt(e5, "Factors affecting subsequent access, distribution, or reuse of scientific data")
+    answers["5.2"] = _extract_under_prompt(e5, "Whether access to scientific data will be controlled")
+    answers["5.3"] = _extract_under_prompt(e5, "Protections for privacy, rights, and confidentiality of human research participants")
 
-    # Element 6: whole body
+    # Element 6
     answers["6.1"] = _best_effort_element_body(elements.get(6, ""))
 
     # Final clean
     for k, v in list(answers.items()):
-        answers[k] = _clean(v)
+        answers[k] = _final_answer_clean(v)
 
     return answers
 
 
+# ============================================================
+# Public builder
+# ============================================================
 def build_dmptool_json(
     template_title: str,
     project_title: str,  # kept for backward compatibility; not emitted anymore
@@ -239,14 +328,9 @@ def build_dmptool_json(
     Strategy:
     1) Parse generated_markdown into per-question answers (preferred).
     2) If parsing yields empty for a question, fallback to form_inputs mapping.
-
-    Change:
-    - Remove "project_title" from the output JSON.
-    - Clean out markdown underline artifacts like "-----" in answers.
     """
     form_inputs = form_inputs or {}
 
-    # fallback mapping (only used if parsed markdown doesn't contain that answer)
     FIELD_MAP: Dict[str, List[str]] = {
         # Element 1
         "1.1": ["types_and_amount", "data_types_and_amount", "data_types", "data_volume"],
@@ -284,10 +368,7 @@ def build_dmptool_json(
         for q_order, q_text in sec["questions"]:
             map_key = f"{sec_order}.{q_order}"
 
-            # 1) prefer parsed markdown (so JSON matches the generated plan)
             answer = parsed.get(map_key, "")
-
-            # 2) fallback to form input
             if not answer:
                 answer = _first_nonempty(form_inputs, FIELD_MAP.get(map_key, []))
 
