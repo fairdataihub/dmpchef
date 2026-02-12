@@ -1,0 +1,172 @@
+{
+  "dmptool": {
+    "provenance": "dmpchef",
+    "narrative": {
+      "title": "NIH Data Management and Sharing Plan",
+      "section": [
+        {
+          "order": 1,
+          "title": "Element 1: Data Type",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Types and amount of scientific data expected to be generated in the project",
+              "answer": {
+                "json": {
+                  "answer": "The types of scientific data expected to be generated include:\n\n* Tabular demographic/clinical data\n* MRI imaging data (structural MRI, fMRI, and 1H fMRS)\n* Derived measures (e.g., brain function, structure, and metabolism metrics)\n* Documentation (data dictionaries, protocols, README)\n\nThe estimated amount of scientific data expected to be generated is approximately 220 participants' worth, including tabular measures and multi-modal MRI imaging files.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
+              "answer": {
+                "json": {
+                  "answer": "All de-identified demographic/clinical data and MRI imaging data will be preserved and shared. The rationale for this decision is to facilitate collaboration, replication, and advancement of research in the field.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Metadata, other relevant data, and associated documentation",
+              "answer": {
+                "json": {
+                  "answer": "The following metadata, other relevant data, and associated documentation will be made accessible:\n\n* Data dictionaries\n* Protocols\n* README files\n* Study instruments\n* MRI scan protocols\n\nThese materials will enable researchers to understand the context and methods used in the study, facilitating interpretation of the scientific data.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Element 2: Related Tools, Software and/or Code",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 2: Related Tools, Software and/or Code",
+              "answer": {
+                "json": {
+                  "answer": "State whether specialized tools, software, and/or code are needed to access or manipulate shared scientific data:\nYes. Specialized tools and software will be necessary for accessing and manipulating the MRI imaging data (e.g., BIDS, AFNI, FSL). The specific tools and software required will be identified as part of the project's research plan.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Element 3: Standards",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 3: Standards",
+              "answer": {
+                "json": {
+                  "answer": "State what common data standards will be applied to the scientific data and associated metadata:\nThe following data standards will be applied:\n\n* Dublin Core standard for metadata (with exceptions for MRI data, which will follow the BIDS standard)\n* NIMH Data Archive (NDA) standards for data submission and preservation\n\nThese standards enable interoperability of datasets and resources, facilitating collaboration and data sharing.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "Element 4: Data Preservation, Access, and Associated Timelines",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Repository where scientific data and metadata will be archived",
+              "answer": {
+                "json": {
+                  "answer": "The primary data repository for this project will be the Open Science Framework (OSF), which has been approved by the NIMH as meeting NIH policy for data sharing and management. Within this repository, links to relevant data and resources will be provided.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "How scientific data will be findable and identifiable",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made findable and identifiable through:\n\n* Unique identifiers assigned to each participant (for use in the NDA)\n* Persistent unique identifier for each dataset\n* Standard indexing tools (e.g., Dublin Core metadata)",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "When and how long the scientific data will be made available",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made available as soon as possible after publication of study results, but no later than the end of the performance period. The data will remain available indefinitely.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 5,
+          "title": "Element 5: Access, Distribution, or Reuse Considerations",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
+              "answer": {
+                "json": {
+                  "answer": "* Informed consent forms reflect participants' willingness for broad data sharing\n* De-identified participant-level data will be used to minimize risks associated with human subjects research\n\nNo special considerations are applicable that would limit the extent of data sharing.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Whether access to scientific data will be controlled",
+              "answer": {
+                "json": {
+                  "answer": "Access to the shared scientific data will not be controlled, as the data has been de-identified and consented for broad sharing. However, the NIMH Data Archive (NDA) may impose controls on access based on user requests and institutional policies.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Protections for privacy, rights, and confidentiality of human research participants",
+              "answer": {
+                "json": {
+                  "answer": "The following protections are in place:\n\n* De-identification of participant-level data\n* Assignment of unique identifiers to each participant (for use in the NDA)\n* Informed consent forms reflect participants' willingness for broad data sharing\n\nThese measures protect the privacy, rights, and confidentiality of human research participants.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 6,
+          "title": "Element 6: Oversight of Data Management and Sharing",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 6: Oversight of Data Management and Sharing",
+              "answer": {
+                "json": {
+                  "answer": "Compliance with this Plan will be monitored and managed through regular meetings between the PI (Laura Simons) and relevant personnel. The frequency of oversight is bi-weekly, with annual reviews to ensure compliance.\n\nThe lead PI will be responsible for day-to-day oversight of data management activities, ensuring that all aspects of the plan are implemented effectively.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -14,8 +14,9 @@ rag:
   retriever_top_k: 10
 
 models:
-  llm_name: llama3.3
+  llm_name: llama3.1:8b 
   embedding_model: sentence-transformers/all-MiniLM-L6-v2
   hf_cache_dir: data/cache/hf
   # Set false for first run to download, then true for offline reuse
   local_files_only: true
+  allow_download_if_missing: true

@@ -99,11 +99,31 @@ _ELEMENT_HEADING_RE = re.compile(
 
 _SUBHEADING_RE = re.compile(r"(?m)^###\s*(?P<h>.+?)\s*$")
 
+# Markdown "setext" underline lines: ----- or =====
+_SETEXT_UNDERLINE_RE = re.compile(r"(?m)^\s*[-=]{3,}\s*$")
+
 
 def _slice_between(text: str, start_idx: int, end_idx: Optional[int]) -> str:
     if end_idx is None:
         return text[start_idx:]
     return text[start_idx:end_idx]
+
+
+def _strip_setext_underlines(text: str) -> str:
+    """
+    Remove markdown underline lines made of only '-' or '='.
+    Helps clean answers when model outputs:
+        Heading
+        --------
+    """
+    text = _clean(text)
+    if not text:
+        return ""
+    # remove these lines anywhere (safe)
+    text = _SETEXT_UNDERLINE_RE.sub("", text)
+    # collapse excessive blank lines
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    return text
 
 
 def _parse_elements(md: str) -> Dict[int, str]:
@@ -120,6 +140,7 @@ def _parse_elements(md: str) -> Dict[int, str]:
         body_start = m.end()
         body_end = matches[i + 1].start() if i + 1 < len(matches) else None
         body = _slice_between(md, body_start, body_end).strip()
+        body = _strip_setext_underlines(body)
         out[num] = body
 
     return out
@@ -130,9 +151,11 @@ def _extract_under_subheading(block: str, subheading_text: str) -> str:
     In a block (one element body), find '### {subheading_text}' and capture text until next ### or end.
     Returns "" if not found.
     """
-    block = _clean(block)
+    block = _strip_setext_underlines(block)
     # exact-ish match but forgiving whitespace/case
-    pat = re.compile(rf"(?mi)^###\s*{re.escape(subheading_text)}\s*:\s*$|(?mi)^###\s*{re.escape(subheading_text)}\s*$")
+    pat = re.compile(
+        rf"(?mi)^###\s*{re.escape(subheading_text)}\s*:\s*$|(?mi)^###\s*{re.escape(subheading_text)}\s*$"
+    )
     m = pat.search(block)
     if not m:
         return ""
@@ -140,14 +163,15 @@ def _extract_under_subheading(block: str, subheading_text: str) -> str:
     start = m.end()
     next_m = _SUBHEADING_RE.search(block, pos=start)
     end = next_m.start() if next_m else None
-    return _slice_between(block, start, end).strip()
+    return _strip_setext_underlines(_slice_between(block, start, end).strip())
 
 
 def _best_effort_element_body(block: str) -> str:
     """
-    For elements without ### subheadings (2,3,6), just return the body.
+    For elements without ### subheadings (2,3,6), just return the body,
+    but clean out underline artifacts.
     """
-    return _clean(block)
+    return _strip_setext_underlines(block)
 
 
 def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, str]:
@@ -162,8 +186,12 @@ def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, s
 
     # Element 1: three ### subsections
     e1 = elements.get(1, "")
-    answers["1.1"] = _extract_under_subheading(e1, "Types and amount of scientific data expected to be generated in the project")
-    answers["1.2"] = _extract_under_subheading(e1, "Scientific data that will be preserved and shared, and the rationale for doing so")
+    answers["1.1"] = _extract_under_subheading(
+        e1, "Types and amount of scientific data expected to be generated in the project"
+    )
+    answers["1.2"] = _extract_under_subheading(
+        e1, "Scientific data that will be preserved and shared, and the rationale for doing so"
+    )
     answers["1.3"] = _extract_under_subheading(e1, "Metadata, other relevant data, and associated documentation")
 
     # Element 2: whole body
@@ -180,14 +208,18 @@ def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, s
 
     # Element 5: three ### subsections
     e5 = elements.get(5, "")
-    answers["5.1"] = _extract_under_subheading(e5, "Factors affecting subsequent access, distribution, or reuse of scientific data")
+    answers["5.1"] = _extract_under_subheading(
+        e5, "Factors affecting subsequent access, distribution, or reuse of scientific data"
+    )
     answers["5.2"] = _extract_under_subheading(e5, "Whether access to scientific data will be controlled")
-    answers["5.3"] = _extract_under_subheading(e5, "Protections for privacy, rights, and confidentiality of human research participants")
+    answers["5.3"] = _extract_under_subheading(
+        e5, "Protections for privacy, rights, and confidentiality of human research participants"
+    )
 
     # Element 6: whole body
     answers["6.1"] = _best_effort_element_body(elements.get(6, ""))
 
-    # Clean up any accidental leading punctuation/newlines
+    # Final clean
     for k, v in list(answers.items()):
         answers[k] = _clean(v)
 
@@ -196,7 +228,7 @@ def _parse_generated_markdown_to_answers(generated_markdown: str) -> Dict[str, s
 
 def build_dmptool_json(
     template_title: str,
-    project_title: str,
+    project_title: str,  # kept for backward compatibility; not emitted anymore
     form_inputs: Dict[str, Any],
     generated_markdown: str = "",
     provenance: str = "dmpchef",
@@ -207,8 +239,11 @@ def build_dmptool_json(
     Strategy:
     1) Parse generated_markdown into per-question answers (preferred).
     2) If parsing yields empty for a question, fallback to form_inputs mapping.
-    """
 
+    Change:
+    - Remove "project_title" from the output JSON.
+    - Clean out markdown underline artifacts like "-----" in answers.
+    """
     form_inputs = form_inputs or {}
 
     # fallback mapping (only used if parsed markdown doesn't contain that answer)
@@ -272,7 +307,6 @@ def build_dmptool_json(
             "provenance": provenance,
             "narrative": {
                 "title": _clean(template_title),
-                "project_title": _clean(project_title),
                 "section": sections_out,
             },
         }

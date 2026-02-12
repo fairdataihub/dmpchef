@@ -42,7 +42,7 @@ dmpchef/
 │── setup.py                # Packaging (editable installs via pip install -e .)
 │── pyproject.toml          # Build system config (wheel builds)
 │── MANIFEST.in             # Include non-code files in distributions
-│── demo_import.ipynb       # Notebook demo: import + run generate()
+│── demo.ipynb       # Notebook demo: import + run generate()
 │── LICENSE
 │── .gitignore
 │── .env                    # Local env vars (do not commit)
@@ -133,7 +133,7 @@ pip install -e .
 ## Run DMP Chef
 
 ### Option A — Jupyter demo
-Use **[`demo_import.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)**.
+Use **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)**.
 
 ### Option B — CLI: Command-line entry point for running the pipeline end-to-end
 
@@ -162,10 +162,6 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 - **PDF**: created by converting the DOCX (platform-dependent; typically works on Windows/macOS with Word).
 - **JSON**: a **DMPTool-compatible** JSON file (`*.dmptool.json`).
 
- **Notes**
-  - Output filenames include a run suffix to prevent overwriting:
-    - `__rag__k{top_k}__{llm}` (RAG runs)  
-    - `__norag__{llm}` (No-RAG runs)
 
 ---
 

@@ -1,8 +1,9 @@
 # utils/nih_docx_writer.py
+from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Any
 
 from docx import Document
 from docx.oxml import OxmlElement
@@ -10,6 +11,7 @@ from docx.text.paragraph import Paragraph
 
 
 # DOCX anchors (instruction paragraphs in the NIH template)
+# NOTE: Kept same structure, but added whitespace/linebreak-safe matching.
 PROMPT_ANCHORS: List[Tuple[str, List[str]]] = [
     ("e1_q1", ["Summarize the types and estimated amount of scientific data expected to be generated in the project"]),
     ("e1_q2", ["Describe which scientific data from the project will be preserved and shared and provide the rationale for this decision"]),
@@ -64,11 +66,33 @@ def _normalize_ws_after(doc: Document, idx: int) -> None:
         break
 
 
+def _norm_ws(s: str) -> str:
+    """
+    Normalize whitespace to make anchor matching robust against:
+      - tabs
+      - newlines
+      - multiple spaces
+      - Word wrapping
+    """
+    return re.sub(r"\s+", " ", (s or "").strip()).lower()
+
+
 def _find_anchor_paragraph_index(doc: Document, anchor_aliases: List[str]) -> Optional[int]:
+    """
+    Robust anchor finding:
+      - compares normalized (collapsed) whitespace
+      - case-insensitive
+    """
+    aliases_norm = [_norm_ws(a) for a in (anchor_aliases or []) if (a or "").strip()]
+    if not aliases_norm:
+        return None
+
     for i, p in enumerate(doc.paragraphs):
-        pt = (p.text or "").strip()
-        for a in anchor_aliases:
-            if a.lower() in pt.lower():
+        pt = _norm_ws(p.text or "")
+        if not pt:
+            continue
+        for a in aliases_norm:
+            if a and a in pt:
                 return i
     return None
 
@@ -159,12 +183,12 @@ def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: 
         return
 
     # Turn the answer into a list of paragraphs separated by blank lines.
-    # Also turn "- item" into its own paragraph "item" (no bullet style).
+    # Also turn "- item" / "• item" into its own paragraph "item" (no bullet style).
     raw_lines = [ln.rstrip() for ln in answer.split("\n")]
     paragraphs: List[str] = []
     buf: List[str] = []
 
-    def flush_buf():
+    def flush_buf() -> None:
         nonlocal buf
         joined = " ".join([x.strip() for x in buf if x.strip()]).strip()
         if joined:
@@ -195,8 +219,6 @@ def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: 
     last_p = anchor_p
     for i, para_text in enumerate(paragraphs):
         last_p = _add_answer_paragraph_after(last_p, para_text, style_name, format_source)
-
-        # one blank line between paragraphs (not after last)
         if i != len(paragraphs) - 1:
             last_p = _add_answer_paragraph_after(last_p, "", style_name, format_source)
 
@@ -204,22 +226,15 @@ def _write_block_after_anchor(doc: Document, anchor_aliases: List[str], answer: 
     _add_answer_paragraph_after(last_p, "", style_name, format_source)
 
 
-# ---------- Markdown parsing for YOUR output format ----------
+# ---------- Markdown parsing (legacy fallback) ----------
 
 def _strip_markdown_keep_structure(md: str) -> str:
     if not md:
         return ""
     text = md.replace("\r\n", "\n").replace("\r", "\n")
-
-    # [text](url) -> text
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
-
-    # remove emphasis markers
-    text = text.replace("**", "").replace("*", "")
-
-    # collapse excessive blank lines
-    text = re.sub(r"\n{3,}", "\n\n", text)
-
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)  # [text](url) -> text
+    text = text.replace("**", "").replace("*", "")        # remove emphasis markers
+    text = re.sub(r"\n{3,}", "\n\n", text)                # collapse excessive blank lines
     return text.strip()
 
 
@@ -302,29 +317,63 @@ def _extract_blocks_from_generated_markdown(generated_markdown: str) -> Dict[str
     return blocks
 
 
+# ---------- Plan JSON helpers (NEW) ----------
+
+def _extract_blocks_from_plan_json(plan_json: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Canonical mapping: plan_json["answers"] keys -> docx anchor keys.
+    Expected answer keys:
+      1.1, 1.2, 1.3, 2.1, 3.1, 4.1, 4.2, 4.3, 5.1, 5.2, 5.3, 6.1
+    """
+    answers = (plan_json or {}).get("answers") or {}
+
+    def g(k: str) -> str:
+        v = answers.get(k)
+        return (v or "").strip()
+
+    return {
+        "e1_q1": g("1.1"),
+        "e1_q2": g("1.2"),
+        "e1_q3": g("1.3"),
+        "e2_q1": g("2.1"),
+        "e3_q1": g("3.1"),
+        "e4_q1": g("4.1"),
+        "e4_q2": g("4.2"),
+        "e4_q3": g("4.3"),
+        "e5_q1": g("5.1"),
+        "e5_q2": g("5.2"),
+        "e5_q3": g("5.3"),
+        "e6_q1": g("6.1"),
+    }
+
+
 # ---------- Public API ----------
 
 def build_nih_docx_from_template(
     template_docx_path: str,
     output_docx_path: str,
-    project_title: str,
-    generated_markdown: str,
+    project_title: str,  # kept for backward compatibility; not inserted anymore
+    generated_markdown: str = "",
+    *,
+    plan_json: Optional[Dict[str, Any]] = None,
 ) -> None:
+    """
+    Preferred path:
+      - if plan_json is provided, use plan_json["answers"] (no markdown parsing)
+    Fallback path:
+      - parse generated_markdown (legacy)
+    """
     doc = Document(str(template_docx_path))
 
-    # Insert Project Title under the main heading
-    for p in doc.paragraphs:
-        if (p.text or "").strip().upper() == "DATA MANAGEMENT AND SHARING PLAN":
-            title_line = f"Project Title: {project_title.strip()}"
-            _insert_paragraph_after(p, title_line, style_name=p.style.name if p.style else None)
-            break
+    # DO NOT insert "Project Title: ..." under the heading anymore.
 
-    blocks = _extract_blocks_from_generated_markdown(generated_markdown)
+    if plan_json:
+        blocks = _extract_blocks_from_plan_json(plan_json)
+    else:
+        blocks = _extract_blocks_from_generated_markdown(generated_markdown or "")
 
-    # Remove old placeholder-only paragraphs (e1_q1, etc.) if they exist
     _remove_placeholder_only_paragraphs(doc)
 
-    # Insert each extracted answer after the NIH instruction paragraph
     for key, aliases in PROMPT_ANCHORS:
         answer = (blocks.get(key, "") or "").strip()
         if not answer:
