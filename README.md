@@ -23,7 +23,7 @@ The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines
 ## Main files
 
 - **[`dmpchef/api.py`](https://github.com/fairdataihub/dmpchef/blob/main/dmpchef/api.py)** — Public, importable API:
-- **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core generation logic (RAG vs No-RAG; retrieval → prompt → generate).
+- **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core generation logic (No-RAG vs RAG ; retrieval → prompt → generate).
 - **[`src/NIH_data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/NIH_data_ingestion.py)** — NIH/DMPTool ingestion to collect reference PDFs for RAG
 - **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** — Command-line entry point for running the pipeline end-to-end.
 - **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)** — Jupyter demo showing.
