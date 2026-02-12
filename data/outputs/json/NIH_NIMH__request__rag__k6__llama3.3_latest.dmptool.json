@@ -1,0 +1,172 @@
+{
+  "dmptool": {
+    "provenance": "dmpchef",
+    "narrative": {
+      "title": "NIH Data Management and Sharing Plan",
+      "section": [
+        {
+          "order": 1,
+          "title": "Element 1: Data Type",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Types and amount of scientific data expected to be generated in the project",
+              "answer": {
+                "json": {
+                  "answer": "The project will generate de-identified demographic, clinical, and MRI imaging data (structural MRI, fMRI, and 1H fMRS) from 110 affected youth and 110 matched healthy controls. The estimated amount of scientific data includes tabular measures for 220 participants and multi-modal MRI imaging files, with the imaging data comprising the largest share.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
+              "answer": {
+                "json": {
+                  "answer": "All collected data, including tabular demographic/clinical data and MRI imaging data (structural MRI, fMRI, 1H fMRS), plus derived measures and documentation (data dictionaries, protocols, README), will be preserved and shared. The rationale for sharing these data is to facilitate secondary research use, promote transparency, and enhance the reproducibility of findings, in line with NIH's stewardship of human genomic data and the principles outlined in the informed consent under which the data or samples were collected.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Metadata, other relevant data, and associated documentation",
+              "answer": {
+                "json": {
+                  "answer": "To facilitate interpretation of the scientific data, the following metadata, other relevant data, and associated documentation will be made accessible: \nData dictionaries defining each variable\nProtocols for treatment and data collection\nStudy instruments used for clinical and demographic measures\nREADME files explaining the content and structure of the shared datasets",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Element 2: Related Tools, Software and/or Code",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 2: Related Tools, Software and/or Code",
+              "answer": {
+                "json": {
+                  "answer": "Specialized tools and software are needed to access or manipulate shared scientific data. Specifically, MRI imaging data will require access to software capable of handling DICOM files (e.g., FSL, AFNI), and tabular data may be manipulated using statistical software (e.g., R, Python libraries like Pandas). These tools can be accessed through their respective official websites or academic licenses.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Element 3: Standards",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 3: Standards",
+              "answer": {
+                "json": {
+                  "answer": "Common data standards will be applied to the scientific data and associated metadata to enable interoperability of datasets and resources. For MRI imaging data, standards such as DICOM for image format and BIDS (Brain Imaging Data Structure) for organization will be used. Tabular demographic/clinical data will adhere to standardized formats recommended by the NIMH Data Archive (NDA), ensuring consistency across datasets. These standards will facilitate seamless integration and analysis of data across different studies.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "Element 4: Data Preservation, Access, and Associated Timelines",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Repository where scientific data and metadata will be archived",
+              "answer": {
+                "json": {
+                  "answer": "Scientific data and metadata arising from the project will be archived in the NIMH Data Archive (NDA), a repository designated by the NIH for human subjects research data. This selection aligns with the NIH's guidance on selecting a data repository that supports the long-term preservation and sharing of research data.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "How scientific data will be findable and identifiable",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made findable and identifiable via a persistent unique identifier provided by the NDA upon data submission. Additionally, metadata describing each dataset will include essential elements such as study title, investigator names, funding information, and keywords to facilitate discovery through search functions.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "When and how long the scientific data will be made available",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made available no later than the time of an associated publication or the end of the performance period, whichever comes first. Data will remain available indefinitely, as per the NDA's data retention policies, ensuring long-term access for secondary research purposes.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 5,
+          "title": "Element 5: Access, Distribution, or Reuse Considerations",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
+              "answer": {
+                "json": {
+                  "answer": "Given that participants provide consent for broad data sharing, factors affecting subsequent access are minimal. However, to protect participant privacy and confidentiality, shared data will be de-identified, adhering to the principles outlined in the informed consent documents and following guidelines set forth by the Institutional Review Board (IRB).",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Whether access to scientific data will be controlled",
+              "answer": {
+                "json": {
+                  "answer": "Access to the scientific data will be controlled through the NDA's mechanisms for managing data access. Users may need to register or obtain approval from the NDA to access certain datasets, especially those containing potentially identifiable information.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Protections for privacy, rights, and confidentiality of human research participants",
+              "answer": {
+                "json": {
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, several measures will be implemented: \nDe-identification of all shared data\nUse of Certificates of Confidentiality where applicable\nAdherence to HIPAA security requirements for handling protected health information (PHI)\nIRB review and approval of data sharing plans\nParticipants will also be assigned an alphanumeric code to protect their identities in the shared datasets.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 6,
+          "title": "Element 6: Oversight of Data Management and Sharing",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 6: Oversight of Data Management and Sharing",
+              "answer": {
+                "json": {
+                  "answer": "Compliance with this Plan will be monitored and managed by the Lead Principal Investigator (PI), who will oversee day-to-day data management activities. The frequency of oversight will include regular checks at key project milestones, such as data collection completion and prior to data submission to the NDA. Additionally, an annual review will ensure that data sharing activities align with this Plan and NIH guidelines. The Lead PI will work closely with other PIs, data managers, and institutional officials (e.g., IRB representatives) to address any issues or concerns related to data management and sharing.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
