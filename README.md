@@ -140,8 +140,7 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 ---
 
 ## Inputs
-- **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate.
-
+- **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate. Validation is performed before pipeline execution using JSON Schema.
 
 ```json
 {
@@ -152,11 +151,11 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 
 ### `config` (Execution Settings)
 
-- **config.funding.agency**: Funder key (e.g., `NIH`; future-ready for others like `NSF`).
-- **config.funding.subagency**: Optional sub-agency (e.g., `NIMH`).
-- **config.pipeline.rag**: `true` / `false` (optional). If omitted, the pipeline uses the YAML default (`rag.enabled`).
-- **config.pipeline.llm**: LLM settings (e.g., `provider`, `model_name`).
-- **config.export**: Output toggles (`md`, `docx`, `pdf`, `dmptool_json`).
+- **config.funding.agency**: Funder key (string; NIH|NSF|OTHER)
+- **config.funding.subagency**: sub-agency (string; optional)
+- **config.pipeline.rag**: `true` / `false` (boolean). If omitted, the pipeline uses the YAML default (`rag.enabled`).
+- **config.pipeline.llm**: LLM settings (boolean flags; e.g., `provider`, `model_name`).
+- **config.export**: Output toggles (boolean flags; `md`, `docx`, `pdf`, `dmptool_json`)-()
 
 ### `inputs` 
 - **inputs**: A dictionary of user/project fields used to draft the plan include:

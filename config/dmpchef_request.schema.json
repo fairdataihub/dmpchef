@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dmpchef.org/schemas/dmpchef_request.schema.json",
+  "title": "DMP Chef Request Schema (Core Inputs)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["config", "inputs"],
+
+  "properties": {
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["funding", "pipeline", "export"],
+      "properties": {
+        "funding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["agency"],
+          "properties": {
+            "agency": {
+              "type": "string",
+              "enum": ["NIH", "NSF", "OTHER"],
+              "description": "Primary funding agency."
+            },
+            "subagency": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Optional sub-agency/division (e.g., NIMH, NCI, BIO, ENG)."
+            }
+          }
+        },
+
+        "pipeline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["rag", "llm"],
+          "properties": {
+            "rag": {
+              "type": "boolean",
+              "description": "Enable retrieval-augmented generation."
+            },
+            "llm": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["provider", "model_name"],
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "enum": ["ollama", "openai", "other"],
+                  "description": "LLM backend provider."
+                },
+                "model_name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Model identifier (e.g., llama3.3:latest, gpt-4.1)."
+                }
+              }
+            }
+          }
+        },
+
+        "export": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["md", "docx", "pdf", "dmptool_json"],
+          "properties": {
+            "md": { "type": "boolean", "description": "Export Markdown output." },
+            "docx": { "type": "boolean", "description": "Export DOCX output." },
+            "pdf": { "type": "boolean", "description": "Export PDF output." },
+            "dmptool_json": {
+              "type": "boolean",
+              "description": "Export structured DMPTool-compatible JSON."
+            }
+          }
+        }
+      }
+    },
+
+    "inputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "research_context",
+        "data_types",
+        "data_source",
+        "human_subjects",
+        "consent_status",
+        "data_volume"
+      ],
+      "properties": {
+        "research_context": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Project overview and scientific goals."
+        },
+        "data_types": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Types of data produced or reused."
+        },
+        "data_source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Where data originates (collection/source)."
+        },
+        "human_subjects": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human subjects involvement (free text; can include Yes/No + explanation)."
+        },
+        "consent_status": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Consent and sharing restrictions (free text)."
+        },
+        "data_volume": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Estimated size, scale, or participants (free text)."
+        }
+      }
+    }
+  }
+}

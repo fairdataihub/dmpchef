@@ -107,6 +107,9 @@ wheel
 build
 python-docx
 docx2pdf
+
+jsonschema
+
 #############################################
 #  Local Package (Editable Install)
 #############################################
