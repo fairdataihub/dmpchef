@@ -1,5 +1,5 @@
 #############################################
-# 🧩 Core Python Utilities
+#  Core Python Utilities
 #############################################
 matplotlib
 numpy
@@ -9,20 +9,20 @@ scikit-learn
 typing_extensions
 
 #############################################
-# 🤖 Deep Learning & NLP
+#  Deep Learning & NLP
 #############################################
 torch
 tiktoken
 
 #############################################
-# 🔥 Stable Transformer & Embedding Libraries
+#  Stable Transformer & Embedding Libraries
 #############################################
 transformers
 sentence-transformers
 regex
 
 #############################################
-# 🧠 LLMs & RAG Frameworks (Stable Versions)
+#  LLMs & RAG Frameworks (Stable Versions)
 #############################################
 google-generativeai
 ollama
@@ -47,7 +47,7 @@ langsmith
 dataclasses-json
 
 #############################################
-# 📄 Document Processing
+#  Document Processing
 #############################################
 docx2txt
 PyMuPDF
@@ -56,7 +56,7 @@ pypandoc
 PyYAML
 
 #############################################
-# 🌐 Web & HTTP Dependencies (full bundle)
+#  Web & HTTP Dependencies (full bundle)
 #############################################
 beautifulsoup4
 requests
@@ -70,7 +70,7 @@ httpx-sse
 lxml
 
 #############################################
-# ⚙️ Backend & API
+#  Backend & API
 #############################################
 fastapi
 python-multipart
@@ -78,13 +78,13 @@ structlog
 uvicorn
 
 #############################################
-# 🔍 Indexing & Search
+#  Indexing & Search
 #############################################
 faiss-cpu
 lancedb
 
 #############################################
-# 🧪 Development & Testing
+#  Development & Testing
 #############################################
 cfn-lint
 jsonpatch
@@ -93,7 +93,7 @@ pytest
 tqdm
 
 #############################################
-# 💻 UI & Deployment
+#  UI & Deployment
 #############################################
 openpyxl
 rouge-score
@@ -108,6 +108,6 @@ build
 python-docx
 docx2pdf
 #############################################
-# 📦 Local Package (Editable Install)
+#  Local Package (Editable Install)
 #############################################
 -e .

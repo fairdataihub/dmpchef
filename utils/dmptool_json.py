@@ -178,7 +178,7 @@ def _strip_footer_notes(text: str) -> str:
     return text.strip()
 
 
-# ✅ NEW: strip markdown artifacts that leak into JSON answers
+#  NEW: strip markdown artifacts that leak into JSON answers
 _BULLET_PREFIX_RE = re.compile(r"(?m)^\s*(?:[-+*•]\s+)")
 _STANDALONE_STAR_RE = re.compile(r"(?m)^\s*\*\s*$")
 
@@ -260,7 +260,7 @@ def _final_answer_clean(text: str) -> str:
     text = _strip_leading_instruction(text)
     text = _strip_footer_notes(text)
 
-    # ✅ remove markdown artifacts
+    #  remove markdown artifacts
     text = _strip_wrapping_italics(text)
     text = _strip_inline_md_emphasis(text)
     text = _strip_bullet_prefixes(text)
@@ -456,7 +456,7 @@ def build_dmptool_json(
             if not answer:
                 answer = _first_nonempty(form_inputs, FIELD_MAP.get(map_key, []))
 
-            # ✅ ensure final clean even for form_inputs fallback
+            #  ensure final clean even for form_inputs fallback
             answer = _final_answer_clean(answer)
 
             questions_out.append(_question(q_order, q_text, answer, "textArea"))

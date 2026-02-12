@@ -249,7 +249,7 @@ def main(
             f'Fix: python main.py --nih_template "PATH\\TO\\nih-dms-plan-template.docx"'
         )
 
-    # ✅ DOCX: use dmptool_json (plan_json) instead of markdown parsing
+    #  DOCX: use dmptool_json (plan_json) instead of markdown parsing
     docx_path = out_docx / f"{run_stem}.docx"
     build_nih_docx_from_template(
         template_docx_path=str(template_path),
