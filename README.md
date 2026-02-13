@@ -142,7 +142,7 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 
 ## Inputs
 - **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate. 
-Before execution, the request is validated against **`dmpchef_request.schema.json` (https://github.com/fairdataihub/dmpchef/blob/main/config/dmpchef_request.schema.json)** using the **`schema_validate.py` (https://github.com/fairdataihub/dmpchef/blob/main/config/schema_validate.py)** validator.
+Before execution, the request is validated against **[dmpchef_request.schema.json](https://github.com/fairdataihub/dmpchef/blob/main/config/dmpchef_request.schema.json)** using the **[schema_validate.py] (https://github.com/fairdataihub/dmpchef/blob/main/config/schema_validate.py)** validator.
 
 
 ```json
