@@ -129,7 +129,7 @@ pip install -e .
 
 ---
 
-## Run DMP Chef
+### Step 4 — Run DMP Chef
 
 ### Option A — Jupyter demo
 Use **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)**.
