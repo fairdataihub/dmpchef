@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 
 from src.core_pipeline import DMPPipeline
+from utils.schema_validate import validate_request
 
 
 def _resolve_path(p: str | Path, base: Path) -> Path:
@@ -318,6 +319,7 @@ def generate(
     - Prevents rag/norag collisions: run_id is stable + core adds __rag__/__norag__ suffix
     - Avoid overwriting outputs: appends TIME-only stamp (HHMMSS) to run_stem for each call
     - Validates corpus folder used by core pipeline (paths.data_pdfs)
+    - Validates input JSON against config/dmpchef_request.schema.json
     """
     repo_root = Path(__file__).resolve().parents[1]
 
@@ -325,6 +327,20 @@ def generate(
     config_path = _resolve_path(config_path, repo_root)
     out_root = _resolve_path(out_root, repo_root)
     template_path = _resolve_path(nih_template_path, repo_root)
+
+    # -------------------------
+    # JSON Schema validation (required, like main.py)
+    # -------------------------
+    schema_path = repo_root / "config" / "dmpchef_request.schema.json"
+    if not schema_path.exists():
+        raise FileNotFoundError(f"Schema not found: {schema_path}")
+
+    try:
+        validate_request(input_json_path, schema_path)
+        print(f"Schema validation: PASS ({input_json_path.name})")
+    except Exception:
+        print(f"Schema validation: FAIL ({input_json_path.name})")
+        raise
 
     req = json.loads(input_json_path.read_text(encoding="utf-8")) or {}
     if not isinstance(req, dict):
