@@ -1,0 +1,172 @@
+{
+  "dmptool": {
+    "provenance": "dmpchef",
+    "narrative": {
+      "title": "NIH Data Management and Sharing Plan",
+      "section": [
+        {
+          "order": 1,
+          "title": "Element 1: Data Type",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Types and amount of scientific data expected to be generated in the project",
+              "answer": {
+                "json": {
+                  "answer": "The proposed study on autism and social communication is anticipated to generate a substantial amount of multi-modal data from youth participants. The types of data include demographic and clinical datasets, behavioral and cognitive assessments, neuroimaging and physiological measures, derived variables, and associated documentation such as protocols, data dictionaries, and README files. Given the comprehensive nature of the study, the estimated amount of scientific data is expected to be significant, with neurobiological data representing the largest portion in terms of storage requirements.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
+              "answer": {
+                "json": {
+                  "answer": "All data types collected during the study will be preserved and shared through the NIMH Data Archive (NDA), utilizing NDA GUID elements for submission. The rationale behind this decision is to contribute meaningfully to the research community by providing valuable datasets that can enhance our understanding of autism and social communication. Sharing these data will facilitate collaborations, reduce redundancy in data collection, and potentially accelerate discoveries in the field.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Metadata, other relevant data, and associated documentation",
+              "answer": {
+                "json": {
+                  "answer": "To ensure the interpretability and usability of the shared scientific data, the following metadata, other relevant data, and associated documentation will be made accessible: detailed study protocols, data collection instruments, data dictionaries that define each variable, README files explaining the content and structure of the datasets, and any other information necessary for understanding the data collection methods and analyses performed.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Element 2: Related Tools, Software and/or Code",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 2: Related Tools, Software and/or Code",
+              "answer": {
+                "json": {
+                  "answer": "Specialized tools, software, and/or code are needed to access or manipulate shared scientific data. Specifically, for neuroimaging data, software such as FSL (FMRIB Software Library) or AFNI (Analysis of Functional NeuroImages) may be required. For statistical analyses and data manipulation, R or Python programming languages with their respective libraries (e.g., pandas, NumPy, matplotlib) will be essential. These tools and software are widely used in the research community and can be accessed through their official websites or academic licenses.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Element 3: Standards",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 3: Standards",
+              "answer": {
+                "json": {
+                  "answer": "To enable interoperability of datasets and resources, common data standards will be applied to the scientific data and associated metadata. For demographic and clinical datasets, standards from the National Institutes of Health (NIH) Data Dictionary and the PhenX Toolkit will be used. Neuroimaging data will adhere to the BIDS (Brain Imaging Data Structure) standard for organization and description. Behavioral and cognitive assessments will follow standards set by their respective measures or instruments. By applying these standards, the datasets generated from this project will be compatible with existing resources and databases in the field of autism research, facilitating meta-analyses and comparative studies.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "Element 4: Data Preservation, Access, and Associated Timelines",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Repository where scientific data and metadata will be archived",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data and metadata arising from this project will be archived in the NIMH Data Archive (NDA), a repository specifically designed for storing and sharing data related to mental health research. The NDA provides a secure and accessible platform for researchers to contribute to and utilize shared data, aligning with the goals of maximizing data sharing and reuse.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "How scientific data will be findable and identifiable",
+              "answer": {
+                "json": {
+                  "answer": "To ensure that the scientific data are findable and identifiable, each dataset will be assigned a unique identifier through the NDA's GUID system. Additionally, detailed metadata and documentation will accompany each submission to facilitate discovery and understanding of the datasets. Standard indexing tools and searchable databases within the NDA will also be utilized to make the data easily accessible.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "When and how long the scientific data will be made available",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made available to other users no later than the time of an associated publication or the end of the performance period, whichever comes first. The data will remain available for a minimum of 10 years following the end of the project to allow for extended research and analysis opportunities.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 5,
+          "title": "Element 5: Access, Distribution, or Reuse Considerations",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
+              "answer": {
+                "json": {
+                  "answer": "While maximizing data sharing is a priority, factors such as informed consent limitations, privacy, and confidentiality protections may affect subsequent access, distribution, or reuse of the scientific data. Given that broad data sharing consent/assent has been obtained from participants, the primary consideration will be protecting participant privacy through de-identification of datasets.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Whether access to scientific data will be controlled",
+              "answer": {
+                "json": {
+                  "answer": "Access to the scientific data will be controlled through the NDA's system for managing data requests and approvals. Researchers seeking to access shared datasets will need to register with the NDA, agree to terms of use, and in some cases, obtain approval from a data access committee to ensure that the proposed use aligns with ethical standards and consent agreements.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Protections for privacy, rights, and confidentiality of human research participants",
+              "answer": {
+                "json": {
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, all shared datasets will be de-identified according to HIPAA guidelines. Additionally, Certificates of Confidentiality will be obtained where applicable to further safeguard against disclosure of sensitive information. These protective measures ensure that while contributing valuable data to the scientific community, the project also upholds its ethical obligations to the participants.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 6,
+          "title": "Element 6: Oversight of Data Management and Sharing",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 6: Oversight of Data Management and Sharing",
+              "answer": {
+                "json": {
+                  "answer": "Compliance with this Data Management and Sharing Plan will be monitored and managed by the study's Principal Investigator (PI) in collaboration with the institution's research data management office. Regular oversight meetings will occur every six months to review progress in data collection, sharing preparations, and adherence to the plan's guidelines. The PI and the data management team will work together to address any challenges or updates needed for the plan, ensuring that all shared data are properly documented, preserved, and accessible according to NIH policies and best practices in data stewardship.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

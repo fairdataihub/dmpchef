@@ -5,7 +5,7 @@
       "subagency": "NIMH"
     },
     "pipeline": {
-      "rag": true,
+      "rag": false,
       "llm": {
         "provider": "ollama",
         "model_name": "llama3.3:latest"
@@ -20,7 +20,7 @@
   },
   "funding_agency": "NIH",
   "funding_subagency": "NIMH",
-  "use_rag": true,
+  "use_rag": false,
   "run_id": "req_8f03ec1fc5",
   "original_inputs": {
     "research_area": "Autism and social communication",

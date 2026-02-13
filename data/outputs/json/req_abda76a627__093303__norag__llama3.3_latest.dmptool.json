@@ -1,0 +1,172 @@
+{
+  "dmptool": {
+    "provenance": "dmpchef",
+    "narrative": {
+      "title": "NIH Data Management and Sharing Plan",
+      "section": [
+        {
+          "order": 1,
+          "title": "Element 1: Data Type",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Types and amount of scientific data expected to be generated in the project",
+              "answer": {
+                "json": {
+                  "answer": "The project 'req_abda76a627' expects to generate a significant amount of scientific data, including demographic and clinical datasets, standardized anxiety and resilience scales, behavioral task data, physiological measures (e.g., heart rate variability), and derived summary variables. The estimated amount of data is substantial due to the longitudinal nature of the study, with multiple time points and various assessment tools used.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
+              "answer": {
+                "json": {
+                  "answer": "All collected data will be preserved and shared, including demographic and clinical datasets, standardized scales, behavioral task data, physiological measures, and derived summary variables. The rationale for sharing these data is to facilitate transparency, reproducibility, and further research in adolescent mental health, anxiety, and resilience mechanisms. Sharing these data will enable other researchers to explore new hypotheses, validate findings, and develop more effective interventions.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Metadata, other relevant data, and associated documentation",
+              "answer": {
+                "json": {
+                  "answer": "To facilitate interpretation of the scientific data, the following metadata, other relevant data, and associated documentation will be made accessible: study protocols, data collection instruments, data dictionaries, and README files. These documents will provide context about the data collection process, variable definitions, and any transformations applied to the data.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Element 2: Related Tools, Software and/or Code",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 2: Related Tools, Software and/or Code",
+              "answer": {
+                "json": {
+                  "answer": "Specialized tools, software, and/or code are needed to access or manipulate shared scientific data. Specifically, statistical analysis software (e.g., R, Python) and data management platforms (e.g., REDCap) will be required to work with the shared datasets. These tools can be accessed through open-source repositories or by contacting the research team for guidance on obtaining necessary licenses or permissions.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Element 3: Standards",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 3: Standards",
+              "answer": {
+                "json": {
+                  "answer": "Common data standards will be applied to the scientific data and associated metadata to enable interoperability of datasets and resources. The project will adhere to the National Institute of Mental Health (NIMH) data sharing standards and use standardized terminologies and ontologies relevant to adolescent mental health research, such as those recommended by the NIH or established by professional organizations in the field. If applicable, indicate that no consensus standards exist for certain aspects of the data; however, for this project, existing standards will be followed to ensure data compatibility and reuse.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "Element 4: Data Preservation, Access, and Associated Timelines",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Repository where scientific data and metadata will be archived",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data and metadata arising from the project will be archived in the National Institute of Mental Health Data Archive (NDA) or another NIH-approved repository, ensuring compliance with federal regulations and facilitating broad accessibility.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "How scientific data will be findable and identifiable",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made findable and identifiable through the assignment of persistent unique identifiers (e.g., DOIs) and indexing in standard databases relevant to mental health research. This approach will enable easy discovery and access to the shared datasets.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "When and how long the scientific data will be made available",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made available no later than the time of publication of the main findings or the end of the performance period, whichever comes first. The data will remain available for at least 10 years after the project's completion to allow for extensive reuse and analysis by the research community.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 5,
+          "title": "Element 5: Access, Distribution, or Reuse Considerations",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
+              "answer": {
+                "json": {
+                  "answer": "Factors affecting access include informed consent limitations, privacy and confidentiality protections, and potential risks associated with re-identification of human subjects. However, since participants provided broad consent for de-identified data sharing, these factors are minimized. Justifiable reasons for limiting sharing, such as protecting vulnerable populations (adolescents in this case), will be carefully balanced against the benefits of open data sharing.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Whether access to scientific data will be controlled",
+              "answer": {
+                "json": {
+                  "answer": "Access to the scientific data will not be strictly controlled but will require registration and acceptance of terms of use through the selected data repository. This approach aims to balance openness with responsible data stewardship, ensuring that data are used appropriately and ethically.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Protections for privacy, rights, and confidentiality of human research participants",
+              "answer": {
+                "json": {
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, all shared data will be de-identified, removing direct identifiers (e.g., names, addresses) and applying statistical methods to prevent re-identification. The project will also comply with relevant federal regulations (e.g., HIPAA) and institutional policies regarding human subjects research.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 6,
+          "title": "Element 6: Oversight of Data Management and Sharing",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 6: Oversight of Data Management and Sharing",
+              "answer": {
+                "json": {
+                  "answer": "Compliance with this Data Management and Sharing Plan will be monitored and managed by the project's Principal Investigator, in collaboration with the institution's data management office and research integrity unit. Regular reviews (at least annually) will ensure that data are properly archived, shared according to the plan, and that any issues or requests related to data access are addressed promptly. The oversight process involves checking for adherence to the sharing timeline, ensuring data quality and integrity, and updating the data management plan as necessary to reflect changes in project scope or new requirements from funding agencies.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

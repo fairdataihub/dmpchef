@@ -14,7 +14,7 @@
               "text": "Types and amount of scientific data expected to be generated in the project",
               "answer": {
                 "json": {
-                  "answer": "The project will generate multi-modal datasets from youth participants, including demographic and clinical datasets; behavioral and cognitive assessments; neuroimaging and/or physiological measures; derived variables; and documentation (protocols, data dictionary, README).",
+                  "answer": "The project 'req_abda76a627' expects to generate a variety of scientific data, including demographic and clinical datasets, standardized anxiety and resilience scales, behavioral task data, physiological measures (e.g., heart rate variability), and derived summary variables. The estimated volume of these longitudinal multi-modal datasets is substantial, with physiological data and raw task files representing the largest portion of storage.",
                   "type": "textArea"
                 }
               }
@@ -24,7 +24,7 @@
               "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
               "answer": {
                 "json": {
-                  "answer": "The scientific data generated in this project will be preserved and shared to facilitate further research on autism and social communication, and to advance our understanding of neurodevelopmental disorders. Sharing of these data is also consistent with the informed consent and assent obtained from participants.",
+                  "answer": "All scientific data generated from this project will be preserved and shared, including demographic and clinical datasets, standardized anxiety and resilience scales, behavioral task data, physiological measures, and derived summary variables. The rationale for sharing these data is to facilitate research on adolescent mental health, anxiety, and resilience mechanisms, and to enable the broader scientific community to build upon our findings.",
                   "type": "textArea"
                 }
               }
@@ -34,7 +34,7 @@
               "text": "Metadata, other relevant data, and associated documentation",
               "answer": {
                 "json": {
-                  "answer": "The following metadata and associated documentation will be made accessible: \nStudy protocols\nData collection instruments\nData dictionary\nREADME file\n These documents will facilitate interpretation of the scientific data and provide context for the research findings.",
+                  "answer": "To facilitate interpretation of the scientific data, we will make accessible the following metadata, other relevant data, and associated documentation: \nStudy protocols\nData dictionary\nREADME files\nInformed consent documents\nSurvey tools and code (available via DOI)\nClinical lab test results\nIntervention details\nELISA Assays\nNeutralizing Antibody Titer Assays\nOther relevant metadata as described in the study protocol.",
                   "type": "textArea"
                 }
               }
@@ -51,7 +51,7 @@
               "text": "Element 2: Related Tools, Software and/or Code",
               "answer": {
                 "json": {
-                  "answer": "Not applicable. No specialized tools, software, or code are required to access or manipulate shared scientific data.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -68,7 +68,7 @@
               "text": "Element 3: Standards",
               "answer": {
                 "json": {
-                  "answer": "The following common data standards will be applied to the scientific data and associated metadata: \nNDA GUID elements for submission to the NIMH Data Archive (NDA)\n These data standards will enable interoperability of datasets and resources, and facilitate the sharing and reuse of scientific data.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -85,7 +85,7 @@
               "text": "Repository where scientific data and metadata will be archived",
               "answer": {
                 "json": {
-                  "answer": "The scientific data and metadata arising from this project will be archived in the NIMH Data Archive (NDA).",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -95,7 +95,7 @@
               "text": "How scientific data will be findable and identifiable",
               "answer": {
                 "json": {
-                  "answer": "The scientific data will be findable and identifiable via a persistent unique identifier (NDA GUID) and other standard indexing tools.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -105,7 +105,7 @@
               "text": "When and how long the scientific data will be made available",
               "answer": {
                 "json": {
-                  "answer": "The scientific data will be made available to other users no later than the end of the performance period, and will be available for at least 10 years after the last study participant's consent expires or the study is completed, whichever comes first.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -122,7 +122,7 @@
               "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
               "answer": {
                 "json": {
-                  "answer": "Informed consent and assent obtained from participants are the basis for data sharing in this project. Broad data sharing consent/assent has been obtained as appropriate. No other factors limit the extent of data sharing.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -132,7 +132,7 @@
               "text": "Whether access to scientific data will be controlled",
               "answer": {
                 "json": {
-                  "answer": "Access to the scientific data will not be controlled, and it will be made available through the NIMH Data Archive (NDA) upon submission.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -142,7 +142,7 @@
               "text": "Protections for privacy, rights, and confidentiality of human research participants",
               "answer": {
                 "json": {
-                  "answer": "The privacy, rights, and confidentiality of human research participants will be protected through de-identification of the data, which is consistent with informed consent and assent obtained from participants.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
@@ -159,7 +159,7 @@
               "text": "Element 6: Oversight of Data Management and Sharing",
               "answer": {
                 "json": {
-                  "answer": "Compliance with this Plan will be monitored and managed by the Principal Investigators (Alexxai Kravitz and Susan Maloney) in collaboration with the Institutional Review Board. Frequency of oversight will be quarterly, and updates will be made to clinicaltrials.gov as necessary.",
+                  "answer": "",
                   "type": "textArea"
                 }
               }
