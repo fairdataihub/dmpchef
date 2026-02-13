@@ -149,6 +149,17 @@ def _extract_llm_model_name(req: Dict[str, Any]) -> str:
     return (v or "").strip()
 
 
+def _extract_title(req: Dict[str, Any]) -> str:
+    """
+    IMPORTANT FIX:
+    Only accept explicit title fields; never use run_id/request_id as title.
+    """
+    title = (req.get("title") or req.get("project_title") or "").strip()
+    if re.fullmatch(r"req_[a-z0-9]{6,}", title.lower()):
+        return ""
+    return title
+
+
 def _prefix_run_stem_with_funding(run_stem: str, agency: str, subagency: str) -> str:
     """
     Prefix <AGENCY>_<SUBAGENCY>__ before the *base* stem, preserving the pipeline suffix.
@@ -200,11 +211,9 @@ def generate(
     """
     Generate a DMP using the core pipeline and (optionally) write outputs.
 
-    - Uses request["inputs"] (or request["project"]) exactly as main.py does.
-    - Reads funding from request["config"]["funding"].
-    - Reads rag from request["config"]["pipeline"]["rag"] (unless overridden by API arg).
-    - Reads llm model override from request["config"]["pipeline"]["llm"]["model_name"] and passes to core.
-    - Does NOT pass a title to the core pipeline (title="") to avoid title leakage.
+    Fixes included:
+    - Title comes ONLY from req["title"] / req["project_title"] (never run_id).
+    - If no title is provided, title="" so core uses "no-title" prompt branch.
     """
 
     repo_root = Path(__file__).resolve().parents[1]
@@ -228,6 +237,9 @@ def generate(
     use_rag_final = _extract_use_rag(req, api_override=use_rag)
     llm_model_name = _extract_llm_model_name(req)
 
+    # ✅ FIX: safely extract a human title only if explicitly provided
+    title = _extract_title(req)
+
     # Keep aligned with main.py: inject agency/subagency into inputs for prompt visibility
     if funding_agency:
         inputs.setdefault("funding_agency", funding_agency)
@@ -247,14 +259,14 @@ def generate(
     pipeline = DMPPipeline(config_path=str(_resolve_path(config_path, base=repo_root)), force_rebuild_index=False)
 
     md_text = pipeline.generate_dmp(
-        title="",  # keep empty (no project title branch)
+        title=title,  # ✅ empty unless explicitly provided; never req_*
         form_inputs=inputs,
         use_rag=use_rag_final,
         funding_agency=funding_agency,
-        llm_model_name=(llm_model_name or None),  # ✅ APPLY API model override
+        llm_model_name=(llm_model_name or None),
     )
 
-    core_run_stem = pipeline.last_run_stem or safe_filename("")
+    core_run_stem = pipeline.last_run_stem or safe_filename(title)
     actual_mode = "rag" if "__rag__" in core_run_stem else "norag"
 
     # Match main.py naming: prefix with agency/subagency
@@ -282,7 +294,7 @@ def generate(
             try:
                 dmptool_payload = build_dmptool_json(
                     template_title="NIH Data Management and Sharing Plan",
-                    project_title="",  # keep empty
+                    project_title=title,  # ✅ safe title (may be empty)
                     form_inputs=inputs,
                     generated_markdown=md_text,
                     provenance="dmpchef",
@@ -312,8 +324,8 @@ def generate(
                 build_nih_docx_from_template(
                     template_docx_path=str(template_path),
                     output_docx_path=str(docx_path),
-                    project_title="",  # keep empty
-                    plan_json=dmptool_payload,  # may be None if export_dmptool_json=False
+                    project_title=title,  # ✅ safe
+                    plan_json=dmptool_payload,
                 )
                 written["docx"] = docx_path.exists()
             except Exception as e:
@@ -338,6 +350,7 @@ def generate(
             "use_rag_actual": actual_mode,
             "llm_model_name_requested": (llm_model_name or None),
             "llm_model_name_actual": getattr(pipeline, "llm_name", None),
+            "title_used": (title or None),
         },
         "outputs": {
             "markdown": str(md_path),
@@ -349,3 +362,22 @@ def generate(
         "markdown_text": md_text,
         "dmptool_payload": (dmptool_payload if return_json else None),
     }
+
+
+# -------------------------------------------------------------------
+# Backwards-compat aliases (fixes ImportError in __init__.py)
+# -------------------------------------------------------------------
+def draft(input_json: str | Path, **kwargs) -> Dict[str, Any]:
+    """Alias for generate() kept for older notebooks/imports."""
+    return generate(input_json, **kwargs)
+
+
+def prepare_nih_corpus(*args, **kwargs):
+    """
+    Placeholder for backwards compatibility if older code imports it.
+    If you have a real implementation elsewhere, import and re-export it here.
+    """
+    raise NotImplementedError(
+        "prepare_nih_corpus is not implemented in dmpchef.api. "
+        "If you need it, re-add the previous implementation or update __init__.py."
+    )
