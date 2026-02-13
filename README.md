@@ -156,7 +156,7 @@ Before execution, the request is validated against **[Schema.JSON](https://githu
 
 - **config.funding.agency**: Funder key (string; NIH|NSF|OTHER)
 - **config.funding.subagency**: sub-agency (string; optional)
-- **config.pipeline.rag**: `true` / `false` (boolean). If omitted, the pipeline uses the YAML default (`rag.enabled`).
+- **config.pipeline.rag**: `true` / `false` (boolean flags; If omitted, the pipeline uses the YAML default (`rag.enabled`)).
 - **config.pipeline.llm**: LLM settings (boolean flags; e.g., `provider`, `model_name`).
 - **config.export**: Output (boolean flags; `md`, `docx`, `pdf`, `dmptool_json`)
 
@@ -169,7 +169,7 @@ Before execution, the request is validated against **[Schema.JSON](https://githu
 - **Markdown**: the generated funder-aligned DMP narrative (currently NIH structure).
 - **DOCX**: generated using the funder template (NIH template today) to preserve official formatting.
 - **PDF**: created by converting the DOCX (platform-dependent; typically works on Windows/macOS with Word).
-- **JSON**: a **DMPTool-compatible** JSON file (`*.dmptool.json`).
+- **JSON**: a **DMPTool-compatible** JSON file.
 
 
 ---
