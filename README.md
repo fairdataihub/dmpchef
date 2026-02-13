@@ -158,7 +158,7 @@ Before execution, the request is validated against **[Schema.JSON](https://githu
 - **config.funding.subagency**: sub-agency (string; optional)
 - **config.pipeline.rag**: `true` / `false` (boolean). If omitted, the pipeline uses the YAML default (`rag.enabled`).
 - **config.pipeline.llm**: LLM settings (boolean flags; e.g., `provider`, `model_name`).
-- **config.export**: Output toggles (boolean flags; `md`, `docx`, `pdf`, `dmptool_json`)-()
+- **config.export**: Output (boolean flags; `md`, `docx`, `pdf`, `dmptool_json`)
 
 ### `inputs` 
 - **inputs**: A dictionary of user/project fields used to draft the plan include:
