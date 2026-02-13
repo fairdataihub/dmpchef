@@ -1,0 +1,172 @@
+{
+  "dmptool": {
+    "provenance": "dmpchef",
+    "narrative": {
+      "title": "NIH Data Management and Sharing Plan",
+      "section": [
+        {
+          "order": 1,
+          "title": "Element 1: Data Type",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Types and amount of scientific data expected to be generated in the project",
+              "answer": {
+                "json": {
+                  "answer": "The project 'req_8f03ec1fc5' will generate multi-modal datasets from youth participants, including demographic and clinical datasets, behavioral and cognitive assessments, neuroimaging and/or physiological measures, derived variables, and documentation (protocols, data dictionary, README). The estimated amount of scientific data expected to be generated is substantial, with neurobiological data representing the largest portion of storage.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
+              "answer": {
+                "json": {
+                  "answer": "All collected data types will be preserved and shared through the NIMH Data Archive (NDA) to facilitate secondary research use and maximize the potential for scientific discovery. The rationale for sharing these data is to enable researchers to investigate social communication and neurodevelopmental profiles in youth with autism, compare them to typically developing peers, and explore the underlying neural mechanisms.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Metadata, other relevant data, and associated documentation",
+              "answer": {
+                "json": {
+                  "answer": "To facilitate interpretation of the scientific data, the following metadata, other relevant data, and associated documentation will be made accessible: \nData dictionary\nProtocols for treatment and data collection instruments\nREADME files describing the datasets and their contents\nNDA GUID elements collected for submission to the NIMH Data Archive (NDA)",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Element 2: Related Tools, Software and/or Code",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 2: Related Tools, Software and/or Code",
+              "answer": {
+                "json": {
+                  "answer": "Specialized tools, software, and/or code are needed to access or manipulate shared scientific data. Specifically, \nFMRIB Software Library (FSL) for neuroimaging analysis\nMATLAB for physiological signal processing\nR for statistical analysis of behavioral and cognitive assessments\nThese tools can be accessed through their respective websites or repositories.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Element 3: Standards",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 3: Standards",
+              "answer": {
+                "json": {
+                  "answer": "Common data standards will be applied to the scientific data and associated metadata to enable interoperability of datasets and resources. The project will apply the \nNIMH Data Archive (NDA) data standards for neurodevelopmental disorder research\nBrain Imaging Data Structure (BIDS) for organizing and describing neuroimaging data\nThese data standards will be applied by using standardized templates for data collection, adhering to established protocols for data processing, and utilizing validated tools for data analysis.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "title": "Element 4: Data Preservation, Access, and Associated Timelines",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Repository where scientific data and metadata will be archived",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data and metadata arising from the project will be archived in the NIMH Data Archive (NDA), a repository designated by NIH for storing and sharing data related to mental health research.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "How scientific data will be findable and identifiable",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be findable and identifiable via a persistent unique identifier, such as a DOI or an NDA Collection ID, and through standard indexing tools like the NDA Data Dictionary.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "When and how long the scientific data will be made available",
+              "answer": {
+                "json": {
+                  "answer": "The scientific data will be made available to other users no later than the time of an associated publication or end of the performance period, whichever comes first. The data will be available for at least 10 years after the initial release to allow for secondary research use and validation of findings.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 5,
+          "title": "Element 5: Access, Distribution, or Reuse Considerations",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
+              "answer": {
+                "json": {
+                  "answer": "Factors affecting subsequent access, distribution, or reuse of scientific data include informed consent restrictions, privacy and confidentiality protections, and limitations imposed by the IRB-approved protocol. Specifically, \nBroad data sharing consent/assent has been obtained from participants\nData will be de-identified to protect participant privacy\nAccess may be controlled for sensitive information",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 2,
+              "text": "Whether access to scientific data will be controlled",
+              "answer": {
+                "json": {
+                  "answer": "Access to the scientific data will be controlled through the NIMH Data Archive (NDA), which requires users to register and agree to terms of use before accessing shared data.",
+                  "type": "textArea"
+                }
+              }
+            },
+            {
+              "order": 3,
+              "text": "Protections for privacy, rights, and confidentiality of human research participants",
+              "answer": {
+                "json": {
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, \nData will be de-identified\nCertificates of Confidentiality will be obtained as necessary\nIRB-approved protocols will guide data collection and sharing practices",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "order": 6,
+          "title": "Element 6: Oversight of Data Management and Sharing",
+          "description": "",
+          "question": [
+            {
+              "order": 1,
+              "text": "Element 6: Oversight of Data Management and Sharing",
+              "answer": {
+                "json": {
+                  "answer": "Compliance with this Plan will be monitored and managed by the Principal Investigators (PIs) and the research team. The PIs will ensure that \nAll shared data are properly de-identified\nDocumentation is accurate and up-to-date\nAccess to controlled data is granted only to authorized users\nThe oversight frequency will be at least bi-annually, with adjustments as needed based on project progress and feedback from stakeholders.",
+                  "type": "textArea"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
