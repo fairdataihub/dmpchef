@@ -1,5 +1,5 @@
 # ===============================================================
-# config_schema.py — Pydantic schema for DMP_RAG_Pipeline config
+# config_schema.py — Pydantic schema for DMPCHEF-Pipeline config
 # ===============================================================
 
 from pydantic import BaseModel

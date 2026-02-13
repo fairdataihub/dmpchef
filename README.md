@@ -46,12 +46,12 @@ dmpchef/
 │── .env                    # Local env vars (do not commit)
 │
 ├── dmpchef/                # Installable Python package (public API)
-│   ├── __init__.py         # Exports: generate, draft, prepare_nih_corpus
+│   ├── __init__.py         # Exports: generate, draft
 │   └── api.py              # Importable API used by notebooks/backends
 │
 ├── config/                 # Configuration
 │   ├── config.yaml         # Main settings (models, paths, retriever params)
-│   └── config_schema.py    #  Pydantic schema for DMP_RAG_Pipeline config
+│   └── config_schema.py    # Pydantic schema for DMPCHEF-Pipeline config
 │   └── schema_validate.py  # Validation/schema helpers for input.json 
 │
 ├── data/                   # Local workspace data + artifacts (not guaranteed in wheel)
@@ -72,7 +72,7 @@ dmpchef/
 ├── src/                    # Core implementation
 │   ├── __init__.py
 │   ├── core_pipeline.py    # Pipeline logic (RAG/no-RAG)
-│   └── NIH_data_ingestion.py # NIH/DMPTool crawl → export PDFs to data/NIH_95
+│   └── NIH_data_ingestion.py # NIH/DMPTool crawl → export PDFs to data/database
 │
 ├── prompt/                 # Prompt templates/utilities
 │   └── prompt_library.py
@@ -92,7 +92,7 @@ dmpchef/
 │   └── custom_exception.py
 │
 ├── notebook_DMP_RAG/       # Notebooks/experiments (non-production)
-└── venv/                   # Local virtualenv (ignore in git)
+└── venv/                   # Local virtualenv 
 
 
 
@@ -141,7 +141,8 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 ---
 
 ## Inputs
-- **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate. Validation is performed before pipeline execution using JSON Schema. 
+- **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate. Validation is performed before pipeline execution using. **[Schema.JSON](https://github.com/fairdataihub/dmpchef/blob/main/config/dmpchef_request.schema.json)**.
+**[schema_validate](https://github.com/fairdataihub/dmpchef/blob/main/config/schema_validate.py)**.
 
 ```json
 {
