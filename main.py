@@ -8,7 +8,7 @@ from typing import Dict, Any, Optional
 from src.core_pipeline import DMPPipeline
 from utils.dmptool_json import build_dmptool_json
 from utils.nih_docx_writer import build_nih_docx_from_template
-from utils.schema_validate import validate_request
+from config.schema_validate import validate_request
 
 from docx2pdf import convert as docx2pdf_convert
 

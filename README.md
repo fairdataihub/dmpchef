@@ -51,7 +51,8 @@ dmpchef/
 │
 ├── config/                 # Configuration
 │   ├── config.yaml         # Main settings (models, paths, retriever params)
-│   └── config_schema.py    # Validation/schema helpers (optional)
+│   └── config_schema.py    #  Pydantic schema for DMP_RAG_Pipeline config
+│   └── schema_validate.py  # Validation/schema helpers for input.json 
 │
 ├── data/                   # Local workspace data + artifacts (not guaranteed in wheel)
 │   ├── inputs/             # Templates + examples
@@ -140,7 +141,7 @@ Use  **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)**
 ---
 
 ## Inputs
-- **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate. Validation is performed before pipeline execution using JSON Schema.
+- **Input.JSON**: A single JSON file (e.g., `data/inputs/input.json`) that tells the pipeline what to generate. Validation is performed before pipeline execution using JSON Schema. 
 
 ```json
 {

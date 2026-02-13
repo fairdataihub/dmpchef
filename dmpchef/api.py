@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 
 from src.core_pipeline import DMPPipeline
-from utils.schema_validate import validate_request
+from config.schema_validate import validate_request
 
 
 def _resolve_path(p: str | Path, base: Path) -> Path:
