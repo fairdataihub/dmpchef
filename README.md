@@ -132,7 +132,7 @@ pip install -e .
 ### Step 4 — Run DMP Chef
 
 ### Option A — Jupyter demo
-Use **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo_import.ipynb)**.
+Use **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo.ipynb)**.
 
 ### Option B — CLI: Command-line entry point for running the pipeline end-to-end
 
