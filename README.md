@@ -164,7 +164,7 @@ Before execution, the request is validated against **[Schema.JSON](https://githu
 - **inputs**: A dictionary of user/project fields used to draft the plan include:
   - `research_context`, `data_types`, `data_source`, `human_subjects`, `consent_status`, `data_volume`, etc.
 
-## Outputs (Project Fields)
+## Outputs 
 
 - **Markdown**: the generated funder-aligned DMP narrative (currently NIH structure).
 - **DOCX**: generated using the funder template (NIH template today) to preserve official formatting.
