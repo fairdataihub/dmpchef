@@ -8,6 +8,7 @@ from typing import Dict, Any, Optional
 from src.core_pipeline import DMPPipeline
 from utils.dmptool_json import build_dmptool_json
 from utils.nih_docx_writer import build_nih_docx_from_template
+from utils.schema_validate import validate_request
 
 from docx2pdf import convert as docx2pdf_convert
 
@@ -178,6 +179,18 @@ def main(
     if not in_path.exists():
         raise FileNotFoundError(f"Input JSON not found: {in_path}")
 
+    repo_root = Path(__file__).resolve().parent
+    schema_path = repo_root / "config" / "dmpchef_request.schema.json"
+    if not schema_path.exists():
+        raise FileNotFoundError(f"Schema not found: {schema_path}")
+
+    try:
+        validate_request(in_path, schema_path)
+        print(f"Schema validation: PASS ({in_path.name})")
+    except Exception:
+        print(f"Schema validation: FAIL ({in_path.name})")
+        raise
+
     req = _read_request_json(in_path)
 
     title = (req.get("title") or req.get("project_title") or "").strip()
@@ -249,14 +262,13 @@ def main(
             f'Fix: python main.py --nih_template "PATH\\TO\\nih-dms-plan-template.docx"'
         )
 
-    #  DOCX: use dmptool_json (plan_json) instead of markdown parsing
+    # DOCX: use dmptool_json (plan_json) instead of markdown parsing
     docx_path = out_docx / f"{run_stem}.docx"
     build_nih_docx_from_template(
         template_docx_path=str(template_path),
         output_docx_path=str(docx_path),
-        project_title=title,          # kept for backwards compat; not inserted
-        
-        plan_json=dmptool_payload,    
+        project_title=title,  # kept for backwards compat; not inserted
+        plan_json=dmptool_payload,
     )
 
     # PDF
