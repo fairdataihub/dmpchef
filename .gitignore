@@ -1,10 +1,9 @@
 # =========================================================
-# 🐍 Python: bytecode, venvs, packaging
+# Python: bytecode, venvs, packaging
 # =========================================================
 __pycache__/
 *.py[cod]
 *.pyd
-*.pyo
 *.so
 
 env/
@@ -13,14 +12,12 @@ venv/
 
 *.egg-info/
 *.egg
-
 dist/
 build/
-document_portal.egg-info/
 
 
 # =========================================================
-# 🧰 OS & Editors
+# OS & Editors
 # =========================================================
 .DS_Store
 .vscode/
@@ -28,102 +25,100 @@ document_portal.egg-info/
 
 
 # =========================================================
-# 🪵 Logs
+# Logs
 # =========================================================
 logs/
 *.log
 
 
 # =========================================================
-# 🔐 Secrets
+# Secrets
 # =========================================================
 .env
 .env.*
 
 
-
-
-
 # =========================================================
-# 📦 Data, outputs, archives (ignored by default)
+# Data & outputs (ignored by default)
 # =========================================================
 data/
 data-Copy/
 outputs/
-outputs/json
 outputs1/
 outputs7/
 outputs-llama/
 archive/
 main_archive/
-*.pdf
+data_ingestion/
 
-# --- Exceptions: keep specific tracked data/template files
+
+# ---- Exceptions: keep specific tracked data/template files
 !data/
 !data/inputs/
 !data/inputs/dmp-template.md
+!data/inputs/input.json
+!data/inputs/nih-dms-plan-template.docx
 
 
 # =========================================================
-# 🗂️ Caches (HF / Transformers / general)
+# Output subfolders you explicitly want ignored
 # =========================================================
-data/cache/
-data/**/cache/
+outputs/json/
+
+
+# =========================================================
+# Caches (HF / Transformers / general)
+# =========================================================
 .cache/
 hf_cache/
+data/cache/
+data/**/cache/
+
 **/hf_models/
 **/models/
-
 **/huggingface/
 **/transformers/
 **/sentence-transformers/
 
+
+# =========================================================
+# Notebook project folders (if you don't want them tracked)
+# =========================================================
 notebook_DMP_RAG/data/cache/
 notebook_DMP_RAG/data/**/cache/
-notebook_DMP_RAG/config/**
-notebook_DMP_RAG/inputs/**
+notebook_DMP_RAG/config/
+notebook_DMP_RAG/inputs/
+
+
 # =========================================================
-# 🧪 Temporary / test files & generated assets
+# Temporary / generated assets
 # =========================================================
 test.py
 *.png
 *.csv
 *.cgi
+*.pdf
 
 
 # =========================================================
-# 📄 Text / Markdown / Input templates
+# Documents (ignore by default, keep specific templates above)
 # =========================================================
-# Word: ignore all, but keep the NIH template
+*.doc
 *.docx
-!data/inputs/nih-dms-plan-template.docx
-
-
-# Text: ignore all, but keep requirements.txt
-*.txt
-!requirements.txt
-
-# Markdown: ignore all, but keep the DMP template
-*.md
-!data/inputs/dmp-template.md
-
-# Inputs: keep specific input JSON files you need
-!data/inputs/input.json
-
-# Ignore ingestion artifacts
-data_ingestion/
-
-# Ignore generated outputs
-outputs/json/
-
-# Ignore local link cache
-web_links.json
-
-# =========================================================
-# 🗃️ Office files
-# =========================================================
 *.xls
 *.xlsx
 *.xlsm
-*.doc
-*.docx
+
+
+# =========================================================
+# Text / Markdown (ignore by default, keep specific files above)
+# =========================================================
+*.txt
+*.md
+!requirements.txt
+
+
+# =========================================================
+# Local link cache
+# =========================================================
+web_links.json
