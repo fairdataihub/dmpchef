@@ -5,7 +5,7 @@
       "subagency": "NIMH"
     },
     "pipeline": {
-      "rag": true
+      "rag": true,
       "llm": {
         "provider": "ollama",
         "model_name": "llama3.3:latest"
