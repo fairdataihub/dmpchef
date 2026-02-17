@@ -121,3 +121,13 @@ test.py
 *.xlsx
 *.xlsm
 *.doc
+
+
+
+
+# HuggingFace / sentence-transformers cache (never commit)
+data/cache/
+data/cache/hf/
+data/cache/hf/models--sentence-transformers--*/
+data/cache/hf/.locks/
+data/cache/hf/xet/
