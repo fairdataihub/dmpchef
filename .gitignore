@@ -50,6 +50,7 @@ logs/
 data/
 data-Copy/
 outputs/
+outputs/json
 outputs1/
 outputs7/
 outputs-llama/
