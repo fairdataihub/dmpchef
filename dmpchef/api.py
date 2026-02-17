@@ -68,14 +68,6 @@ def _get_nested(d: Dict[str, Any], path: str, default=None):
     return cur
 
 
-def _resolve_path(p: str | Path, base: Path) -> Path:
-    """Expand ~, resolve relative to base, return absolute path."""
-    p = Path(p).expanduser()
-    if not p.is_absolute():
-        p = (base / p).resolve()
-    return p.resolve()
-
-
 def _read_request_json(in_path: Path) -> Dict[str, Any]:
     req = json.loads(in_path.read_text(encoding="utf-8")) or {}
     if not isinstance(req, dict):
@@ -211,17 +203,22 @@ def generate(
     """
     Generate a DMP using the core pipeline and (optionally) write outputs.
 
-    Fixes included:
+    Design notes:
+    - We initialize DMPPipeline first so we can resolve all paths consistently
+      via pipeline.config.resolve_path(), which respects config.root_dir.
     - Title comes ONLY from req["title"] / req["project_title"] (never run_id).
-    - If no title is provided, title="" so core uses "no-title" prompt branch.
     """
 
-    repo_root = Path(__file__).resolve().parents[1]
+    # Initialize pipeline first (root_dir-aware)
+    pipeline = DMPPipeline(config_path=str(config_path), force_rebuild_index=False)
 
-    in_path = _resolve_path(input_json, base=repo_root)
+    # Resolve paths using the SAME root_dir logic as the pipeline
+    in_path = pipeline.config.resolve_path(input_json)
     if not in_path.exists():
         raise FileNotFoundError(f"Input JSON not found: {in_path}")
 
+    # Schema path stays next to repo (relative to repo containing main.py/config/)
+    repo_root = Path(__file__).resolve().parents[1]
     schema_path = repo_root / "config" / "dmpchef_request.schema.json"
     if not schema_path.exists():
         raise FileNotFoundError(f"Schema not found: {schema_path}")
@@ -237,16 +234,17 @@ def generate(
     use_rag_final = _extract_use_rag(req, api_override=use_rag)
     llm_model_name = _extract_llm_model_name(req)
 
-    # ✅ FIX: safely extract a human title only if explicitly provided
+    # Title (explicit only)
     title = _extract_title(req)
 
-    # Keep aligned with main.py: inject agency/subagency into inputs for prompt visibility
+    # Inject agency/subagency for prompt visibility (same as main.py)
     if funding_agency:
         inputs.setdefault("funding_agency", funding_agency)
     if funding_subagency:
         inputs.setdefault("funding_subagency", funding_subagency)
 
-    out_root_path = _resolve_path(out_root, base=repo_root)
+    # Output roots resolved consistently
+    out_root_path = pipeline.config.resolve_path(out_root)
     out_json = out_root_path / "json"
     out_md = out_root_path / "markdown"
     out_docx = out_root_path / "docx"
@@ -256,10 +254,8 @@ def generate(
         ensure_dir(p)
 
     # Core pipeline (Markdown only)
-    pipeline = DMPPipeline(config_path=str(_resolve_path(config_path, base=repo_root)), force_rebuild_index=False)
-
     md_text = pipeline.generate_dmp(
-        title=title,  # ✅ empty unless explicitly provided; never req_*
+        title=title,
         form_inputs=inputs,
         use_rag=use_rag_final,
         funding_agency=funding_agency,
@@ -269,7 +265,7 @@ def generate(
     core_run_stem = pipeline.last_run_stem or safe_filename(title)
     actual_mode = "rag" if "__rag__" in core_run_stem else "norag"
 
-    # Match main.py naming: prefix with agency/subagency
+    # Prefix filename with agency/subagency
     run_stem = _prefix_run_stem_with_funding(core_run_stem, funding_agency, funding_subagency)
     pipeline.last_run_stem = run_stem
 
@@ -294,7 +290,7 @@ def generate(
             try:
                 dmptool_payload = build_dmptool_json(
                     template_title="NIH Data Management and Sharing Plan",
-                    project_title=title,  # ✅ safe title (may be empty)
+                    project_title=title,
                     form_inputs=inputs,
                     generated_markdown=md_text,
                     provenance="dmpchef",
@@ -317,14 +313,14 @@ def generate(
         # DOCX
         if export_docx:
             try:
-                template_path = _resolve_path(nih_template_path, base=repo_root)
+                template_path = pipeline.config.resolve_path(nih_template_path)
                 if not template_path.exists():
                     raise FileNotFoundError(f"NIH template DOCX not found: {template_path}")
 
                 build_nih_docx_from_template(
                     template_docx_path=str(template_path),
                     output_docx_path=str(docx_path),
-                    project_title=title,  # ✅ safe
+                    project_title=title,  # kept for backward compat; not inserted
                     plan_json=dmptool_payload,
                 )
                 written["docx"] = docx_path.exists()
@@ -364,20 +360,10 @@ def generate(
     }
 
 
-# -------------------------------------------------------------------
-# Backwards-compat aliases (fixes ImportError in __init__.py)
+
 # -------------------------------------------------------------------
 def draft(input_json: str | Path, **kwargs) -> Dict[str, Any]:
     """Alias for generate() kept for older notebooks/imports."""
     return generate(input_json, **kwargs)
 
 
-def prepare_nih_corpus(*args, **kwargs):
-    """
-    Placeholder for backwards compatibility if older code imports it.
-    If you have a real implementation elsewhere, import and re-export it here.
-    """
-    raise NotImplementedError(
-        "prepare_nih_corpus is not implemented in dmpchef.api. "
-        "If you need it, re-add the previous implementation or update __init__.py."
-    )

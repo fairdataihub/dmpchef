@@ -114,7 +114,7 @@ test.py
 # Inputs: keep specific input JSON files you need
 !data/inputs/input.json
 
-
+!data/index
 
 # =========================================================
 # 📤 Outputs (generated) — ignore

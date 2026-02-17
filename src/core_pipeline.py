@@ -30,9 +30,6 @@ from prompt.prompt_library import PROMPT_REGISTRY, PromptType
 
 # ===============================================================
 # FUNDER REGISTRY (NIH default)
-# Notes:
-#
-# - core pipeline does NOT write output files; main.py handles that
 # ===============================================================
 @dataclass(frozen=True)
 class FunderSpec:
@@ -62,28 +59,57 @@ def get_funder_spec(funding_agency: str) -> FunderSpec:
 
 
 # ===============================================================
-# CONFIGURATION MANAGER
+# CONFIGURATION MANAGER (root_dir aware)
 # ===============================================================
 class ConfigManager:
+    """
+    Reads config/config.yaml and resolves relative paths using:
+      1) config.root_dir (if present)
+      2) repo_root (parent of /src)
+    """
+
     def __init__(self, config_path: str = "config/config.yaml"):
-        path = Path(config_path)
+        repo_root = Path(__file__).resolve().parents[1]
+        raw = Path(config_path)
+        path = raw if raw.is_absolute() else (repo_root / raw).resolve()
+
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {path}")
 
         with open(path, "r", encoding="utf-8") as f:
             self.cfg = yaml.safe_load(f) or {}
 
+        self.repo_root = repo_root
+        self.config_path = path
+
+        self.root_dir = self._resolve_root_dir(self.cfg.get("root_dir"))
         self.paths = self.cfg.get("paths", {}) or {}
         self.models = self.cfg.get("models", {}) or {}
         self.rag = self.cfg.get("rag", {}) or {}
 
-        log.info("Config loaded successfully")
+        log.info("Config loaded successfully", config=str(path), root_dir=str(self.root_dir))
+
+    def _resolve_root_dir(self, root_dir_value: Optional[str]) -> Path:
+        if not root_dir_value:
+            return self.repo_root
+
+        p = Path(str(root_dir_value)).expanduser()
+        if p.is_absolute():
+            return p.resolve()
+
+        return (self.repo_root / p).resolve()
+
+    def resolve_path(self, p: str | Path) -> Path:
+        p = Path(p).expanduser()
+        if p.is_absolute():
+            return p.resolve()
+        return (self.root_dir / p).resolve()
 
     def get_path(self, key: str) -> Path:
         val = self.paths.get(key)
         if not val:
             raise KeyError(f"Missing config.paths.{key} in YAML")
-        return Path(val)
+        return self.resolve_path(val)
 
     def get_model(self, key: str):
         return self.models.get(key)
@@ -93,10 +119,7 @@ class ConfigManager:
 
 
 # ===============================================================
-# MAIN PIPELINE CLASS
-# Notes:
-# - generate_dmp() returns MARKDOWN ONLY
-# - main.py writes MD/DOCX/PDF/JSON
+# MAIN PIPELINE
 # ===============================================================
 class DMPPipeline:
     def __init__(self, config_path: str = "config/config.yaml", force_rebuild_index: bool = False):
@@ -104,37 +127,32 @@ class DMPPipeline:
             self.config = ConfigManager(config_path)
             self.force_rebuild_index = force_rebuild_index
 
-            # Paths from YAML
+            # Paths from YAML (root_dir aware)
             self.data_pdfs = self.config.get_path("data_pdfs")
             self.index_dir = self.config.get_path("index_dir")
 
             # Debug/aux output folders (core writes ONLY debug retrieval context)
-            self.output_debug = Path("data/outputs/debug")
+            self.output_debug = self.config.resolve_path("data/outputs/debug")
 
-            # Ensure needed dirs exist
             for p in [self.index_dir, self.output_debug]:
                 p.mkdir(parents=True, exist_ok=True)
 
             # Models
-            self.model_loader = ModelLoader(config_path=config_path)
+            self.model_loader = ModelLoader(config_path=str(self.config.config_path))
             self.embeddings = None
 
             self.llm_name = self.model_loader.llm_name
             self.llm = Ollama(model=self.llm_name)
 
-            # Default RAG enable/disable from YAML; can be overridden by input.json / CLI
             enabled_val = self.config.get_rag_param("enabled")
             self.use_rag_default = True if enabled_val is None else bool(enabled_val)
 
-            # Caches / runtime state
             self._no_rag_chain_cache: Dict[str, object] = {}
             self.vectorstore = None
             self.retriever = None
 
-            # main.py reads this to name files with __rag__/__norag__
             self.last_run_stem: Optional[str] = None
 
-            # Better logging (no behavior change)
             log.info(
                 "DMPPipeline initialized",
                 llm=self.llm_name,
@@ -168,7 +186,6 @@ class DMPPipeline:
         return default
 
     def _safe_stem(self, s: str) -> str:
-        # Used for filenames. If title is missing, we fall back to "request".
         s = (s or "").strip()
         s = re.sub(r'[\\/*?:"<>|]', "_", s)
         s = re.sub(r"\s+", "_", s).strip("_")
@@ -178,7 +195,6 @@ class DMPPipeline:
         return re.sub(r'[\\/*?:"<>|\s]', "_", (self.llm_name or "").strip()).strip() or "llm"
 
     def _run_suffix(self, use_rag_final: bool, top_k: int) -> str:
-        # Adds a stable suffix so outputs from rag/norag don't overwrite each other.
         mode_tag = "rag" if use_rag_final else "norag"
         llm_tag = self._llm_tag()
         if use_rag_final:
@@ -229,36 +245,28 @@ class DMPPipeline:
             return PROMPT_REGISTRY[PromptType.NIH_DMP.value]
 
     def _load_template_text(self, spec: FunderSpec) -> str:
-        path = spec.template_md
+        # resolve template relative to root_dir for consistency
+        path = self.config.resolve_path(spec.template_md)
         if path.exists():
             return path.read_text(encoding="utf-8")
 
-        nih_path = FUNDER_SPECS["NIH"].template_md
+        nih_path = self.config.resolve_path(FUNDER_SPECS["NIH"].template_md)
         if nih_path.exists():
             log.warning("Funder template missing; falling back to NIH template", missing=str(path))
             return nih_path.read_text(encoding="utf-8")
 
         raise FileNotFoundError(f"Template not found for funder: {spec.key} (missing {path})")
 
-    # --- NEW: allow overriding Ollama model name from input.json ---
     def _maybe_override_llm(self, llm_model_name: Optional[str]) -> None:
-        """
-        Keep YAML as default, but if input.json provides a model name,
-        swap the Ollama model for this run.
-        """
         name = (llm_model_name or "").strip()
         if not name:
             return
-
-        # no-op if same model
         if (self.llm_name or "").strip() == name:
             return
-
         self.llm_name = name
         self.llm = Ollama(model=self.llm_name)
         log.info("LLM overridden from inputs", llm=self.llm_name)
 
-    # No-RAG chain (kept from your original code)
     def _build_no_rag_chain(self, prompt_template):
         try:
             chain = (
@@ -280,12 +288,7 @@ class DMPPipeline:
         self._no_rag_chain_cache[spec.key] = chain
         return chain
 
-    # LangChain-version-safe retrieval
     def _retrieve(self, query: str):
-        """
-        New LangChain retrievers: retriever.invoke(query)
-        Older LangChain: retriever.get_relevant_documents(query)
-        """
         if self.retriever is None:
             return []
         try:
@@ -298,7 +301,7 @@ class DMPPipeline:
                 return fn(query) if callable(fn) else []
 
     # -------------------------
-    # Index build/load (FAISS)
+    # Index build/load (FAISS) (kept, still available)
     # -------------------------
     def _load_or_build_index(self, force_rebuild: bool = False):
         try:
@@ -307,7 +310,6 @@ class DMPPipeline:
 
             faiss_path = self.index_dir / "index.faiss"
 
-            # Load existing index if present
             if faiss_path.exists() and not force_rebuild:
                 try:
                     log.info("Loading existing FAISS index", path=str(faiss_path))
@@ -319,7 +321,6 @@ class DMPPipeline:
                 except Exception as e:
                     log.warning("Failed to load FAISS index. Rebuilding.", reason=str(e))
 
-            # Build new index from PDFs
             pdf_files = sorted(self.data_pdfs.glob("*.pdf"))
             if not pdf_files:
                 raise FileNotFoundError(f"No PDFs found in: {self.data_pdfs}")
@@ -327,7 +328,6 @@ class DMPPipeline:
             docs = []
             bad_pdfs = []
 
-            # Better log
             log.info("FAISS build starting", pdf_dir=str(self.data_pdfs), pdf_count=len(pdf_files))
 
             for pdf in tqdm(pdf_files, desc="Loading PDFs"):
@@ -351,12 +351,12 @@ class DMPPipeline:
             if bad_pdfs:
                 log.warning("Some PDFs were skipped", skipped=len(bad_pdfs), first=bad_pdfs[0])
 
-            chunk_size = self.config.get_rag_param("chunk_size") or 800
-            chunk_overlap = self.config.get_rag_param("chunk_overlap") or 120
+            chunk_size = self.config.get_rag_param("chunk_size") or 900
+            chunk_overlap = self.config.get_rag_param("chunk_overlap") or 150
 
             splitter = RecursiveCharacterTextSplitter(
-                chunk_size=chunk_size,
-                chunk_overlap=chunk_overlap,
+                chunk_size=int(chunk_size),
+                chunk_overlap=int(chunk_overlap),
             )
             chunks = splitter.split_documents(docs)
 
@@ -367,6 +367,7 @@ class DMPPipeline:
                 chunk_size=chunk_size,
                 chunk_overlap=chunk_overlap,
             )
+
             vectorstore = FAISS.from_documents(chunks, self.embeddings)
             vectorstore.save_local(str(self.index_dir))
             log.info("FAISS index built and saved", path=str(self.index_dir))
@@ -376,25 +377,56 @@ class DMPPipeline:
             raise DocumentPortalException("FAISS index error", e)
 
     # -------------------------
+    # NEW: Load-only FAISS (no PDFs)
+    # -------------------------
+    def _load_index_only(self):
+        if self.embeddings is None:
+            raise RuntimeError("Embeddings are not loaded. Call _ensure_rag_ready() first.")
+
+        faiss_path = self.index_dir / "index.faiss"
+        if not faiss_path.exists():
+            raise FileNotFoundError(
+                f"FAISS index not found: {faiss_path}. "
+                "Build it first using: python .\\src\\build_index.py --force"
+            )
+
+        log.info("Loading existing FAISS index (load-only)", path=str(faiss_path))
+        return FAISS.load_local(
+            str(self.index_dir),
+            self.embeddings,
+            allow_dangerous_deserialization=True,
+        )
+
+    # -------------------------
     # Lazy init RAG components
     # -------------------------
     def _ensure_rag_ready(self):
-        # If retriever already ready, do nothing
         if self.retriever is not None and self.vectorstore is not None:
             log.info("RAG components already ready", index_dir=str(self.index_dir))
             return
 
-        # Load embeddings lazily (only when using RAG)
         if self.embeddings is None:
             log.info("Loading embeddings for RAG", llm=self.llm_name)
             self.embeddings = self.model_loader.load_embeddings()
             log.info("Embeddings ready")
 
-        # Load or build FAISS index
-        log.info("Preparing FAISS vectorstore", index_dir=str(self.index_dir), force_rebuild=self.force_rebuild_index)
-        self.vectorstore = self._load_or_build_index(force_rebuild=self.force_rebuild_index)
+        # NEW: index_mode switch (default keeps original behavior)
+        # - "load" => ONLY load index (no PDFs)
+        # - "build_or_load" => original: load if exists else build from PDFs
+        index_mode = (self.config.get_rag_param("index_mode") or "build_or_load").strip().lower()
 
-        # Build retriever
+        log.info(
+            "Preparing FAISS vectorstore",
+            index_dir=str(self.index_dir),
+            index_mode=index_mode,
+            force_rebuild=self.force_rebuild_index,
+        )
+
+        if index_mode == "load":
+            self.vectorstore = self._load_index_only()
+        else:
+            self.vectorstore = self._load_or_build_index(force_rebuild=self.force_rebuild_index)
+
         top_k = self.config.get_rag_param("retriever_top_k") or 6
         use_mmr = self._to_bool(self.config.get_rag_param("use_mmr"), default=True)
 
@@ -402,11 +434,11 @@ class DMPPipeline:
             fetch_k = max(20, int(top_k) * 4)
             self.retriever = self.vectorstore.as_retriever(
                 search_type="mmr",
-                search_kwargs={"k": top_k, "fetch_k": fetch_k, "lambda_mult": 0.5},
+                search_kwargs={"k": int(top_k), "fetch_k": int(fetch_k), "lambda_mult": 0.5},
             )
             log.info("RAG retriever initialized", search_type="mmr", top_k=top_k, fetch_k=fetch_k, lambda_mult=0.5)
         else:
-            self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": top_k})
+            self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": int(top_k)})
             log.info("RAG retriever initialized", search_type="similarity", top_k=top_k)
 
     # -------------------------
@@ -418,14 +450,9 @@ class DMPPipeline:
         form_inputs: dict,
         use_rag: Optional[bool] = None,
         funding_agency: str = "NIH",
-        llm_model_name: Optional[str] = None,  # <-- NEW (from input.json)
+        llm_model_name: Optional[str] = None,
     ) -> str:
-        """
-        Returns generated Markdown only.
-        YAML remains the default for LLM model, but input.json can override using `llm_model_name`.
-        """
         try:
-            # Select funder spec (NIH default)
             spec = get_funder_spec(funding_agency)
             funding_agency = spec.key
             log.info(
@@ -436,17 +463,13 @@ class DMPPipeline:
                 retrieval_hint=spec.retrieval_hint,
             )
 
-            # --- NEW: input.json can override YAML model name ---
             self._maybe_override_llm(llm_model_name)
 
-            # Load prompt + markdown template
             prompt_template = self._get_prompt_template(spec)
             template_text = self._load_template_text(spec)
 
-            # Decide RAG mode (CLI/JSON can override YAML default)
             use_rag_final = self._to_bool(use_rag, default=self.use_rag_default)
 
-            # Better, unambiguous mode log (no behavior change)
             log.info(
                 "Pipeline mode selected",
                 mode=("rag" if use_rag_final else "norag"),
@@ -455,10 +478,8 @@ class DMPPipeline:
                 use_rag_final=use_rag_final,
             )
 
-            # Title is optional now
             title_clean = (title or "").strip()
 
-            # Convert inputs dict into readable lines
             user_elements: List[str] = []
             for key, val in (form_inputs or {}).items():
                 if val is None:
@@ -470,7 +491,6 @@ class DMPPipeline:
                         continue
                     user_elements.append(f"{key.replace('_', ' ').title()}: {v}")
                 else:
-                    # lists/dicts/numbers -> stringify safely
                     try:
                         txt = json.dumps(val, ensure_ascii=False)
                     except Exception:
@@ -486,7 +506,6 @@ class DMPPipeline:
                 input_fields=len(user_elements),
             )
 
-            # Build output stem (used by main.py for filenames)
             top_k = int(self.config.get_rag_param("retriever_top_k") or 6)
             base_stem = self._safe_stem(title_clean)
             safe_stem = f"{base_stem}{self._run_suffix(use_rag_final, top_k=top_k)}"
@@ -501,7 +520,6 @@ class DMPPipeline:
                 llm=self.llm_name,
             )
 
-            # Instructions
             rag_usage_rules = (
                 f"IMPORTANT (RAG MODE): You MUST use the provided context as authoritative {funding_agency} guidance. "
                 "Incorporate specific details from it, and prefer it over generic wording.\n\n"
@@ -530,7 +548,6 @@ class DMPPipeline:
                 user_elements_lines=len(user_elements),
             )
 
-            # RAG mode: retrieve context then invoke LLM
             if use_rag_final:
                 log.info("RAG phase start", step="ensure_rag_ready")
                 self._ensure_rag_ready()
@@ -566,7 +583,6 @@ class DMPPipeline:
                 context_text = self._format_docs(docs)
                 context_text = self._trim_context(context_text, max_chars=max_ctx_chars)
 
-                # Write debug context file (helps verify retrieval)
                 debug_path = self.output_debug / f"{safe_stem}.retrieved_context.txt"
                 debug_path.write_text(context_text, encoding="utf-8")
 
@@ -585,7 +601,6 @@ class DMPPipeline:
                 result = self.llm.invoke(full_prompt)
                 log.info("LLM done", mode="rag")
 
-            # No-RAG mode: same prompt formatting, empty context
             else:
                 full_prompt = prompt_template.format(context="", question=question_text)
                 log.info("LLM start", mode="norag", prompt_chars=len(full_prompt))

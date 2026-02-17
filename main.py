@@ -175,10 +175,15 @@ def main(
     nih_template_path: str = "data/inputs/nih-dms-plan-template.docx",
     use_rag: Optional[bool] = None,
 ):
-    in_path = Path(input_json_path).expanduser().resolve()
+    # Initialize pipeline FIRST so we can resolve paths consistently via root_dir
+    pipeline = DMPPipeline(config_path=config_path, force_rebuild_index=False)
+
+    # Resolve paths relative to pipeline root_dir
+    in_path = pipeline.config.resolve_path(input_json_path)
     if not in_path.exists():
         raise FileNotFoundError(f"Input JSON not found: {in_path}")
 
+    # Schema path (still relative to repo root beside main.py)
     repo_root = Path(__file__).resolve().parent
     schema_path = repo_root / "config" / "dmpchef_request.schema.json"
     if not schema_path.exists():
@@ -199,7 +204,6 @@ def main(
     funding_agency = _extract_funding_agency(req)
     funding_subagency = _extract_funding_subagency(req)
 
-    # Inject agency/subagency into inputs so core pipeline includes them in the prompt
     if funding_agency:
         inputs.setdefault("funding_agency", funding_agency)
     if funding_subagency:
@@ -207,7 +211,7 @@ def main(
 
     use_rag = _extract_use_rag(req, cli_use_rag=use_rag)
 
-    out_root_path = Path(out_root).expanduser().resolve()
+    out_root_path = pipeline.config.resolve_path(out_root)
     out_json = out_root_path / "json"
     out_md = out_root_path / "markdown"
     out_docx = out_root_path / "docx"
@@ -217,8 +221,6 @@ def main(
     ensure_dir(out_md)
     ensure_dir(out_docx)
     ensure_dir(out_pdf)
-
-    pipeline = DMPPipeline(config_path=config_path, force_rebuild_index=False)
 
     md_text = pipeline.generate_dmp(
         title=title,
@@ -230,24 +232,20 @@ def main(
     run_stem = pipeline.last_run_stem or safe_filename(title)
     actual_mode = "rag" if "__rag__" in run_stem else "norag"
 
-    # Prefix filename with agency/subagency
     run_stem = _prefix_run_stem_with_funding(run_stem, funding_agency, funding_subagency)
     pipeline.last_run_stem = run_stem
 
-    # Save Markdown
     md_path = out_md / f"{run_stem}.md"
     md_path.write_text(md_text, encoding="utf-8")
 
-    # Build DMPTool JSON (this is the structured answers we will use for DOCX)
     dmptool_payload = build_dmptool_json(
         template_title="NIH Data Management and Sharing Plan",
-        project_title=title,  # harmless even if empty; not emitted anymore
+        project_title=title,
         form_inputs=inputs,
         generated_markdown=md_text,
         provenance="dmpchef",
     )
 
-    # Save JSON
     dmptool_json_path = out_json / f"{run_stem}.dmptool.json"
     cleanup_title_json(out_json, run_stem)
     dmptool_json_path.write_text(
@@ -255,23 +253,21 @@ def main(
         encoding="utf-8",
     )
 
-    template_path = Path(nih_template_path).expanduser().resolve()
+    template_path = pipeline.config.resolve_path(nih_template_path)
     if not template_path.exists():
         raise FileNotFoundError(
             f"NIH template DOCX not found: {template_path}\n"
             f'Fix: python main.py --nih_template "PATH\\TO\\nih-dms-plan-template.docx"'
         )
 
-    # DOCX: use dmptool_json (plan_json) instead of markdown parsing
     docx_path = out_docx / f"{run_stem}.docx"
     build_nih_docx_from_template(
         template_docx_path=str(template_path),
         output_docx_path=str(docx_path),
-        project_title=title,  # kept for backwards compat; not inserted
+        project_title=title,
         plan_json=dmptool_payload,
     )
 
-    # PDF
     pdf_path = out_pdf / f"{run_stem}.pdf"
     make_pdf_from_docx(docx_path, pdf_path)
 

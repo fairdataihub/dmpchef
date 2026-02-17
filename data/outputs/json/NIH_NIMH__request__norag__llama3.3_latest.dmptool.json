@@ -14,7 +14,7 @@
               "text": "Types and amount of scientific data expected to be generated in the project",
               "answer": {
                 "json": {
-                  "answer": "The study aims to investigate anxiety symptoms and resilience processes in adolescents using longitudinal behavioral, clinical, and neurobiological assessments. The types of scientific data expected to be generated include demographic and clinical datasets, standardized anxiety and resilience scales, behavioral task data, physiological measures (e.g., heart rate variability), derived summary variables, and documentation (protocols, data dictionary, README). Given the longitudinal nature of the study and the collection of multi-modal data across multiple time points, a substantial amount of data is expected to be generated. The largest portion of storage will be dedicated to physiological data and raw task files.",
+                  "answer": "The study will generate a diverse range of scientific data, including demographic and clinical datasets, standardized anxiety and resilience scales, behavioral task data, physiological measures (e.g., heart rate variability), and derived summary variables. The estimated amount of scientific data is substantial due to the longitudinal design, with multiple modalities collected across several time points. Notably, physiological data and raw task files will constitute a significant portion of the storage requirements.",
                   "type": "textArea"
                 }
               }
@@ -24,7 +24,7 @@
               "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
               "answer": {
                 "json": {
-                  "answer": "All scientific data collected from this project, including demographic and clinical datasets, behavioral task data, physiological measures, and derived summary variables, will be preserved and shared. The rationale for sharing these data is to facilitate transparency, reproducibility, and advancement of research in adolescent mental health, anxiety, and resilience mechanisms. By making these data available, other researchers can build upon our findings, explore new hypotheses, and contribute to the development of more effective interventions.",
+                  "answer": "All generated scientific data will be preserved and shared, including demographic and clinical datasets, standardized scales, behavioral task data, physiological measures, and derived variables. The rationale for sharing these data is to facilitate transparency, reproducibility, and further research into adolescent mental health, anxiety, and resilience mechanisms. Sharing these comprehensive datasets will enable other researchers to explore new hypotheses, validate findings, and contribute meaningfully to the field.",
                   "type": "textArea"
                 }
               }
@@ -34,7 +34,7 @@
               "text": "Metadata, other relevant data, and associated documentation",
               "answer": {
                 "json": {
-                  "answer": "To facilitate interpretation of the scientific data, the following metadata, other relevant data, and associated documentation will be made accessible: study protocols, data collection instruments, data dictionaries that define each variable, README files explaining the content and structure of the datasets, and detailed information about the methods used for data collection and analysis. These resources will provide context and ensure that the shared data can be understood and utilized effectively by other researchers.",
+                  "answer": "To facilitate interpretation of the scientific data, the following metadata, other relevant data, and associated documentation will be made accessible: study protocols, data collection instruments, data dictionaries, README files explaining the structure and content of the datasets, and detailed descriptions of the methods used for data collection and analysis. These resources will provide essential context for understanding the data and reproducing the findings.",
                   "type": "textArea"
                 }
               }
@@ -51,7 +51,7 @@
               "text": "Element 2: Related Tools, Software and/or Code",
               "answer": {
                 "json": {
-                  "answer": "Specialized tools, software, and/or code are needed to access or manipulate some of the shared scientific data, particularly for analyzing physiological measures and behavioral task data. The specific tools include:\nStatistical analysis software (e.g., R, Python libraries such as Pandas and NumPy) for data manipulation and analysis.\nSpecialized software for processing and analyzing physiological data (e.g., EDFbrowser for EEG data).\nBehavioral task data may require custom scripts or software provided by the task developers.\n\nThese tools and software can be accessed through their respective websites or repositories. For custom code developed during this project, it will be shared via a public repository (e.g., GitHub), ensuring transparency and facilitating collaboration.",
+                  "answer": "Specialized tools and software are needed to access or manipulate some of the shared scientific data. Specifically, statistical analysis software (e.g., R, Python libraries such as Pandas and NumPy) will be necessary for manipulating and analyzing the datasets. Additionally, specialized software for handling physiological data (e.g., EDFbrowser for EEG data, HRV analysis tools) may be required. These tools are widely available in the research community, and instructions on how to access or use them will be provided in the README files accompanying the shared datasets.",
                   "type": "textArea"
                 }
               }
@@ -68,7 +68,7 @@
               "text": "Element 3: Standards",
               "answer": {
                 "json": {
-                  "answer": "To enable interoperability of datasets and resources, common data standards will be applied to the scientific data and associated metadata. Specifically:\nDemographic and clinical datasets will adhere to standardized formats used in psychiatric research (e.g., DSM-5 codes for diagnoses).\nPhysiological measures will follow standards established by relevant professional societies (e.g., guidelines from the Society for Psychophysiological Research for EEG data).\nBehavioral task data will be formatted according to standards set by the task developers or, where applicable, broader standards in cognitive neuroscience research.\nMetadata will include detailed descriptions of methods and instruments used, consistent with recommendations from the NIH for metadata standards.\n\nApplying these standards ensures that our datasets can be easily integrated with existing resources, promoting collaborative research and meta-analyses.",
+                  "answer": "To enable interoperability of datasets and resources, common data standards will be applied to the scientific data and associated metadata. The study will adhere to standardized formats for demographic and clinical data (e.g., CSV for tabular data), behavioral task data (e.g., JSON for structured data), and physiological measures (e.g., EDF for EEG data). Metadata will follow established standards for description, such as the Data Documentation Initiative (DDI) for social science data. For datasets where no consensus standards exist, best practices in data organization and documentation will be followed to ensure clarity and usability.",
                   "type": "textArea"
                 }
               }
@@ -85,7 +85,7 @@
               "text": "Repository where scientific data and metadata will be archived",
               "answer": {
                 "json": {
-                  "answer": "The scientific data and metadata arising from this project will be archived in the National Institute of Mental Health Data Archive (NDA), a repository that aligns with NIH's data sharing policies and provides a secure platform for storing and sharing human subjects data. The NDA is specifically designed to facilitate data sharing in mental health research, making it an ideal choice for our study.",
+                  "answer": "The scientific data and metadata arising from the project will be archived in the National Institutes of Health (NIH) National Library of Medicine's (NLM) repository, specifically the [National Center for Biotechnology Information (NCBI)](https://www.ncbi.nlm.nih.gov/), which includes databases such as the Database of Genotypes and Phenotypes (dbGaP) for sensitive data. For less sensitive data, repositories like figshare or Zenodo will be considered to maximize accessibility.",
                   "type": "textArea"
                 }
               }
@@ -95,7 +95,7 @@
               "text": "How scientific data will be findable and identifiable",
               "answer": {
                 "json": {
-                  "answer": "To ensure the scientific data are findable and identifiable, each dataset will be assigned a unique identifier (e.g., DOI) upon deposition into the NDA. Additionally, detailed metadata describing each dataset, including information about the study design, population, methods, and variables measured, will be provided. This metadata will be searchable through the NDA's query tool, allowing other researchers to easily locate and access our datasets.",
+                  "answer": "The scientific data will be made findable and identifiable through the assignment of a persistent unique identifier (e.g., DOI) for each dataset. Data will also be indexed using standard keywords related to adolescent mental health, anxiety, and resilience, facilitating discovery through repository search functions.",
                   "type": "textArea"
                 }
               }
@@ -105,7 +105,7 @@
               "text": "When and how long the scientific data will be made available",
               "answer": {
                 "json": {
-                  "answer": "The scientific data will be made available no later than the time of publication of the main findings or at the end of the performance period, whichever comes first. Data will be available for a minimum of 10 years following the end of the project to allow for extended research use and integration with future studies.",
+                  "answer": "The scientific data will be made available no later than the time of publication of the main findings or at the end of the performance period, whichever comes first. The data are expected to remain available for a minimum of 10 years following the completion of the project to allow for extensive use by the research community.",
                   "type": "textArea"
                 }
               }
@@ -122,7 +122,7 @@
               "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
               "answer": {
                 "json": {
-                  "answer": "While maximizing data sharing is a priority, certain factors may limit the extent of data sharing. These include:\nInformed consent limitations: Participants provided broad consent for de-identified data sharing, but any identifiable information will be protected.\nPrivacy and confidentiality protections: All shared data will be de-identified to protect participant privacy.\nPotential risks to participants if data are not properly de-identified.\n\nThese factors are justifiable reasons for limiting certain aspects of data sharing and have been considered in the development of this Data Management and Sharing Plan.",
+                  "answer": "While maximizing data sharing is a priority, factors such as informed consent, privacy, and confidentiality protections may limit the extent of data sharing. Specifically, because the study involves human subjects (adolescents) and sensitive information, access to identifiable data will be controlled, and de-identified datasets will be shared wherever possible.",
                   "type": "textArea"
                 }
               }
@@ -132,7 +132,7 @@
               "text": "Whether access to scientific data will be controlled",
               "answer": {
                 "json": {
-                  "answer": "Access to the scientific data will be controlled through the NDA's access request system. Researchers requesting access will need to provide a brief description of their intended use of the data, agree to terms of use that include protecting participant confidentiality, and may require approval from our research team or an NDA-appointed data access committee.",
+                  "answer": "Access to certain scientific data, particularly those that could potentially identify individual participants or contain sensitive personal information, will be controlled. These data will be stored in secured repositories requiring approval for access, such as dbGaP, to protect participant privacy and confidentiality.",
                   "type": "textArea"
                 }
               }
@@ -142,7 +142,7 @@
               "text": "Protections for privacy, rights, and confidentiality of human research participants",
               "answer": {
                 "json": {
-                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, all shared data will be thoroughly de-identified. This process includes removing direct identifiers (e.g., names, addresses), indirect identifiers (e.g., dates of birth, zip codes), and applying statistical methods to prevent re-identification. Additionally, a Certificate of Confidentiality has been obtained to further safeguard against compelled disclosure of identifying information.",
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, several measures will be taken: \n1. De-identification: Datasets shared publicly will be de-identified to remove any direct identifiers.\n2. Consent: Broad consent for data sharing has been obtained from parents/guardians and assent from adolescents, with an understanding that data will be de-identified.\n3. Certificates of Confidentiality: The study will apply for Certificates of Confidentiality to further protect against compelled disclosure of identifying information.\n4. Secure Data Storage: Sensitive data will be stored on secure servers with restricted access.",
                   "type": "textArea"
                 }
               }
@@ -159,7 +159,7 @@
               "text": "Element 6: Oversight of Data Management and Sharing",
               "answer": {
                 "json": {
-                  "answer": "Compliance with this Plan will be monitored and managed by the Principal Investigator (PI) in collaboration with the research team's data manager and institutional officials responsible for research integrity and compliance. Regular oversight meetings will occur quarterly to review data management practices, ensure adherence to sharing timelines, and address any issues or concerns related to data privacy and access. The PI will also work closely with the NDA to ensure that all deposited data meet their standards for sharing and accessibility. Through this structured approach, we aim to maintain high standards of data stewardship and contribute meaningfully to the broader research community.",
+                  "answer": "Compliance with this Data Management and Sharing Plan will be monitored and managed by the study's Principal Investigator (PI), in collaboration with the institution's research administration office. The PI, along with a designated data manager, will oversee data collection, storage, sharing, and ensure that all shared data are properly de-identified and documented. Regular checks (every 6 months) will be conducted to verify adherence to the plan, address any issues promptly, and update the plan as necessary to reflect changes in data management best practices or regulatory requirements. The institution's Information Technology department will provide support for data security and storage solutions. Annual reports to the funding agency will include updates on data sharing activities, ensuring transparency and accountability in data management and sharing practices.",
                   "type": "textArea"
                 }
               }

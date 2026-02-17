@@ -14,7 +14,7 @@
               "text": "Types and amount of scientific data expected to be generated in the project",
               "answer": {
                 "json": {
-                  "answer": "The project aims to investigate anxiety symptoms and resilience processes in adolescents using longitudinal behavioral, clinical, and neurobiological assessments. The types of scientific data expected to be generated include demographic and clinical datasets, standardized anxiety and resilience scales, behavioral task data, physiological measures (e.g., heart rate variability), and derived summary variables. The estimated amount of scientific data is substantial due to the longitudinal multi-modal nature of the study, with physiological data and raw task files representing the largest portion of storage.",
+                  "answer": "The proposed study on adolescent mental health, anxiety, and resilience mechanisms will generate a diverse range of scientific data. This includes demographic and clinical datasets, standardized anxiety and resilience scales, behavioral task data, physiological measures such as heart rate variability, derived summary variables, and associated documentation (e.g., protocols, data dictionary, README files). The estimated amount of scientific data is substantial due to the longitudinal multi-modal datasets collected across multiple time points. Physiological data and raw task files are expected to represent the largest portion of storage.",
                   "type": "textArea"
                 }
               }
@@ -24,7 +24,7 @@
               "text": "Scientific data that will be preserved and shared, and the rationale for doing so",
               "answer": {
                 "json": {
-                  "answer": "All collected data will be preserved and shared in a de-identified manner, consistent with the informed consent provided by participants. This includes demographic and clinical datasets, behavioral task data, physiological measures, and derived summary variables. The rationale for sharing these data is to facilitate further research into adolescent mental health, anxiety, and resilience mechanisms, thereby contributing to the development of more effective interventions.",
+                  "answer": "All scientific data generated from this project will be preserved and shared, with the exception of any information that could potentially compromise the privacy or confidentiality of human research participants. The rationale for preserving and sharing these data is to facilitate transparency, reproducibility, and further research in the field of adolescent mental health, particularly regarding anxiety symptoms and resilience processes. Sharing these data aligns with the principles of maximizing the benefit of research investments and promoting scientific progress.",
                   "type": "textArea"
                 }
               }
@@ -34,7 +34,7 @@
               "text": "Metadata, other relevant data, and associated documentation",
               "answer": {
                 "json": {
-                  "answer": "To facilitate interpretation of the scientific data, the following metadata will be shared: study protocol, informed consent documents, data dictionary, and a README file explaining the structure and content of the datasets. Additionally, survey tools and code used in the project can be accessed through a DOI (e.g., 10.5281/zenodo.7449282), and relevant documentation will be posted to ClinicalTrials.gov.",
+                  "answer": "To facilitate interpretation of the scientific data, the following metadata and associated documentation will be made accessible: study protocols, informed consent documents, data collection instruments (including survey tools and behavioral task descriptions), data dictionaries, and README files explaining the structure and content of the shared datasets. These materials will be deposited in a publicly accessible repository, such as ClinicalTrials.gov for study protocol and informed consent information, and other relevant platforms like Zenodo or similar for survey tools and code.",
                   "type": "textArea"
                 }
               }
@@ -51,7 +51,7 @@
               "text": "Element 2: Related Tools, Software and/or Code",
               "answer": {
                 "json": {
-                  "answer": "Specialized tools and software needed to access or manipulate shared scientific data include statistical analysis packages (e.g., R, Python) for handling demographic and clinical datasets, behavioral task data, and physiological measures. These tools can be accessed through their respective websites or academic licenses.",
+                  "answer": "Specialized tools, software, and/or code are needed to access or manipulate some of the shared scientific data. For instance, statistical analysis software (e.g., R, Python libraries) may be required for manipulating and analyzing the datasets, especially for derived summary variables and physiological measures. Additionally, specific software might be necessary for viewing or working with certain types of behavioral task data. These tools and software will be specified in the documentation accompanying the shared data to facilitate their use by other researchers.",
                   "type": "textArea"
                 }
               }
@@ -68,7 +68,7 @@
               "text": "Element 3: Standards",
               "answer": {
                 "json": {
-                  "answer": "The project will apply common data standards to enable interoperability of datasets and resources. Specifically, the data will be formatted according to the National Institutes of Health (NIH) guidelines for data sharing, including the use of standardized data dictionaries and metadata formats. For physiological data, standards from the PhysioNet platform will be followed. If applicable, adherence to specific standards for behavioral task data and clinical assessments will also be ensured.",
+                  "answer": "To enable interoperability of datasets and resources, common data standards will be applied to the scientific data and associated metadata. For demographic and clinical datasets, standards such as those recommended by the National Institute of Mental Health (NIMH) for clinical research will be followed. For physiological measures, data will be formatted according to standards established in the field of psychophysiology. When applicable, data will also adhere to the FAIR principles (Findable, Accessible, Interoperable, Reusable) to maximize their utility for the broader scientific community.",
                   "type": "textArea"
                 }
               }
@@ -85,7 +85,7 @@
               "text": "Repository where scientific data and metadata will be archived",
               "answer": {
                 "json": {
-                  "answer": "The scientific data and metadata arising from the project will be archived in a designated NIH-approved repository (e.g., National Institute of Mental Health Data Archive), ensuring long-term preservation and accessibility.",
+                  "answer": "Scientific data and metadata arising from this project will be archived in a reputable, publicly accessible repository. Given the focus on mental health research, repositories such as the NIMH Data Archive or similar platforms that specialize in hosting clinical and behavioral research data will be considered.",
                   "type": "textArea"
                 }
               }
@@ -95,7 +95,7 @@
               "text": "How scientific data will be findable and identifiable",
               "answer": {
                 "json": {
-                  "answer": "Scientific data will be made findable and identifiable through persistent unique identifiers (e.g., DOIs) and standard indexing tools, facilitating easy access and citation by other researchers.",
+                  "answer": "The scientific data will be made findable and identifiable through the use of persistent unique identifiers (e.g., DOIs) for datasets and associated publications. Standard indexing tools and metadata tags relevant to adolescent mental health, anxiety, and resilience mechanisms will also be utilized to enhance discoverability.",
                   "type": "textArea"
                 }
               }
@@ -105,7 +105,7 @@
               "text": "When and how long the scientific data will be made available",
               "answer": {
                 "json": {
-                  "answer": "The scientific data will be made available as soon as possible but no later than the time of an associated publication or the end of the performance period, whichever comes first. The duration of preservation and sharing of the data will be permanent, ensuring that the data remain accessible for future research.",
+                  "answer": "The scientific data will be made available as soon as possible but no later than the time of an associated publication or the end of the performance period, whichever comes first. The duration of preservation and sharing of the data will be permanent, ensuring that these resources remain accessible to the research community over the long term.",
                   "type": "textArea"
                 }
               }
@@ -122,7 +122,7 @@
               "text": "Factors affecting subsequent access, distribution, or reuse of scientific data",
               "answer": {
                 "json": {
-                  "answer": "Factors affecting subsequent access include the need to protect participant privacy and confidentiality. Data use limitations are primarily related to the informed consent provided by participants, which allows for de-identified data sharing for research purposes.",
+                  "answer": "Given that this project involves human subjects, particularly adolescents, factors such as informed consent, privacy, and confidentiality protections will affect subsequent access, distribution, or reuse of the scientific data. Specifically, all shared data will be de-identified to protect participant privacy, and access may be controlled for certain sensitive datasets. Justifications for any limitations on data sharing will be based on ethical considerations and legal requirements, including those related to the protection of human subjects.",
                   "type": "textArea"
                 }
               }
@@ -132,7 +132,7 @@
               "text": "Whether access to scientific data will be controlled",
               "answer": {
                 "json": {
-                  "answer": "Access to the scientific data will be controlled through a designated data repository, requiring approval for access to ensure compliance with privacy and confidentiality protections.",
+                  "answer": "Access to certain components of the scientific data, particularly those that could potentially compromise participant confidentiality even after de-identification, may be controlled. This control mechanism will involve a review process for requests to access these sensitive datasets, ensuring that use is limited to legitimate research purposes and that users agree to terms of use that protect participant privacy.",
                   "type": "textArea"
                 }
               }
@@ -142,7 +142,7 @@
               "text": "Protections for privacy, rights, and confidentiality of human research participants",
               "answer": {
                 "json": {
-                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, all shared data will be de-identified. The project has obtained broad consent from participants for de-identified data sharing, and an IRB review has verified that the submission of data to the NIH data repository is consistent with the informed consent.",
+                  "answer": "To protect the privacy, rights, and confidentiality of human research participants, all data shared will be de-identified. This process will involve removing or altering direct identifiers (e.g., names, addresses) and potentially sensitive indirect identifiers that could lead to participant identification. Additionally, the project will adhere to the terms of the informed consent provided by participants and their parents/guardians, which includes broad consent for de-identified data sharing. Certificates of Confidentiality may also be used as an added protection for sensitive information.",
                   "type": "textArea"
                 }
               }
@@ -159,7 +159,7 @@
               "text": "Element 6: Oversight of Data Management and Sharing",
               "answer": {
                 "json": {
-                  "answer": "Compliance with this Plan will be monitored and managed by the Principal Investigator (PI) and the research institution's data management office. Regular checks will ensure that all shared data are properly de-identified, that access controls are in place, and that sharing is conducted according to the approved plan. The frequency of oversight will be at least quarterly during active data collection phases and annually thereafter. This oversight structure ensures adherence to NIH guidelines for data management and sharing while protecting participant confidentiality and promoting open scientific inquiry.",
+                  "answer": "Compliance with this Data Management and Sharing Plan will be monitored and managed by the Principal Investigator (PI) in collaboration with the research institution's data management and compliance offices. Regular oversight meetings will be conducted at least bi-annually to review progress, address any issues related to data sharing or privacy protection, and ensure that all project staff are trained on and adhere to the policies outlined in this plan. The PI will also be responsible for reporting any changes or updates to the Plan to the funding agency as necessary, ensuring ongoing compliance with NIH's Data Management and Sharing Policy.",
                   "type": "textArea"
                 }
               }

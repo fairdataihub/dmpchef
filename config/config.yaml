@@ -1,4 +1,5 @@
-root_dir: ./DMPCHEF
+root_dir: .
+
 
 paths:
   data_pdfs: data/database
@@ -9,6 +10,7 @@ paths:
 
 rag:
   enabled: true
+  index_mode: "load"
   chunk_size: 900
   chunk_overlap: 150
   retriever_top_k: 6
