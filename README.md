@@ -54,16 +54,13 @@ dmpchef/
 │   ├── inputs/             # Templates + examples
 │   │   ├── nih-dms-plan-template.docx  # NIH blank Word template
 │   │   └── input.json                  # Example request file
-│   ├── web_links.json      # Seed links for NIH/DMPTool ingestion (used by src/NIH_data_ingestion.py)
-│   ├── database/             # Reference PDFs collected for NIH RAG (optional)
 │   ├── index/              # Vector index artifacts (e.g., FAISS)
 │   ├── outputs/            # Generated artifacts
 │   │   ├── markdown/       # Generated Markdown DMPs
 │   │   ├── docx/           # Generated DOCX DMPs (template-preserving)
 │   │   ├── json/           # DMPTool-compatible JSON outputs
-│   │   ├── pdf/            # Optional PDFs converted from DOCX
-│   │   └── debug/          # Optional retrieval debug outputs (retrieved context, logs, etc.)
-│   └── data_ingestion/     # Session folders + manifests from crawling
+│   │   └── pdf/            # Optional PDFs converted from DOCX
+│   
 │
 ├── src/                    # Core implementation
 │   ├── __init__.py
