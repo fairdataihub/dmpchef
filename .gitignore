@@ -110,7 +110,14 @@ test.py
 # Inputs: keep specific input JSON files you need
 !data/inputs/input.json
 
+# Ignore ingestion artifacts
+data_ingestion/
 
+# Ignore generated outputs
+outputs/json/
+
+# Ignore local link cache
+web_links.json
 
 # =========================================================
 # 🗃️ Office files
