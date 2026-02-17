@@ -20,11 +20,7 @@ This project is part of a broader extension of the DMP Tool platform. The ultima
 The overall codebase is organized in alignment with the **[FAIR-BioRS guidelines](https://fair-biors.org/)**. All Python code follows **[PEP 8](https://peps.python.org/pep-0008/)** conventions, including consistent formatting, inline comments, and docstrings. Project dependencies are fully captured in **[requirements.txt](https://github.com/fairdataihub/dmpchef/blob/main/requirements.txt)**. We also retain **[dmp-template](https://github.com/fairdataihub/dmpchef/blob/main/data/inputs/dmp-template.md)** as inside the prompt template used by the DMP generation workflow.
 
 
-## Main files
-
-- **[`dmpchef/api.py`](https://github.com/fairdataihub/dmpchef/blob/main/dmpchef/api.py)** — Public, importable API:
-- **[`src/core_pipeline.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/core_pipeline.py)** — Core generation logic (No-RAG vs RAG ; retrieval → prompt → generate).
-- **[`src/NIH_data_ingestion.py`](https://github.com/fairdataihub/dmpchef/blob/main/src/NIH_data_ingestion.py)** — NIH/DMPTool ingestion to collect reference PDFs for RAG
+## Main files for testing
 - **[`main.py`](https://github.com/fairdataihub/dmpchef/blob/main/main.py)** — Command-line entry point for running the pipeline end-to-end.
 - **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo.ipynb)** — Jupyter demo showing.
 
@@ -72,6 +68,7 @@ dmpchef/
 ├── src/                    # Core implementation
 │   ├── __init__.py
 │   ├── core_pipeline.py    # Pipeline logic (RAG/no-RAG)
+│   ├── Build_index.py      #Bulid index of vectore db
 │   └── NIH_data_ingestion.py # NIH/DMPTool crawl → export PDFs to data/database
 │
 ├── prompt/                 # Prompt templates/utilities
