@@ -134,6 +134,6 @@ data/cache/hf/xet/
 
 src/data/cache/
 src/data/cache/hf/
-src//cache/hf/models--sentence-transformers--*/
+src/cache/hf/models--sentence-transformers--*/
 src/data/cache/hf/.locks/
 src/cache/hf/xet/
