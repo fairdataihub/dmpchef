@@ -1,9 +1,10 @@
 # =========================================================
-# Python: bytecode, venvs, packaging
+#  Python: bytecode, venvs, packaging
 # =========================================================
 __pycache__/
 *.py[cod]
 *.pyd
+*.pyo
 *.so
 
 env/
@@ -12,12 +13,14 @@ venv/
 
 *.egg-info/
 *.egg
+
 dist/
 build/
+document_portal.egg-info/
 
 
 # =========================================================
-# OS & Editors
+#  OS & Editors
 # =========================================================
 .DS_Store
 .vscode/
@@ -25,22 +28,44 @@ build/
 
 
 # =========================================================
-# Logs
+#  Logs
 # =========================================================
 logs/
 *.log
 
 
 # =========================================================
-# Secrets
+#  Secrets
 # =========================================================
 .env
 .env.*
 
 
 # =========================================================
-# Data & outputs (ignored by default)
+#  Caches (HF / Transformers / general)
 # =========================================================
+.cache/
+hf_cache/
+
+# Your repo-specific caches
+data/cache/
+data/**/cache/
+notebook_DMP_RAG/data/cache/
+notebook_DMP_RAG/data/**/cache/
+
+# Extra safety: ignore common ML cache dirs anywhere
+**/hf_models/
+**/models/
+**/huggingface/
+**/transformers/
+**/sentence-transformers/
+**/models--sentence-transformers--*/
+
+
+# =========================================================
+#  Data, outputs, archives (ignored by default)
+# =========================================================
+# Ignore big/generated directories
 data/
 data-Copy/
 outputs/
@@ -49,76 +74,50 @@ outputs7/
 outputs-llama/
 archive/
 main_archive/
+*.pdf
+
+# Ignore specific generated folders/files you mentioned
 data_ingestion/
+outputs/json/
+web_links.json
 
-
-# ---- Exceptions: keep specific tracked data/template files
+# --- Exceptions: keep specific tracked data/template/input files
 !data/
 !data/inputs/
 !data/inputs/dmp-template.md
-!data/inputs/input.json
 !data/inputs/nih-dms-plan-template.docx
+!data/inputs/input.json
 
 
 # =========================================================
-# Output subfolders you explicitly want ignored
-# =========================================================
-outputs/json/
-
-
-# =========================================================
-# Caches (HF / Transformers / general)
-# =========================================================
-.cache/
-hf_cache/
-data/cache/
-data/**/cache/
-
-**/hf_models/
-**/models/
-**/huggingface/
-**/transformers/
-**/sentence-transformers/
-
-
-# =========================================================
-# Notebook project folders (if you don't want them tracked)
-# =========================================================
-notebook_DMP_RAG/data/cache/
-notebook_DMP_RAG/data/**/cache/
-notebook_DMP_RAG/config/
-notebook_DMP_RAG/inputs/
-
-
-# =========================================================
-# Temporary / generated assets
+#  Temporary / test files & generated assets
 # =========================================================
 test.py
 *.png
 *.csv
 *.cgi
-*.pdf
 
 
 # =========================================================
-# Documents (ignore by default, keep specific templates above)
+#  Text / Markdown / Input templates
 # =========================================================
-*.doc
+# Word: ignore all docx, but keep the NIH template
 *.docx
+!data/inputs/nih-dms-plan-template.docx
+
+# Text: ignore all txt, but keep requirements.txt
+*.txt
+!requirements.txt
+
+# Markdown: ignore all md, but keep the DMP template
+*.md
+!data/inputs/dmp-template.md
+
+
+# =========================================================
+# Office files
+# =========================================================
 *.xls
 *.xlsx
 *.xlsm
-
-
-# =========================================================
-# Text / Markdown (ignore by default, keep specific files above)
-# =========================================================
-*.txt
-*.md
-!requirements.txt
-
-
-# =========================================================
-# Local link cache
-# =========================================================
-web_links.json
+*.doc
