@@ -127,8 +127,23 @@ pip install -e .
 ```
 
 ---
-### step 4- Download vector db --> I need to update this part
-when you download vector_db.zip you should unzip inside data folder.
+### Step 4 — Download the vector database
+
+Download `vector_db.zip`. It contains **three** vector database versions:
+
+- `data/vector_db/DMPtools_db/`
+- `data/vector_db/NIH_all_db/`
+- `data/vector_db/NIH_sharing_db/`
+
+By default, the pipeline is configured to use **`DMPtools_db`** (set in your YAML config under `config/*.yaml`).
+
+To use a different database, update the `index_dir` value in the YAML file. For example:
+
+```yaml
+index_dir: data/vector_db/DMPtools_db      # default
+# index_dir: data/vector_db/NIH_all_db     # option 1
+# index_dir: data/vector_db/NIH_sharing_db # option 2
+```
 ---
 ### Step 5 — Run DMP Chef
 
