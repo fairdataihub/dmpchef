@@ -144,7 +144,7 @@ index_dir: data/vector_db/DMPtools_db      # default
 # index_dir: data/vector_db/NIH_all_db     # option 1
 # index_dir: data/vector_db/NIH_sharing_db # option 2
 ```
-⚠️ Note: The best long-term option for sharing and hosting the vector database is still under review.
+- ⚠️ Note: The best long-term option for sharing and hosting the vector database is still under review.
 ---
 ### Step 5 — Run DMP Chef
 
