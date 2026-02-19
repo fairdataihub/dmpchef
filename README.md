@@ -54,7 +54,8 @@ dmpchef/
 │   ├── inputs/             # Templates + examples
 │   │   ├── nih-dms-plan-template.docx  # NIH blank Word template
 │   │   └── input.json                  # Example request file
-│   ├── index/              # Vector index artifacts (e.g., FAISS)
+│   ├── vector_db/              # Vector index artifacts (e.g., FAISS)
+│   ├── data_ingestion/         # Source Pdfs and text from DMPtool+ NIH + NIH_sharing and etc
 │   ├── outputs/            # Generated artifacts
 │   │   ├── markdown/       # Generated Markdown DMPs
 │   │   ├── docx/           # Generated DOCX DMPs (template-preserving)
