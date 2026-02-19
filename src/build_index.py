@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import yaml
 from tqdm import tqdm
@@ -75,6 +76,27 @@ class ConfigManager:
     def get_rag_param(self, key: str):
         return self.rag.get(key)
 
+    def get_models_param(self, key: str, default=None):
+        return self.models.get(key, default)
+
+
+def _load_one_pdf(pdf_path: Path) -> Tuple[list, Optional[Tuple[str, str, str]]]:
+    """
+    Load a single PDF robustly:
+    - try PyMuPDFLoader first
+    - fallback to PyPDFLoader
+    Returns:
+      (docs, None) on success
+      ([], (pdf_path, pymupdf_error, pypdf_error)) on failure
+    """
+    try:
+        return PyMuPDFLoader(str(pdf_path)).load(), None
+    except Exception as e1:
+        try:
+            return PyPDFLoader(str(pdf_path)).load(), None
+        except Exception as e2:
+            return [], (str(pdf_path), str(e1), str(e2))
+
 
 class IndexBuilder:
     """
@@ -122,21 +144,35 @@ class IndexBuilder:
             docs = []
             bad_pdfs: List[str] = []
 
-            log.info("FAISS build starting", pdf_dir=str(self.data_pdfs), pdf_count=len(pdf_files))
+            # Tune worker count:
+            # - Start with 8
+            # - If your disk/antivirus becomes the bottleneck, reduce to 4
+            # - If you have a fast NVMe and many CPU cores, you can try 12–16
+            max_workers = int(self.config.get_models_param("pdf_load_workers", 8))
 
-            for pdf in tqdm(pdf_files, desc="Loading PDFs"):
-                try:
-                    docs.extend(PyMuPDFLoader(str(pdf)).load())
-                except Exception as e1:
-                    try:
-                        docs.extend(PyPDFLoader(str(pdf)).load())
-                    except Exception as e2:
-                        bad_pdfs.append(str(pdf))
+            log.info(
+                "FAISS build starting",
+                pdf_dir=str(self.data_pdfs),
+                pdf_count=len(pdf_files),
+                max_workers=max_workers,
+            )
+
+            # Parallel PDF loading
+            with ThreadPoolExecutor(max_workers=max_workers) as ex:
+                futures = {ex.submit(_load_one_pdf, pdf): pdf for pdf in pdf_files}
+
+                for fut in tqdm(as_completed(futures), total=len(futures), desc="Loading PDFs"):
+                    loaded_docs, err = fut.result()
+                    if loaded_docs:
+                        docs.extend(loaded_docs)
+                    if err:
+                        pdf, e1, e2 = err
+                        bad_pdfs.append(pdf)
                         log.warning(
                             "Skipping PDF due to parse error",
-                            pdf=str(pdf),
-                            pymupdf_error=str(e1),
-                            pypdf_error=str(e2),
+                            pdf=pdf,
+                            pymupdf_error=e1,
+                            pypdf_error=e2,
                         )
 
             if not docs:

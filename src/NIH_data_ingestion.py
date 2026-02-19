@@ -4,6 +4,7 @@ import os, sys, time, json, hashlib, requests, shutil, re
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
+
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
@@ -23,17 +24,16 @@ from logger.custom_logger import GLOBAL_LOGGER as log
 
 class UnifiedWebIngestion:
     """
-     Unified NIH Grants + DMPTool Ingestion (Cross-Session Deduplication + Copy Forward)
+    Unified NIH Grants + DMPTool Ingestion (Cross-Session Deduplication + Copy Forward)
     --------------------------------------------------------------------
-     Loads hashes from previous sessions
-     Deduplicates across sessions by file hash
-     Saves per-domain + master manifests safely
-     Skips duplicate PDFs and login/signup/account pages
-     Extracts meaningful content for RAG
-     Exports PDFs after run into <data_root>/<export_pdf_folder> (default: NIH_95)
-     Robustly resolves json_links path regardless of where you run the script from
-
-    
+    - Loads hashes from previous sessions
+    - Deduplicates across sessions by file hash
+    - Saves per-domain + master manifests safely
+    - Skips duplicate PDFs and login/signup/account pages
+    - Extracts meaningful content for RAG
+    - Exports PDFs after run into <data_root>/<export_pdf_folder>
+    - Robustly resolves json_links path regardless of where you run the script from
+    - Skips specific NIH pages (e.g., Writing a DMS Plan) to keep crawl more relevant
     """
 
     def __init__(
@@ -43,15 +43,17 @@ class UnifiedWebIngestion:
         max_depth: int = 5,
         crawl_delay: float = 1.2,
         max_pages: int = 18000,
-        export_pdf_folder: str = "database",   # relative to data_root
-        export_mode: str = "move",           # "move" or "copy"
-        update_manifest_paths: bool = False, # if True, rewrite master manifest 'file' paths after export
+        export_pdf_folder: str = "data_ingestion/NIH_sharing",  # relative to data_root
+        export_mode: str = "move",  # "move" or "copy"
+        update_manifest_paths: bool = False,  # if True, rewrite master manifest 'file' paths after export
         dmptool_require_nih_filter: bool = True,  # abort if NIH facet not in URL
-        dmptool_safety_max_pages: int = 500,       # safety stop for pagination
-        keep_last_n_sessions: int = 2,             # keep current + previous by default
-        copy_forward_previous: bool = True,        # copy forward previous PDFs/texts into current session
+        dmptool_safety_max_pages: int = 500,  # safety stop for pagination
+        keep_last_n_sessions: int = 2,  # keep current + previous by default
+        copy_forward_previous: bool = True,  # copy forward previous PDFs/texts into current session
+        nih_skip_urls: list[str] | None = None,  # NEW: explicit NIH URLs to skip
+        nih_skip_substrings: list[str] | None = None,  # NEW: URL substrings to skip
     ):
-        #  Auto-detect <project_root>/data if not provided
+        # Auto-detect <project_root>/data if not provided
         if data_root is None:
             # Assumes this file is at <project_root>/src/...
             project_root = Path(__file__).resolve().parents[1]
@@ -88,6 +90,16 @@ class UnifiedWebIngestion:
         # previous hashes (from past manifests)
         self.previous_hashes = self._load_previous_manifests()
 
+        # NEW: NIH URL skip rules (exact + substring)
+        default_skip_urls = [
+            "https://grants.nih.gov/policy-and-compliance/policy-topics/sharing-policies/dms/writing-dms-plan",
+        ]
+        default_skip_substrings = [
+            "/policy-and-compliance/policy-topics/sharing-policies/dms/writing-dms-plan",
+        ]
+        self.nih_skip_urls = {u.rstrip("/") for u in (nih_skip_urls or default_skip_urls)}
+        self.nih_skip_substrings = nih_skip_substrings or default_skip_substrings
+
         # stats
         self.stats = {
             "dmptool.org": {"pdfs": 0, "skipped": 0, "already_have": 0},
@@ -101,10 +113,10 @@ class UnifiedWebIngestion:
     # Folder setup
     # --------------------------------------------------------
     def _detect_or_create_session_folder(self) -> Path:
-        parent = self.data_root / "data_ingestion"
+        parent = self.data_root / "data_ingestion1"
         parent.mkdir(parents=True, exist_ok=True)
         now = datetime.now()
-        tag = f"{now.year}_{now.month:02d}_{now.day:02d}_NIH_ingestion"
+        tag = f"{now.year}_{now.month:02d}_{now.day:02d}_NIH_sharing_ingestion"
         ts = now.strftime("%Y%m%d_%H%M%S")
         folder = parent / f"{tag}_{ts}"
         folder.mkdir(parents=True, exist_ok=True)
@@ -381,21 +393,36 @@ class UnifiedWebIngestion:
     def _crawl_nih(self, start_url: str, domain: str):
         txt_dir, pdf_dir, manifest_path, manifest = self._prepare_site_dirs(domain)
         visited, queue = set(), [(start_url, 0)]
+
         skip_url_terms = [
             "login", "signin", "signup", "register", "account", "forgot", "logout",
             "profile", "cart", "donate", "feedback", "subscribe", "unsubscribe"
         ]
 
+        def _should_skip_url(u: str) -> bool:
+            norm = (u or "").strip().rstrip("/")
+            if not norm:
+                return True
+            if any(term in norm.lower() for term in skip_url_terms):
+                return True
+            if norm in self.nih_skip_urls:
+                return True
+            if any(s in norm for s in self.nih_skip_substrings):
+                return True
+            return False
+
         print(f" Crawling NIH site: {start_url}")
         with tqdm(total=self.max_pages, desc="NIH Pages", unit="page") as pbar:
             while queue and len(visited) < self.max_pages:
                 url, depth = queue.pop(0)
+
                 if url in visited or depth > self.max_depth:
                     continue
-                if any(term in url.lower() for term in skip_url_terms):
+                if _should_skip_url(url):
                     continue
 
                 visited.add(url)
+
                 try:
                     r = self.session.get(url, timeout=20)
                     if r.status_code != 200 or "text/html" not in r.headers.get("content-type", ""):
@@ -422,10 +449,17 @@ class UnifiedWebIngestion:
 
                     for a in soup.find_all("a", href=True):
                         href = urljoin(url, a["href"])
+                        if not href:
+                            continue
+
                         if href.lower().endswith(".pdf"):
                             self._download_pdf(href, pdf_dir, domain, manifest)
-                        elif urlparse(href).netloc.endswith("nih.gov") and "#" not in href:
-                            queue.append((href, depth + 1))
+                            continue
+
+                        # Only follow NIH links (and don't follow fragment-only links)
+                        if urlparse(href).netloc.endswith("nih.gov") and "#" not in href:
+                            if not _should_skip_url(href):
+                                queue.append((href, depth + 1))
 
                     pbar.update(1)
                     time.sleep(self.crawl_delay)
@@ -609,7 +643,7 @@ class UnifiedWebIngestion:
 
                 h = self._compute_hash(b)
 
-                #  If already present in NIH_95, skip export (prevents *_001 duplicates)
+                # If already present in destination, skip export
                 if h in existing_hashes:
                     skipped_existing += 1
                     continue
@@ -695,17 +729,24 @@ class UnifiedWebIngestion:
 
 if __name__ == "__main__":
     crawler = UnifiedWebIngestion(
-        data_root=None,  #  auto-resolves to <project_root>/data
+        data_root=None,  # auto-resolves to <project_root>/data
         json_links=r"data\web_links.json",
         max_depth=5,
         crawl_delay=1.2,
         max_pages=18000,
-        export_pdf_folder="database",
+        export_pdf_folder="data_ingestion/NIH_sharing",
         export_mode="move",
         update_manifest_paths=False,
         dmptool_require_nih_filter=True,
         dmptool_safety_max_pages=500,
         keep_last_n_sessions=2,
         copy_forward_previous=True,
+        # Optional: override skip list here
+        nih_skip_urls=[
+            "https://grants.nih.gov/policy-and-compliance/policy-topics/sharing-policies/dms/writing-dms-plan",
+        ],
+        nih_skip_substrings=[
+            "/policy-and-compliance/policy-topics/sharing-policies/dms/writing-dms-plan",
+        ],
     )
     crawler.run_all()

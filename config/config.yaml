@@ -2,8 +2,8 @@ root_dir: .
 
 
 paths:
-  data_pdfs: data/database
-  index_dir: data/index
+  data_pdfs: data/data_ingestion/NIH_all
+  index_dir: data/vector_db/NIH_all_db
   excel_path: data/inputs/inputs.xlsx
   output_md: data/outputs/markdown
   output_docx: data/outputs/docx
@@ -18,6 +18,10 @@ rag:
 models:
   llm_name: llama3.3:latest        
   embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  pdf_load_workers: 8
+  embedding_device: cuda
+  embedding_batch_size: 256       # tune: 128, 256, 512 (reduce if OOM)
+  normalize_embeddings: true
   hf_cache_dir: data/cache/hf
   # Set false for first run to download, then true for offline reuse
   local_files_only: true

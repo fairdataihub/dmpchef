@@ -1,4 +1,3 @@
-# src/utils/model_loader.py
 from __future__ import annotations
 
 import os
@@ -19,7 +18,8 @@ class ModelLoader:
     Unified model loader for embeddings and LLMs.
 
     Notes:
-    - Embeddings: supports offline-first loading with an optional fallback to download.
+    - Embeddings: supports offline-first loading with optional fallback to download.
+      Also supports GPU acceleration via sentence-transformers device="cuda".
     - LLM (Ollama): supports optional generation controls (num_predict, temperature, num_ctx, etc.)
       via config/models.yaml keys.
     """
@@ -42,8 +42,13 @@ class ModelLoader:
             self.local_files_only: bool = bool(models.get("local_files_only", False))
             self.allow_download_if_missing: bool = bool(models.get("allow_download_if_missing", False))
 
+            # Embedding acceleration / quality controls
+            # embedding_device: "cuda" | "cpu" | "auto"
+            self.embedding_device: str = str(models.get("embedding_device", "auto")).lower()
+            self.embedding_batch_size: int = int(models.get("embedding_batch_size", 128))
+            self.normalize_embeddings: bool = bool(models.get("normalize_embeddings", True))
+
             # Ollama generation controls (optional, but recommended for speed)
-            # Put these under models: in config/config.yaml if you want.
             self.temperature: Optional[float] = models.get("temperature", None)
             self.num_predict: Optional[int] = models.get("num_predict", None)  # cap output tokens
             self.num_ctx: Optional[int] = models.get("num_ctx", None)          # context window
@@ -57,6 +62,9 @@ class ModelLoader:
                 hf_cache_dir=self.hf_cache_dir,
                 local_files_only=self.local_files_only,
                 allow_download_if_missing=self.allow_download_if_missing,
+                embedding_device=self.embedding_device,
+                embedding_batch_size=self.embedding_batch_size,
+                normalize_embeddings=self.normalize_embeddings,
                 temperature=self.temperature,
                 num_predict=self.num_predict,
                 num_ctx=self.num_ctx,
@@ -92,11 +100,51 @@ class ModelLoader:
                 kwargs["top_k"] = int(self.top_k)
 
             llm = Ollama(**kwargs)
-            log.info("LLM loaded successfully", model=self.llm_name, **{k: v for k, v in kwargs.items() if k != "model"})
+            log.info(
+                "LLM loaded successfully",
+                model=self.llm_name,
+                **{k: v for k, v in kwargs.items() if k != "model"},
+            )
             return llm
         except Exception as e:
             log.error("Failed to load LLM", error=str(e))
             raise DocumentPortalException("LLM loading error", e)
+
+    def _pick_embedding_device(self) -> str:
+        """
+        Decide which device to use for sentence-transformers embeddings.
+        - If embedding_device="cpu": always CPU
+        - If embedding_device="cuda": require CUDA, else fall back to CPU with warning
+        - If embedding_device="auto": use CUDA if available else CPU
+        """
+        device = self.embedding_device
+
+        try:
+            import torch  # local import to avoid forcing torch for non-embedding usage
+            cuda_ok = torch.cuda.is_available()
+            gpu_name = torch.cuda.get_device_name(0) if cuda_ok else None
+        except Exception:
+            cuda_ok = False
+            gpu_name = None
+
+        if device == "cpu":
+            log.info("Embeddings device selected", device="cpu")
+            return "cpu"
+
+        if device == "cuda":
+            if cuda_ok:
+                log.info("Embeddings device selected", device="cuda", gpu=gpu_name)
+                return "cuda"
+            log.warning("CUDA requested but not available; falling back to CPU")
+            return "cpu"
+
+        # auto
+        if cuda_ok:
+            log.info("Embeddings device selected", device="cuda", gpu=gpu_name)
+            return "cuda"
+
+        log.info("Embeddings device selected", device="cpu")
+        return "cpu"
 
     def load_embeddings(self):
         """
@@ -108,6 +156,10 @@ class ModelLoader:
             - will try offline load
             - if missing AND allow_download_if_missing=True: retry online download
             - else: raise a clear error telling you to cache or enable download
+
+        GPU:
+        - If models.embedding_device is "cuda" or "auto" and CUDA is available,
+          sentence-transformers will run on GPU.
         """
         try:
             # SSL stability (Windows)
@@ -118,11 +170,24 @@ class ModelLoader:
             cache_dir = Path(self.hf_cache_dir).resolve()
             cache_dir.mkdir(parents=True, exist_ok=True)
 
+            device = self._pick_embedding_device()
+            batch_size = max(1, int(self.embedding_batch_size))
+
             def _make(local_only: bool):
+                # IMPORTANT:
+                # - "device" controls GPU vs CPU for sentence-transformers
+                # - "local_files_only" controls HF download behavior
                 return HuggingFaceEmbeddings(
                     model_name=self.embedding_model,
                     cache_folder=str(cache_dir),
-                    model_kwargs={"local_files_only": local_only},
+                    model_kwargs={
+                        "device": device,
+                        "local_files_only": local_only,
+                    },
+                    encode_kwargs={
+                        "batch_size": batch_size,
+                        "normalize_embeddings": self.normalize_embeddings,
+                    },
                 )
 
             # 1) Try according to config
@@ -133,6 +198,9 @@ class ModelLoader:
                     model=self.embedding_model,
                     cache_dir=str(cache_dir),
                     local_files_only=self.local_files_only,
+                    device=device,
+                    batch_size=batch_size,
+                    normalize_embeddings=self.normalize_embeddings,
                 )
                 return emb
             except Exception as e1:
@@ -142,6 +210,7 @@ class ModelLoader:
                         "Embeddings not found in cache; retrying with download enabled",
                         model=self.embedding_model,
                         cache_dir=str(cache_dir),
+                        device=device,
                     )
                     emb = _make(False)
                     log.info(
@@ -149,6 +218,9 @@ class ModelLoader:
                         model=self.embedding_model,
                         cache_dir=str(cache_dir),
                         local_files_only=False,
+                        device=device,
+                        batch_size=batch_size,
+                        normalize_embeddings=self.normalize_embeddings,
                     )
                     return emb
 
