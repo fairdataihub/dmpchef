@@ -1,3 +1,5 @@
+data/vector_db/NIH_all_db/index.faiss
+data/vector_db/NIH_all_db/index.pkl
 # =========================================================
 #  Python: bytecode, venvs, packaging
 # =========================================================
@@ -63,6 +65,22 @@ notebook_DMP_RAG/data/**/cache/
 
 
 # =========================================================
+#  HuggingFace / sentence-transformers cache (never commit)
+# =========================================================
+data/cache/
+data/cache/hf/
+data/cache/hf/models--sentence-transformers--*/
+data/cache/hf/.locks/
+data/cache/hf/xet/
+
+src/data/cache/
+src/data/cache/hf/
+src/cache/hf/models--sentence-transformers--*/
+src/data/cache/hf/.locks/
+src/cache/hf/xet/
+
+
+# =========================================================
 #  Data, outputs, archives (ignored by default)
 # =========================================================
 # Ignore big/generated directories
@@ -75,6 +93,22 @@ outputs-llama/
 archive/
 main_archive/
 *.pdf
+# =========================================================
+#  src/ logs & caches
+# =========================================================
+src/logs/
+src/**/*.log
+src/.cache/
+src/**/.cache/
+src/cache/
+src/**/cache/
+src/hf_cache/
+src/**/hf_cache/
+
+src/data/vector_db/
+src/**/index.faiss
+src/**/index.pkl
+
 
 # Ignore specific generated folders/files you mentioned
 data_ingestion/
@@ -87,6 +121,33 @@ web_links.json
 !data/inputs/dmp-template.md
 !data/inputs/nih-dms-plan-template.docx
 !data/inputs/input.json
+
+
+# =========================================================
+#  Ingested PDF/test artifacts (ignore)
+# =========================================================
+data/data_ingestion/**/test*
+data/data_ingestion/**/*.pdf
+data/data_ingestion1/**/test*
+data/data_ingestion1/**/*.pdf
+
+
+# =========================================================
+#  Vector databases / indices
+# =========================================================
+data/vector_db/
+**/index.faiss
+**/index.pkl
+**/*.lance
+**/*.parquet
+
+# Ignore specific FAISS index files
+data/vector_db/NIH_all_db/index.faiss
+data/vector_db/NIH_all_db/index.pkl
+data/vector_db/DMPtools_db/index.faiss
+data/vector_db/DMPtools_db/index.pkl
+data/vector_db/NIH_sharing_db/index.faiss
+data/vector_db/NIH_sharing_db/index.pkl
 
 
 # =========================================================
@@ -115,25 +176,9 @@ test.py
 
 
 # =========================================================
-# Office files
+#  Office files
 # =========================================================
 *.xls
 *.xlsx
 *.xlsm
 *.doc
-
-
-
-
-# HuggingFace / sentence-transformers cache (never commit)
-data/cache/
-data/cache/hf/
-data/cache/hf/models--sentence-transformers--*/
-data/cache/hf/.locks/
-data/cache/hf/xet/
-
-src/data/cache/
-src/data/cache/hf/
-src/cache/hf/models--sentence-transformers--*/
-src/data/cache/hf/.locks/
-src/cache/hf/xet/
