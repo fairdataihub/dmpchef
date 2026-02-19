@@ -127,7 +127,7 @@ pip install -e .
 ```
 
 ---
-### Step 4 — Download the vector database (it still underreview to find best option for sharing vector db)
+### Step 4 — Download the vector database
 
 Download `vector_db.zip`. It contains **three** vector database versions:
 
