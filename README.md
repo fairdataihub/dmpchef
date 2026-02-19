@@ -128,6 +128,8 @@ pip install -e .
 
 ---
 ### step 4- Download vector db --> I need to update this part
+when you download vector_db.zip you should unzip inside data folder.
+---
 ### Step 5 — Run DMP Chef
 
 ### Option A — Jupyter demo
