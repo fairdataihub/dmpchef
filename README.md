@@ -127,8 +127,8 @@ pip install -e .
 ```
 
 ---
-
-### Step 4 — Run DMP Chef
+### step 4- Download vector db --> I need to update this part
+### Step 5 — Run DMP Chef
 
 ### Option A — Jupyter demo
 Use **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo.ipynb)**.
