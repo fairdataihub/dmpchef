@@ -129,7 +129,9 @@ pip install -e .
 ---
 ### Step 4 — Download the vector database
 
-Download `vector_db.zip`. It contains **three** vector database versions:
+Download `vector_db.zip`. It contains **three** vector database versions.
+
+After downloading, **unzip the file and place the extracted `vector_db/` folder inside your project’s `data/` directory**, so the structure looks like:
 
 - `data/vector_db/DMPtools_db/`
 - `data/vector_db/NIH_all_db/`
