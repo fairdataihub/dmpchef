@@ -55,6 +55,9 @@ dmpchef/
 │   │   ├── nih-dms-plan-template.docx  # NIH blank Word template
 │   │   └── input.json                  # Example request file
 │   ├── vector_db/              # Vector index artifacts (e.g., FAISS)
+|        ├── DMPtools_db/
+|        ├── NIH_all_db/
+|        └── NIH_sharing_db/
 │   ├── data_ingestion/         # Source Pdfs and text from DMPtool+ NIH + NIH_sharing and etc
 │   ├── outputs/            # Generated artifacts
 │   │   ├── markdown/       # Generated Markdown DMPs
@@ -77,6 +80,7 @@ dmpchef/
 │   ├── model_loader.py
 │   ├── dmptool_json.py
 │   └── nih_docx_writer.py
+│   └── download_vector_db.py
 │
 ├── logger/                 # Logging utilities
 │   ├── __init__.py
