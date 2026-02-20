@@ -142,13 +142,20 @@ data/vector_db/
 **/*.parquet
 
 # Ignore specific FAISS index files
-data/vector_db/NIH_all_db/index.faiss
-data/vector_db/NIH_all_db/index.pkl
 data/vector_db/DMPtools_db/index.faiss
 data/vector_db/DMPtools_db/index.pkl
+
 data/vector_db/NIH_sharing_db/index.faiss
 data/vector_db/NIH_sharing_db/index.pkl
 
+# ---------------------------------------------------------
+# Allow ONLY the DMPtools test indices to be tracked
+# (must come AFTER the ignore rules above)
+# ---------------------------------------------------------
+!data/vector_db/
+!data/vector_db/DMPtools_db/
+!data/vector_db/DMPtools_db/index.faiss
+!data/vector_db/DMPtools_db/index.pkl
 
 # =========================================================
 #  Temporary / test files & generated assets

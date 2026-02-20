@@ -15,7 +15,7 @@ rag:
   chunk_overlap: 150
   retriever_top_k: 6
   vector_db_mode: "load"   # load | build
-  hf_repo: "nzeinali/DMP_vector_db"
+  hf_repo: "XXX"
   hf_zip: "vector_db.zip"
 
 models:
