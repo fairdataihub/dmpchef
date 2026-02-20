@@ -125,30 +125,8 @@ pip install -r requirements.txt
 # or (recommended for local dev)
 pip install -e .
 ```
-
 ---
-### Step 4 — Download the vector database
-
-Download `vector_db.zip`. It contains **three** vector database versions.
-
-After downloading, **unzip the file and place the extracted `vector_db/` folder inside your project’s `data/` directory**, so the structure looks like:
-
-- `data/vector_db/DMPtools_db/`
-- `data/vector_db/NIH_all_db/`
-- `data/vector_db/NIH_sharing_db/`
-
-By default, the pipeline is configured to use **`DMPtools_db`** (set in your YAML config under `config/*.yaml`).
-
-To use a different database, update the `index_dir` value in the YAML file. For example:
-
-```yaml
-index_dir: data/vector_db/DMPtools_db      # default
-# index_dir: data/vector_db/NIH_all_db     # option 1
-# index_dir: data/vector_db/NIH_sharing_db # option 2
-```
-- ⚠️ Note: The best long-term option for sharing and hosting the vector database is still under review.
----
-### Step 5 — Run DMP Chef
+### Step 4 — Run DMP Chef
 
 ### Option A — Jupyter demo
 Use **[`demo.ipynb`](https://github.com/fairdataihub/dmpchef/blob/main/demo.ipynb)**.
