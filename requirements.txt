@@ -109,6 +109,7 @@ python-docx
 docx2pdf
 
 jsonschema
+pyyaml
 
 #############################################
 #  Local Package (Editable Install)
