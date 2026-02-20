@@ -88,6 +88,11 @@ def _load_one_pdf(pdf_path: Path) -> Tuple[list, Optional[Tuple[str, str, str]]]
     Returns:
       (docs, None) on success
       ([], (pdf_path, pymupdf_error, pypdf_error)) on failure
+
+    NOTE:
+    - Some NIH-sharing PDFs can contain malformed layer configs that make MuPDF complain:
+      "No default Layer config". Those should be skipped (or handled by the fallback).
+    - This function NEVER raises, so the thread pool won't get stuck due to an exception.
     """
     try:
         return PyMuPDFLoader(str(pdf_path)).load(), None
@@ -116,6 +121,9 @@ class IndexBuilder:
             self.model_loader = ModelLoader(config_path=str(self.config.cfg_path))
             self.embeddings = None
 
+            # Where we write a list of PDFs that failed to parse
+            self.bad_pdfs_path = self.index_dir / "bad_pdfs.txt"
+
             log.info(
                 "IndexBuilder initialized",
                 data_pdfs=str(self.data_pdfs),
@@ -124,10 +132,33 @@ class IndexBuilder:
         except Exception as e:
             raise DocumentPortalException("IndexBuilder initialization error", e)
 
+    def _write_bad_pdfs(self, bad_rows: List[Tuple[str, str, str]]) -> None:
+        """
+        Write bad PDFs to a file so you can inspect/fix/remove them later.
+        Format (TSV):
+          pdf_path <tab> pymupdf_error <tab> pypdf_error
+        """
+        if not bad_rows:
+            return
+
+        try:
+            with self.bad_pdfs_path.open("w", encoding="utf-8") as f:
+                f.write("pdf_path\tpymupdf_error\tpypdf_error\n")
+                for pdf, e1, e2 in bad_rows:
+                    f.write(f"{pdf}\t{e1}\t{e2}\n")
+
+            log.warning(
+                "Wrote bad PDF list",
+                path=str(self.bad_pdfs_path),
+                skipped=len(bad_rows),
+            )
+        except Exception as e:
+            # Don't fail the index build just because logging failed
+            log.warning("Failed to write bad_pdfs.txt", error=str(e), path=str(self.bad_pdfs_path))
+
     def build_and_save(self, force_rebuild: bool = False) -> str:
         try:
             faiss_path = self.index_dir / "index.faiss"
-
             if faiss_path.exists() and not force_rebuild:
                 log.info("FAISS exists; skipping build", path=str(faiss_path))
                 return str(self.index_dir)
@@ -142,12 +173,11 @@ class IndexBuilder:
                 raise FileNotFoundError(f"No PDFs found in: {self.data_pdfs}")
 
             docs = []
-            bad_pdfs: List[str] = []
+            bad_rows: List[Tuple[str, str, str]] = []
 
             # Tune worker count:
-            # - Start with 8
-            # - If your disk/antivirus becomes the bottleneck, reduce to 4
-            # - If you have a fast NVMe and many CPU cores, you can try 12–16
+            # - If you see many MuPDF errors or Windows AV slows reads, try 4
+            # - If your disk is fast and CPU has headroom, 8–12 can be ok
             max_workers = int(self.config.get_models_param("pdf_load_workers", 8))
 
             log.info(
@@ -157,30 +187,47 @@ class IndexBuilder:
                 max_workers=max_workers,
             )
 
-            # Parallel PDF loading
-            with ThreadPoolExecutor(max_workers=max_workers) as ex:
-                futures = {ex.submit(_load_one_pdf, pdf): pdf for pdf in pdf_files}
+            # Parallel PDF loading (robust: skip bad files, never crash)
+            try:
+                with ThreadPoolExecutor(max_workers=max_workers) as ex:
+                    futures = {ex.submit(_load_one_pdf, pdf): pdf for pdf in pdf_files}
 
-                for fut in tqdm(as_completed(futures), total=len(futures), desc="Loading PDFs"):
-                    loaded_docs, err = fut.result()
-                    if loaded_docs:
-                        docs.extend(loaded_docs)
-                    if err:
-                        pdf, e1, e2 = err
-                        bad_pdfs.append(pdf)
-                        log.warning(
-                            "Skipping PDF due to parse error",
-                            pdf=pdf,
-                            pymupdf_error=e1,
-                            pypdf_error=e2,
-                        )
+                    for fut in tqdm(as_completed(futures), total=len(futures), desc="Loading PDFs"):
+                        loaded_docs, err = fut.result()
+
+                        if loaded_docs:
+                            docs.extend(loaded_docs)
+
+                        if err:
+                            pdf, e1, e2 = err
+                            bad_rows.append((pdf, e1, e2))
+                            log.warning(
+                                "Skipping PDF due to parse error",
+                                pdf=pdf,
+                                pymupdf_error=e1,
+                                pypdf_error=e2,
+                            )
+
+            except KeyboardInterrupt:
+                # Make Ctrl+C behavior clean and predictable
+                log.warning("Interrupted by user (Ctrl+C) during PDF loading; writing bad_pdfs.txt and exiting.")
+                self._write_bad_pdfs(bad_rows)
+                raise  # re-raise so the caller sees the interrupt
 
             if not docs:
+                # Persist bad list to help debugging
+                self._write_bad_pdfs(bad_rows)
                 raise RuntimeError("No documents could be loaded from PDFs.")
 
-            if bad_pdfs:
-                log.warning("Some PDFs were skipped", skipped=len(bad_pdfs), first=bad_pdfs[0])
+            if bad_rows:
+                self._write_bad_pdfs(bad_rows)
+                log.warning(
+                    "Some PDFs were skipped",
+                    skipped=len(bad_rows),
+                    first=bad_rows[0][0],
+                )
 
+            # Chunking
             chunk_size = int(self.config.get_rag_param("chunk_size") or 900)
             chunk_overlap = int(self.config.get_rag_param("chunk_overlap") or 150)
 
@@ -199,12 +246,16 @@ class IndexBuilder:
                 chunk_overlap=chunk_overlap,
             )
 
+            # Build and save FAISS
             vectorstore = FAISS.from_documents(chunks, self.embeddings)
             vectorstore.save_local(str(self.index_dir))
 
             log.info("FAISS index built and saved", index_dir=str(self.index_dir))
             return str(self.index_dir)
 
+        except KeyboardInterrupt:
+            # Keep the stack trace clean in logs; user already knows they interrupted.
+            raise
         except Exception as e:
             raise DocumentPortalException("FAISS build error", e)
 

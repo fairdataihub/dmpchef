@@ -6,8 +6,16 @@ from typing import Any, Dict, Optional
 
 import certifi
 import yaml
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.llms import Ollama
+
+# Prefer the new, non-deprecated HuggingFace embeddings integration if installed.
+# Fall back to langchain_community if not.
+try:
+    from langchain_huggingface import HuggingFaceEmbeddings  # type: ignore
+    _USING_LANGCHAIN_HF = True
+except Exception:
+    from langchain_community.embeddings import HuggingFaceEmbeddings  # type: ignore
+    _USING_LANGCHAIN_HF = False
 
 from exception.custom_exception import DocumentPortalException
 from logger.custom_logger import GLOBAL_LOGGER as log
@@ -18,10 +26,13 @@ class ModelLoader:
     Unified model loader for embeddings and LLMs.
 
     Notes:
-    - Embeddings: supports offline-first loading with optional fallback to download.
-      Also supports GPU acceleration via sentence-transformers device="cuda".
-    - LLM (Ollama): supports optional generation controls (num_predict, temperature, num_ctx, etc.)
-      via config/models.yaml keys.
+    - Embeddings:
+        - Offline-first loading with optional fallback download.
+        - GPU acceleration via device="cuda" when torch reports CUDA available.
+        - Uses langchain-huggingface if installed (recommended), otherwise falls back
+          to the deprecated langchain_community HuggingFaceEmbeddings.
+    - LLM (Ollama):
+        - Supports optional generation controls (num_predict, temperature, num_ctx, top_p, top_k).
     """
 
     def __init__(self, config_path: str = "config/config.yaml"):
@@ -44,14 +55,14 @@ class ModelLoader:
 
             # Embedding acceleration / quality controls
             # embedding_device: "cuda" | "cpu" | "auto"
-            self.embedding_device: str = str(models.get("embedding_device", "auto")).lower()
+            self.embedding_device: str = str(models.get("embedding_device", "auto")).lower().strip()
             self.embedding_batch_size: int = int(models.get("embedding_batch_size", 128))
             self.normalize_embeddings: bool = bool(models.get("normalize_embeddings", True))
 
-            # Ollama generation controls (optional, but recommended for speed)
+            # Ollama generation controls (optional)
             self.temperature: Optional[float] = models.get("temperature", None)
-            self.num_predict: Optional[int] = models.get("num_predict", None)  # cap output tokens
-            self.num_ctx: Optional[int] = models.get("num_ctx", None)          # context window
+            self.num_predict: Optional[int] = models.get("num_predict", None)
+            self.num_ctx: Optional[int] = models.get("num_ctx", None)
             self.top_p: Optional[float] = models.get("top_p", None)
             self.top_k: Optional[int] = models.get("top_k", None)
 
@@ -70,6 +81,7 @@ class ModelLoader:
                 num_ctx=self.num_ctx,
                 top_p=self.top_p,
                 top_k=self.top_k,
+                embeddings_backend=("langchain_huggingface" if _USING_LANGCHAIN_HF else "langchain_community"),
             )
         except Exception as e:
             log.error("Failed to load model config", error=str(e))
@@ -78,7 +90,8 @@ class ModelLoader:
     def load_llm(self):
         """
         Load Ollama LLM with optional generation controls.
-        Recommended config for speed (CPU):
+
+        Example (speed-friendly):
           models:
             num_predict: 800
             temperature: 0.2
@@ -87,7 +100,6 @@ class ModelLoader:
         try:
             kwargs: Dict[str, Any] = {"model": self.llm_name}
 
-            # Only pass options if user provided them in config
             if self.temperature is not None:
                 kwargs["temperature"] = float(self.temperature)
             if self.num_predict is not None:
@@ -110,73 +122,92 @@ class ModelLoader:
             log.error("Failed to load LLM", error=str(e))
             raise DocumentPortalException("LLM loading error", e)
 
+    @staticmethod
+    def _torch_cuda_status() -> Dict[str, Any]:
+        """
+        Safely query torch CUDA status. Never raises.
+        """
+        try:
+            import torch  # local import
+
+            cuda_ok = bool(torch.cuda.is_available())
+            cuda_ver = getattr(torch.version, "cuda", None)
+            gpu_name = torch.cuda.get_device_name(0) if cuda_ok else None
+            return {"cuda_ok": cuda_ok, "cuda_version": cuda_ver, "gpu_name": gpu_name}
+        except Exception:
+            return {"cuda_ok": False, "cuda_version": None, "gpu_name": None}
+
     def _pick_embedding_device(self) -> str:
         """
         Decide which device to use for sentence-transformers embeddings.
-        - If embedding_device="cpu": always CPU
-        - If embedding_device="cuda": require CUDA, else fall back to CPU with warning
-        - If embedding_device="auto": use CUDA if available else CPU
+
+        Rules:
+        - "cpu": always CPU
+        - "cuda": use CUDA if available else CPU (warn)
+        - "auto": CUDA if available else CPU
         """
-        device = self.embedding_device
+        req = self.embedding_device
 
-        try:
-            import torch  # local import to avoid forcing torch for non-embedding usage
-            cuda_ok = torch.cuda.is_available()
-            gpu_name = torch.cuda.get_device_name(0) if cuda_ok else None
-        except Exception:
-            cuda_ok = False
-            gpu_name = None
+        status = self._torch_cuda_status()
+        cuda_ok = status["cuda_ok"]
+        gpu_name = status["gpu_name"]
+        cuda_ver = status["cuda_version"]
 
-        if device == "cpu":
+        if req == "cpu":
             log.info("Embeddings device selected", device="cpu")
             return "cpu"
 
-        if device == "cuda":
+        if req == "cuda":
             if cuda_ok:
-                log.info("Embeddings device selected", device="cuda", gpu=gpu_name)
+                log.info("Embeddings device selected", device="cuda", gpu=gpu_name, torch_cuda=cuda_ver)
                 return "cuda"
-            log.warning("CUDA requested but not available; falling back to CPU")
+            log.warning("CUDA requested but not available; falling back to CPU", torch_cuda=cuda_ver)
             return "cpu"
 
         # auto
         if cuda_ok:
-            log.info("Embeddings device selected", device="cuda", gpu=gpu_name)
+            log.info("Embeddings device selected", device="cuda", gpu=gpu_name, torch_cuda=cuda_ver)
             return "cuda"
 
-        log.info("Embeddings device selected", device="cpu")
+        log.info("Embeddings device selected", device="cpu", torch_cuda=cuda_ver)
         return "cpu"
 
     def load_embeddings(self):
         """
-        Loads HuggingFace embeddings using a local cache folder.
+        Load HuggingFace embeddings using a local cache folder.
 
         Behavior:
         - If local_files_only=False: will download if missing.
         - If local_files_only=True:
             - will try offline load
             - if missing AND allow_download_if_missing=True: retry online download
-            - else: raise a clear error telling you to cache or enable download
+            - else: raise a clear error explaining how to fix
 
         GPU:
-        - If models.embedding_device is "cuda" or "auto" and CUDA is available,
+        - If embedding_device is "cuda" or "auto" and CUDA is available,
           sentence-transformers will run on GPU.
         """
         try:
             # SSL stability (Windows)
             os.environ.setdefault("SSL_CERT_FILE", certifi.where())
-            # reduce HF noise
+
+            # reduce HF noise + telemetry
             os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
 
-            cache_dir = Path(self.hf_cache_dir).resolve()
+            cache_dir = Path(self.hf_cache_dir).expanduser().resolve()
             cache_dir.mkdir(parents=True, exist_ok=True)
 
             device = self._pick_embedding_device()
             batch_size = max(1, int(self.embedding_batch_size))
 
             def _make(local_only: bool):
-                # IMPORTANT:
-                # - "device" controls GPU vs CPU for sentence-transformers
-                # - "local_files_only" controls HF download behavior
+                """
+                Construct the embedding wrapper.
+
+                IMPORTANT:
+                - Put `device` in model_kwargs so SentenceTransformer moves to GPU.
+                - Use local_files_only to control download behavior.
+                """
                 return HuggingFaceEmbeddings(
                     model_name=self.embedding_model,
                     cache_folder=str(cache_dir),
@@ -193,6 +224,15 @@ class ModelLoader:
             # 1) Try according to config
             try:
                 emb = _make(self.local_files_only)
+
+                # Optional: force one tiny embed to ensure the model is really initialized on the device.
+                # This helps catch lazy-init edge cases early.
+                try:
+                    _ = emb.embed_query("gpu_check")
+                except Exception:
+                    # If a wrapper doesn't support embed_query at init time, ignore.
+                    pass
+
                 log.info(
                     "Embeddings loaded successfully",
                     model=self.embedding_model,
@@ -201,8 +241,10 @@ class ModelLoader:
                     device=device,
                     batch_size=batch_size,
                     normalize_embeddings=self.normalize_embeddings,
+                    embeddings_backend=("langchain_huggingface" if _USING_LANGCHAIN_HF else "langchain_community"),
                 )
                 return emb
+
             except Exception as e1:
                 # 2) If offline requested but allowed to download, retry online
                 if self.local_files_only and self.allow_download_if_missing:
@@ -213,6 +255,12 @@ class ModelLoader:
                         device=device,
                     )
                     emb = _make(False)
+
+                    try:
+                        _ = emb.embed_query("gpu_check")
+                    except Exception:
+                        pass
+
                     log.info(
                         "Embeddings loaded successfully after download",
                         model=self.embedding_model,
@@ -221,6 +269,7 @@ class ModelLoader:
                         device=device,
                         batch_size=batch_size,
                         normalize_embeddings=self.normalize_embeddings,
+                        embeddings_backend=("langchain_huggingface" if _USING_LANGCHAIN_HF else "langchain_community"),
                     )
                     return emb
 
