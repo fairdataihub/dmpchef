@@ -56,7 +56,7 @@ data/cache/
 data/**/cache/
 notebook_DMP_RAG/data/cache/
 notebook_DMP_RAG/data/**/cache/
-notebook_DMP_RAG/
+
 
 # Extra safety: ignore common ML cache dirs anywhere
 **/hf_models/
