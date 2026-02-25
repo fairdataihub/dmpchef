@@ -131,7 +131,7 @@ pip install -e .
 1.  Install Ollama from:\
     https://ollama.com/
 
-2.  Pull the Llama 3.3 model:
+2.  Pull the llama3.3:latest:
 
 ``` bash
 ollama pull llama3.3
