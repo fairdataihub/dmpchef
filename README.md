@@ -125,7 +125,17 @@ pip install -r requirements.txt
 # or (recommended for local dev)
 pip install -e .
 ```
----
+### Step 4 — Configure Large Language Models
+**Llama 3.3 (via Ollama)**
+
+1.  Install Ollama from:\
+    https://ollama.com/
+
+2.  Pull the llama3.3:
+
+``` bash
+ollama pull llama3.3:latest
+```
 ### Step 4 — Run DMP Chef
 
 ### Option A — Jupyter demo
