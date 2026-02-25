@@ -131,10 +131,10 @@ pip install -e .
 1.  Install Ollama from:\
     https://ollama.com/
 
-2.  Pull the llama3.3:latest:
+2.  Pull the llama3.3:
 
 ``` bash
-ollama pull llama3.3
+ollama pull llama3.3:latest
 ```
 ### Step 4 — Run DMP Chef
 
