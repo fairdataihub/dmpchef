@@ -2,8 +2,8 @@ root_dir: .
 
 
 paths:
-  data_pdfs: data/data_ingestion/NIH_sharing
-  index_dir: data/vector_db/NIH_sharing_db
+  data_pdfs: data/data_ingestion/DMPtools
+  index_dir: data/vector_db/DMPtools_db
   excel_path: data/inputs/inputs.xlsx
   output_md: data/outputs/markdown
   output_docx: data/outputs/docx
