@@ -1,0 +1,31 @@
+services:
+  dmpchef:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dmpchef:latest
+    container_name: dmpchef
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.1:8b-instruct-q8_0
+    # pin to GPU device 0 only
+    gpus:
+      - device_ids: ["0"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/up"]
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 120s
+    ports:
+      - "${APP_PORT:-17887}:8000"
+    volumes:
+      - ./data/vector_db:/app/data/vector_db:ro
+    restart: ${RESTART_POLICY:-unless-stopped}
+    networks:
+      - ollama-network
+
+networks:
+  ollama-network:
+    external: true
+    name: ollama-network
