@@ -44,6 +44,7 @@ class ModelLoader:
 
             # Model names
             self.llm_name: str = models.get("llm_name", "llama3")
+            self.llm_host: Optional[str] = models.get("llm_host")
             self.embedding_model: str = models.get(
                 "embedding_model", "sentence-transformers/all-MiniLM-L6-v2"
             )

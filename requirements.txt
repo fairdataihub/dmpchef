@@ -72,6 +72,12 @@ lxml
 #############################################
 #  Backend & API
 #############################################
+flask
+gunicorn
+flask-cors
+python-docx
+pyyaml
+tqdm
 fastapi
 python-multipart
 structlog
@@ -114,4 +120,4 @@ pyyaml
 #############################################
 #  Local Package (Editable Install)
 #############################################
--e .
+# -e .

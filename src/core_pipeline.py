@@ -142,7 +142,10 @@ class DMPPipeline:
             self.embeddings = None
 
             self.llm_name = self.model_loader.llm_name
-            self.llm = Ollama(model=self.llm_name)
+            self.llm = Ollama(
+                model=self.llm_name,
+                base_url=self.model_loader.llm_host,
+            )
 
             enabled_val = self.config.get_rag_param("enabled")
             self.use_rag_default = True if enabled_val is None else bool(enabled_val)
@@ -264,7 +267,11 @@ class DMPPipeline:
         if (self.llm_name or "").strip() == name:
             return
         self.llm_name = name
-        self.llm = Ollama(model=self.llm_name)
+        self.model_loader = ModelLoader(config_path=str(self.config.config_path))
+        self.llm = Ollama(
+                model=self.llm_name,
+                base_url=self.model_loader.llm_host,
+            )
         log.info("LLM overridden from inputs", llm=self.llm_name)
 
     def _build_no_rag_chain(self, prompt_template):
