@@ -1,5 +1,5 @@
 CONFIG_PATH = "config/config.yaml"
-BASE_INPUT_PATH = "data/inputs/input.json"
+BASE_INPUT_PATH = "data_prd/inputs/input.json"
 
 import re
 import uuid
@@ -13,7 +13,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from pathlib import Path
 
-from src.core_pipeline import DMPPipeline
+from src.core_pipeline_prd import DMPPipeline
 from utils.dmptool_json import build_dmptool_json
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -165,7 +165,7 @@ def worker():
                 funding_agency=funding_agency,
             )
 
-            job_output_root = Path("data/outputs/jobs") / job_id
+            job_output_root = Path("data_prd/outputs/jobs") / job_id
             md_dir = job_output_root / "markdown"
             docx_dir = job_output_root / "docx"
             json_dir = job_output_root / "json"
@@ -207,7 +207,7 @@ def worker():
                     from utils.nih_docx_writer import build_nih_docx_from_template
 
                     template_path = pipeline.config.resolve_path(
-                        "data/inputs/nih-dms-plan-template.docx"
+                        "data_prd/inputs/nih-dms-plan-template.docx"
                     )
 
                     build_nih_docx_from_template(
