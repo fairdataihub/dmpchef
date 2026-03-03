@@ -20,7 +20,7 @@ services:
     ports:
       - "${APP_PORT:-17887}:8000"
     volumes:
-      - ./data:/app/data
+      - ./data_prd:/app/data_prd
     restart: ${RESTART_POLICY:-unless-stopped}
     networks:
       - ollama-network
