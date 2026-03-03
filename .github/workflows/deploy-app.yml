@@ -51,7 +51,7 @@ jobs:
           # -z: compress during transfer
           # --delete: delete files on destination that don't exist in source
           # --exclude: skip these directories (large files that shouldn't be synced)
-          rsync -az --delete \
+          rsync -rz --delete \
             --exclude ".git/" \
             --exclude "data/" \
             --exclude "data_prd/outputs/" \
