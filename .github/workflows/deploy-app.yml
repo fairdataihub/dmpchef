@@ -55,6 +55,8 @@ jobs:
             --exclude ".git/" \
             --exclude "data/" \
             --exclude "data_prd/outputs/" \
+            --exclude "data_prd/cache/" \
+            --exclude "data_prd/vector_db/" \
             --exclude "models/" \
             --exclude "checkpoints/" \
             --exclude "node_modules/" \
