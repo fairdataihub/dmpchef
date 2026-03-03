@@ -58,7 +58,7 @@ class CustomLogger:
         return structlog.get_logger(logger_name)
 
 
-# ✅ Create a single global logger to use everywhere
+#  Create a single global logger to use everywhere
 GLOBAL_LOGGER = CustomLogger().get_logger(__name__)
 
 

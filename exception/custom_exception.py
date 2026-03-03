@@ -77,17 +77,4 @@ class DocumentPortalException(Exception):
         return f"DocumentPortalException(file={self.file_name!r}, line={self.lineno}, message={self.error_message!r})"
 
 
-# --- Demo usage section ---
-#if __name__ == "__main__":
-    # Demo 1: Wrap a simple runtime error (division by zero)
-   # try:
-        a = 1 / 0
-   # except Exception as e:
-        # Raise custom exception wrapping the original one
-      #  raise DocumentPortalException("Division failed", e) from e
 
-    # Demo 2: Show compatibility with sys (older pattern)
-  #  try:
-        a = int("abc")  # will raise ValueError
-  #  except Exception as e:
-  ##      raise DocumentPortalException(e, sys)

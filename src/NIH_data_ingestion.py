@@ -53,9 +53,9 @@ class UnifiedWebIngestion:
         nih_skip_urls: list[str] | None = None,  # NEW: explicit NIH URLs to skip
         nih_skip_substrings: list[str] | None = None,  # NEW: URL substrings to skip
     ):
-        # Auto-detect <project_root>/data if not provided
+        
         if data_root is None:
-            # Assumes this file is at <project_root>/src/...
+           
             project_root = Path(__file__).resolve().parents[1]
             data_root = project_root / "data"
 
@@ -109,9 +109,9 @@ class UnifiedWebIngestion:
         print(f"\n data_root: {self.data_root.resolve()}")
         print(f" Session Folder Created: {self.session_folder}\n")
 
-    # --------------------------------------------------------
+   
     # Folder setup
-    # --------------------------------------------------------
+  
     def _detect_or_create_session_folder(self) -> Path:
         parent = self.data_root / "data_ingestion1"
         parent.mkdir(parents=True, exist_ok=True)
@@ -133,9 +133,9 @@ class UnifiedWebIngestion:
                 return txt_dir, pdf_dir, manifest_path, json.load(f)
         return txt_dir, pdf_dir, manifest_path, {"files": {}}
 
-    # --------------------------------------------------------
+    
     # Robust links loader
-    # --------------------------------------------------------
+   
     def _load_links(self, path: str) -> list[str]:
         candidates: list[Path] = []
         p = Path(path)
@@ -144,7 +144,7 @@ class UnifiedWebIngestion:
             candidates.append(p)
         else:
             candidates.append(Path.cwd() / p)
-            project_root = Path(__file__).resolve().parents[1]  # <project>/src -> <project>
+            project_root = Path(__file__).resolve().parents[1] 
             candidates.append(project_root / p)
             candidates.append(project_root.parent / p)
 
@@ -166,9 +166,9 @@ class UnifiedWebIngestion:
         print(f" Failed to load {path}. Tried:\n  - " + "\n  - ".join(str(c) for c in candidates))
         return []
 
-    # --------------------------------------------------------
+    
     # Session listing / copy-forward / cleanup
-    # --------------------------------------------------------
+    
     def _list_sessions(self) -> list[Path]:
         parent = self.data_root / "data_ingestion"
         parent.mkdir(parents=True, exist_ok=True)
@@ -230,9 +230,9 @@ class UnifiedWebIngestion:
             except Exception as e:
                 print(f" Failed to remove {old}: {e}")
 
-    # --------------------------------------------------------
+    
     # Load previous manifests (hash index)
-    # --------------------------------------------------------
+   
     def _load_previous_manifests(self) -> dict[str, set[str]]:
         sessions = self._list_sessions()
         if len(sessions) <= 1:
@@ -263,9 +263,9 @@ class UnifiedWebIngestion:
             print(" No previous manifest found — starting fresh.")
         return hash_index
 
-    # --------------------------------------------------------
+    
     # Manifest saving
-    # --------------------------------------------------------
+    
     def _save_manifest(self, manifest_path: Path, manifest: dict, domain: str):
         try:
             tmp = manifest_path.with_suffix(".tmp")
@@ -283,9 +283,9 @@ class UnifiedWebIngestion:
         except Exception as e:
             print(f" Manifest save error for {domain}: {e}")
 
-    # --------------------------------------------------------
+    
     # Text filters
-    # --------------------------------------------------------
+   
     def _is_valid_text_block(self, text: str) -> bool:
         text = text.strip().lower()
         if not text or len(text.split()) < 5:
@@ -316,9 +316,9 @@ class UnifiedWebIngestion:
     def _compute_hash(self, content: bytes) -> str:
         return hashlib.sha256(content).hexdigest()
 
-    # --------------------------------------------------------
+    
     # HTML cleanup + extraction
-    # --------------------------------------------------------
+    
     def _clean_html(self, html: str) -> BeautifulSoup:
         soup = BeautifulSoup(html, "html.parser")
         for tag in soup(["script", "style", "noscript", "iframe", "svg", "form"]):
@@ -353,9 +353,9 @@ class UnifiedWebIngestion:
             merged.append(buf)
         return "\n\n".join(merged)
 
-    # --------------------------------------------------------
+    
     # PDF download (dedupe by previous hashes)
-    # --------------------------------------------------------
+    
     def _download_pdf(self, href: str, pdf_dir: Path, domain: str, manifest: dict):
         try:
             r = self.session.get(href, timeout=30)
@@ -387,9 +387,9 @@ class UnifiedWebIngestion:
         except Exception as e:
             print(f" PDF download failed: {href} | {e}")
 
-    # --------------------------------------------------------
+    
     # NIH Crawl
-    # --------------------------------------------------------
+    
     def _crawl_nih(self, start_url: str, domain: str):
         txt_dir, pdf_dir, manifest_path, manifest = self._prepare_site_dirs(domain)
         visited, queue = set(), [(start_url, 0)]
@@ -456,7 +456,7 @@ class UnifiedWebIngestion:
                             self._download_pdf(href, pdf_dir, domain, manifest)
                             continue
 
-                        # Only follow NIH links (and don't follow fragment-only links)
+                        
                         if urlparse(href).netloc.endswith("nih.gov") and "#" not in href:
                             if not _should_skip_url(href):
                                 queue.append((href, depth + 1))
@@ -473,9 +473,9 @@ class UnifiedWebIngestion:
         already = self.stats.get(domain, {}).get("already_have", 0)
         print(f" NIH crawl completed — pages={domain_pages} downloaded_pdfs={domain_pdfs} already_have={already}")
 
-    # --------------------------------------------------------
+    
     # DMPTool Crawl
-    # --------------------------------------------------------
+    
     def _crawl_dmptool(self, start_url: str, domain: str):
         _, pdf_dir, manifest_path, manifest = self._prepare_site_dirs(domain)
         print(f" Crawling DMPTool: {start_url}")
@@ -598,9 +598,9 @@ class UnifiedWebIngestion:
         finally:
             driver.quit()
 
-    # --------------------------------------------------------
+   
     # Export PDFs to fixed folder (SKIP duplicates in destination by hash)
-    # --------------------------------------------------------
+   
     def _export_pdfs_to_folder(self, dest_rel: str, mode: str = "move"):
         dest_dir = (self.data_root / dest_rel)
         dest_dir.mkdir(parents=True, exist_ok=True)
@@ -610,7 +610,7 @@ class UnifiedWebIngestion:
             print("ℹ No PDFs found to export.")
             return
 
-        # Hash what already exists in the destination to prevent *_001 duplicates
+        
         existing_hashes: set[str] = set()
         for existing in dest_dir.glob("*.pdf"):
             try:
@@ -657,7 +657,7 @@ class UnifiedWebIngestion:
 
                 exported_map[str(src)] = str(dst)
                 exported += 1
-                existing_hashes.add(h)  # prevent duplicates within the same run too
+                existing_hashes.add(h)  
 
             except Exception as e:
                 print(f" Failed to {mode} {src}: {e}")
@@ -697,9 +697,9 @@ class UnifiedWebIngestion:
         except Exception as e:
             print(f" Failed to update master manifest paths: {e}")
 
-    # --------------------------------------------------------
+    
     # Run all
-    # --------------------------------------------------------
+   
     def run_all(self):
         if not self.urls:
             print(" No URLs loaded from web_links.json. Nothing to crawl.")
@@ -729,7 +729,7 @@ class UnifiedWebIngestion:
 
 if __name__ == "__main__":
     crawler = UnifiedWebIngestion(
-        data_root=None,  # auto-resolves to <project_root>/data
+        data_root=None, 
         json_links=r"data\web_links.json",
         max_depth=5,
         crawl_delay=1.2,

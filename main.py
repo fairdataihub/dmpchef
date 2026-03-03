@@ -13,9 +13,9 @@ from config.schema_validate import validate_request
 from docx2pdf import convert as docx2pdf_convert
 
 
-# -------------------------
+
 # Small utilities
-# -------------------------
+
 def safe_filename(title: str) -> str:
     s = re.sub(r'[\\/*?:"<>|]', "_", (title or "").strip()).strip()
     s = re.sub(r"\s+", "_", s).strip("_")
@@ -165,9 +165,9 @@ def _prefix_run_stem_with_funding(run_stem: str, agency: str, subagency: str) ->
     return f"{base}{suffix}"
 
 
-# -------------------------
+
 # Main entry
-# -------------------------
+
 def main(
     input_json_path: str = "data/inputs/input.json",
     out_root: str = "data/outputs",
@@ -175,15 +175,15 @@ def main(
     nih_template_path: str = "data/inputs/nih-dms-plan-template.docx",
     use_rag: Optional[bool] = None,
 ):
-    # Initialize pipeline FIRST so we can resolve paths consistently via root_dir
+    
     pipeline = DMPPipeline(config_path=config_path, force_rebuild_index=False)
 
-    # Resolve paths relative to pipeline root_dir
+    
     in_path = pipeline.config.resolve_path(input_json_path)
     if not in_path.exists():
         raise FileNotFoundError(f"Input JSON not found: {in_path}")
 
-    # Schema path (still relative to repo root beside main.py)
+    
     repo_root = Path(__file__).resolve().parent
     schema_path = repo_root / "config" / "dmpchef_request.schema.json"
     if not schema_path.exists():

@@ -28,9 +28,9 @@ from logger.custom_logger import GLOBAL_LOGGER as log
 from prompt.prompt_library import PROMPT_REGISTRY, PromptType
 
 
-# ===============================================================
+
 # FUNDER REGISTRY (NIH default)
-# ===============================================================
+
 @dataclass(frozen=True)
 class FunderSpec:
     key: str
@@ -58,9 +58,9 @@ def get_funder_spec(funding_agency: str) -> FunderSpec:
     return FUNDER_SPECS.get(key, FUNDER_SPECS["NIH"])
 
 
-# ===============================================================
-# CONFIGURATION MANAGER (root_dir aware)
-# ===============================================================
+
+
+
 class ConfigManager:
     """
     Reads config/config.yaml and resolves relative paths using:
@@ -118,9 +118,9 @@ class ConfigManager:
         return self.rag.get(key)
 
 
-# ===============================================================
+
 # MAIN PIPELINE
-# ===============================================================
+
 class DMPPipeline:
     def __init__(self, config_path: str = "config/config.yaml", force_rebuild_index: bool = False):
         try:
@@ -167,9 +167,9 @@ class DMPPipeline:
             log.error("Failed to initialize DMPPipeline", error=str(e))
             raise DocumentPortalException("Pipeline initialization error", e)
 
-    # -------------------------
+    
     # Helpers
-    # -------------------------
+    
     def _to_bool(self, v, default: Optional[bool] = None) -> Optional[bool]:
         if v is None:
             return default
@@ -300,9 +300,9 @@ class DMPPipeline:
                 fn = getattr(self.retriever, "_get_relevant_documents", None)
                 return fn(query) if callable(fn) else []
 
-    # -------------------------
-    # Index build/load (FAISS) (kept, still available)
-    # -------------------------
+    
+    # Index build/load (FAISS) 
+    
     def _load_or_build_index(self, force_rebuild: bool = False):
         try:
             if self.embeddings is None:
@@ -376,9 +376,9 @@ class DMPPipeline:
         except Exception as e:
             raise DocumentPortalException("FAISS index error", e)
 
-    # -------------------------
-    # NEW: Load-only FAISS (no PDFs)
-    # -------------------------
+    
+    
+    
     def _load_index_only(self):
         if self.embeddings is None:
             raise RuntimeError("Embeddings are not loaded. Call _ensure_rag_ready() first.")
@@ -397,9 +397,9 @@ class DMPPipeline:
             allow_dangerous_deserialization=True,
         )
 
-    # -------------------------
+    
     # Lazy init RAG components
-    # -------------------------
+
     def _ensure_rag_ready(self):
         if self.retriever is not None and self.vectorstore is not None:
             log.info("RAG components already ready", index_dir=str(self.index_dir))
@@ -410,9 +410,7 @@ class DMPPipeline:
             self.embeddings = self.model_loader.load_embeddings()
             log.info("Embeddings ready")
 
-        # NEW: index_mode switch (default keeps original behavior)
-        # - "load" => ONLY load index (no PDFs)
-        # - "build_or_load" => original: load if exists else build from PDFs
+      
         index_mode = (self.config.get_rag_param("index_mode") or "build_or_load").strip().lower()
 
         log.info(
@@ -441,9 +439,9 @@ class DMPPipeline:
             self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": int(top_k)})
             log.info("RAG retriever initialized", search_type="similarity", top_k=top_k)
 
-    # -------------------------
+    
     # MAIN: Generate DMP (Markdown only)
-    # -------------------------
+   
     def generate_dmp(
         self,
         title: Optional[str],

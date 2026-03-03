@@ -1,8 +1,5 @@
-# ===============================================================
-# prompt_library.py — NIH DMP Generation Prompts
-# (works for BOTH RAG and NO-RAG)
-# ===============================================================
 
+# prompt_library.py — NIH DMP Generation Prompts
 from enum import Enum
 from langchain_core.prompts import PromptTemplate
 

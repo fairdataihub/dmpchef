@@ -26,7 +26,7 @@ class ConfigManager:
     """
 
     def __init__(self, config_path: str = "config/config.yaml"):
-        repo_root = Path(__file__).resolve().parents[1]  # <repo_root>/src/... -> <repo_root>
+        repo_root = Path(__file__).resolve().parents[1]  
         raw_cfg = Path(config_path)
         cfg_path = raw_cfg if raw_cfg.is_absolute() else (repo_root / raw_cfg).resolve()
 

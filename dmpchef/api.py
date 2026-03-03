@@ -14,9 +14,9 @@ from utils.dmptool_json import build_dmptool_json
 from utils.nih_docx_writer import build_nih_docx_from_template
 
 
-# -------------------------------------------------------------------
+
 # Utilities (kept aligned with main.py behavior)
-# -------------------------------------------------------------------
+
 def safe_filename(title: str) -> str:
     """Convert a string into a filesystem-safe filename stem."""
     s = re.sub(r'[\\/*?:"<>|]', "_", (title or "").strip()).strip()
@@ -183,9 +183,9 @@ def _make_pdf_from_docx(docx_path: Path, pdf_path: Path) -> None:
     docx2pdf_convert(str(docx_path), str(pdf_path))
 
 
-# -------------------------------------------------------------------
+
 # Public API
-# -------------------------------------------------------------------
+
 def generate(
     input_json: str | Path,
     *,
