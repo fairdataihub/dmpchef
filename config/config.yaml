@@ -2,11 +2,11 @@ root_dir: .
 
 
 paths:
-  data_pdfs: data/data_ingestion/NIH_all
-  index_dir: data/vector_db/DMPtools_db
-  excel_path: data/inputs/inputs.xlsx
-  output_md: data/outputs/markdown
-  output_docx: data/outputs/docx
+  data_pdfs: data_prddata_ingestion/NIH_all
+  index_dir: data_prdvector_db/DMPtools_db
+  excel_path: data_prdinputs/inputs.xlsx
+  output_md: data_prdoutputs/markdown
+  output_docx: data_prdoutputs/docx
 
 rag:
   enabled: true
@@ -26,7 +26,7 @@ models:
   embedding_device: cuda
   embedding_batch_size: 128
   normalize_embeddings: true
-  hf_cache_dir: data/cache/hf
+  hf_cache_dir: data_prdcache/hf
   # Set false for first run to download, then true for offline reuse
   local_files_only: true
   allow_download_if_missing: true
