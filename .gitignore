@@ -138,6 +138,11 @@ data/data_ingestion1/**/*.pdf
 # =========================================================
 #  Vector databases / indices
 # =========================================================
+!data_prd/
+!data_prd/vector_db/
+!data_prd/vector_db/DMPtools_db/
+!data_prd/vector_db/DMPtools_db/index.faiss
+!data_prd/vector_db/DMPtools_db/index.pkl
 data/vector_db/
 **/index.faiss
 **/index.pkl
@@ -175,6 +180,7 @@ test.py
 # Word: ignore all docx, but keep the NIH template
 *.docx
 !data/inputs/nih-dms-plan-template.docx
+!data_prd/inputs/nih-dms-plan-template.docx
 
 # Text: ignore all txt, but keep requirements.txt
 *.txt
@@ -183,6 +189,7 @@ test.py
 # Markdown: ignore all md, but keep the DMP template
 *.md
 !data/inputs/dmp-template.md
+!data_prd/inputs/dmp-template.md
 
 
 # =========================================================
