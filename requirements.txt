@@ -1,6 +1,5 @@
-#############################################
+
 #  Core Python Utilities
-#############################################
 matplotlib
 numpy
 pandas
@@ -8,22 +7,19 @@ python-dotenv
 scikit-learn
 typing_extensions
 
-#############################################
+
 #  Deep Learning & NLP
-#############################################
 torch
 tiktoken
 
-#############################################
+
 #  Stable Transformer & Embedding Libraries
-#############################################
 transformers
 sentence-transformers
 regex
 
-#############################################
+
 #  LLMs & RAG Frameworks (Stable Versions)
-#############################################
 google-generativeai
 ollama
 openai
@@ -46,18 +42,16 @@ packaging
 langsmith
 dataclasses-json
 
-#############################################
+
 #  Document Processing
-#############################################
 docx2txt
 PyMuPDF
 pypdf
 pypandoc
 PyYAML
 
-#############################################
+
 #  Web & HTTP Dependencies (full bundle)
-#############################################
 beautifulsoup4
 requests
 urllib3
@@ -69,38 +63,33 @@ httpx
 httpx-sse
 lxml
 
-#############################################
+
 #  Backend & API
-#############################################
 fastapi
 python-multipart
 structlog
 uvicorn
 
-#############################################
+
 #  Indexing & Search
-#############################################
 faiss-cpu
 lancedb
 
-#############################################
+
 #  Development & Testing
-#############################################
 cfn-lint
 jsonpatch
 ipykernel
 pytest
 tqdm
 
-#############################################
+
 #  UI & Deployment
-#############################################
 openpyxl
 rouge-score
 selenium
 streamlit
 webdriver-manager
-
 
 setuptools 
 wheel 
@@ -111,7 +100,7 @@ docx2pdf
 jsonschema
 pyyaml
 
-#############################################
+
 #  Local Package (Editable Install)
-#############################################
+
 -e .
