@@ -63,12 +63,12 @@ def get_funder_spec(funding_agency: str) -> FunderSpec:
 # ===============================================================
 class ConfigManager:
     """
-    Reads config/config.yaml and resolves relative paths using:
+    Reads config/config_prd.yaml and resolves relative paths using:
       1) config.root_dir (if present)
       2) repo_root (parent of /src)
     """
 
-    def __init__(self, config_path: str = "config/config.yaml"):
+    def __init__(self, config_path: str = "config/config_prd.yaml"):
         repo_root = Path(__file__).resolve().parents[1]
         raw = Path(config_path)
         path = raw if raw.is_absolute() else (repo_root / raw).resolve()
@@ -122,7 +122,7 @@ class ConfigManager:
 # MAIN PIPELINE
 # ===============================================================
 class DMPPipeline:
-    def __init__(self, config_path: str = "config/config.yaml", force_rebuild_index: bool = False):
+    def __init__(self, config_path: str = "config/config_prd.yaml", force_rebuild_index: bool = False):
         try:
             self.config = ConfigManager(config_path)
             self.force_rebuild_index = force_rebuild_index
