@@ -12,7 +12,7 @@ services:
     gpus:
       - device_ids: ["0"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/up"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/up"]
       interval: 20s
       timeout: 10s
       retries: 15
