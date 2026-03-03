@@ -57,8 +57,8 @@ jobs:
             --exclude "data_prd/outputs/" \
             --exclude "data_prd/cache/" \
             --exclude "data_prd/vector_db/**"
-            --include "data_prd/vector_db/DMPtools_db/index.faiss"
-            --include "data_prd/vector_db/DMPtools_db/index.pkl"
+            --include "data_prd/vector_db/DMPtools_db/index.faiss" \
+            --include "data_prd/vector_db/DMPtools_db/index.pkl" \
             --exclude "models/" \
             --exclude "checkpoints/" \
             --exclude "node_modules/" \
