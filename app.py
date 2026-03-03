@@ -1,4 +1,4 @@
-CONFIG_PATH = "config/config.yaml"
+CONFIG_PATH = "config/config_prd.yaml"
 BASE_INPUT_PATH = "data_prd/inputs/input.json"
 
 import re
