@@ -53,8 +53,7 @@ jobs:
           # --exclude: skip these directories (large files that shouldn't be synced)
           rsync -az --delete \
             --exclude ".git/" \
-            --exclude "data/vector_db/"
-            --exclude "data/outputs/"
+            --exclude "data/" \
             --exclude "models/" \
             --exclude "checkpoints/" \
             --exclude "node_modules/" \
