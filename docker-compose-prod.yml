@@ -19,6 +19,8 @@ services:
       start_period: 120s
     ports:
       - "${APP_PORT:-17887}:8000"
+    volumes:
+      - ./data:/app/data
     restart: ${RESTART_POLICY:-unless-stopped}
     networks:
       - ollama-network
