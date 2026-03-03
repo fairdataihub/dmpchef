@@ -1,10 +1,9 @@
 data/vector_db/NIH_all_db/index.faiss
 data/vector_db/NIH_all_db/index.pkl
-
 data_ingestion1/
-# =========================================================
+
 #  Python: bytecode, venvs, packaging
-# =========================================================
+
 __pycache__/
 *.py[cod]
 *.pyd
@@ -23,31 +22,18 @@ build/
 document_portal.egg-info/
 
 
-# =========================================================
 #  OS & Editors
-# =========================================================
+
 .DS_Store
 .vscode/
 .idea/
-
-
-# =========================================================
-#  Logs
-# =========================================================
 logs/
 *.log
-
-
-# =========================================================
-#  Secrets
-# =========================================================
 .env
 .env.*
 
 
-# =========================================================
 #  Caches (HF / Transformers / general)
-# =========================================================
 .cache/
 hf_cache/
 
@@ -67,9 +53,8 @@ notebook_DMP_RAG/data/**/cache/
 **/models--sentence-transformers--*/
 
 
-# =========================================================
+
 #  HuggingFace / sentence-transformers cache (never commit)
-# =========================================================
 data/cache/
 data/cache/hf/
 data/cache/hf/models--sentence-transformers--*/
@@ -83,10 +68,10 @@ src/data/cache/hf/.locks/
 src/cache/hf/xet/
 
 
-# =========================================================
+
 #  Data, outputs, archives (ignored by default)
-# =========================================================
 # Ignore big/generated directories
+notebook_DMP_RAG/
 data/
 data-Copy/
 outputs/
@@ -96,9 +81,9 @@ outputs-llama/
 archive/
 main_archive/
 *.pdf
-# =========================================================
+
 #  src/ logs & caches
-# =========================================================
+
 src/logs/
 src/**/*.log
 src/.cache/
@@ -107,7 +92,6 @@ src/cache/
 src/**/cache/
 src/hf_cache/
 src/**/hf_cache/
-
 src/data/vector_db/
 src/**/index.faiss
 src/**/index.pkl
@@ -126,18 +110,16 @@ web_links.json
 !data/inputs/input.json
 
 
-# =========================================================
+
 #  Ingested PDF/test artifacts (ignore)
-# =========================================================
 data/data_ingestion/**/test*
 data/data_ingestion/**/*.pdf
 data/data_ingestion1/**/test*
 data/data_ingestion1/**/*.pdf
 
 
-# =========================================================
+
 #  Vector databases / indices
-# =========================================================
 data/vector_db/
 **/index.faiss
 **/index.pkl
@@ -151,28 +133,23 @@ data/vector_db/DMPtools_db/index.pkl
 data/vector_db/NIH_sharing_db/index.faiss
 data/vector_db/NIH_sharing_db/index.pkl
 
-# ---------------------------------------------------------
+
 # Allow ONLY the DMPtools test indices to be tracked
-# (must come AFTER the ignore rules above)
-# ---------------------------------------------------------
 !data/vector_db/
 !data/vector_db/DMPtools_db/
 !data/vector_db/DMPtools_db/index.faiss
 !data/vector_db/DMPtools_db/index.pkl
 
-# =========================================================
+
 #  Temporary / test files & generated assets
-# =========================================================
 test.py
 *.png
 *.csv
 *.cgi
 
 
-# =========================================================
+
 #  Text / Markdown / Input templates
-# =========================================================
-# Word: ignore all docx, but keep the NIH template
 *.docx
 !data/inputs/nih-dms-plan-template.docx
 
@@ -185,9 +162,8 @@ test.py
 !data/inputs/dmp-template.md
 
 
-# =========================================================
+
 #  Office files
-# =========================================================
 *.xls
 *.xlsx
 *.xlsm
