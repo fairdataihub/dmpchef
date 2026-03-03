@@ -19,8 +19,6 @@ services:
       start_period: 120s
     ports:
       - "${APP_PORT:-17887}:8000"
-    volumes:
-      - ./data/vector_db:/app/data/vector_db:ro
     restart: ${RESTART_POLICY:-unless-stopped}
     networks:
       - ollama-network
