@@ -54,6 +54,7 @@ jobs:
           rsync -az --delete \
             --exclude ".git/" \
             --exclude "data/" \
+            --exclude "data_prd/outputs/" \
             --exclude "models/" \
             --exclude "checkpoints/" \
             --exclude "node_modules/" \
