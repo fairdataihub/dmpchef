@@ -71,7 +71,7 @@ src/cache/hf/xet/
 
 #  Data, outputs, archives (ignored by default)
 # Ignore big/generated directories
-notebook_DMP_RAG/**
+
 data/
 data-Copy/
 outputs/
