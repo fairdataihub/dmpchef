@@ -134,7 +134,7 @@ pip install -e .
 2.  Pull the llama3.3:
 
 ``` bash
-ollama pull llama3.3:latest
+ollama pull llama3.3:70b 
 ```
 ### Step 4 — Run DMP Chef
 
