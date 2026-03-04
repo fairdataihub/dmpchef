@@ -2,8 +2,8 @@ root_dir: .
 
 
 paths:
-  data_pdfs: data/data_ingestion/NIH_all
-  index_dir: data/vector_db/NIH_all_db
+  data_pdfs: data/data_ingestion/NIH_DMPtools
+  index_dir: data/vector_db/DMPtools_db
   excel_path: data/inputs/inputs.xlsx
   output_md: data/outputs/markdown
   output_docx: data/outputs/docx
@@ -19,7 +19,7 @@ rag:
   hf_zip: "vector_db.zip"
 
 models:
-  llm_name: llama3.3:70b        
+  llm_name: llama3.3:70b      
   embedding_model: sentence-transformers/all-MiniLM-L6-v2
   pdf_load_workers: 8
   embedding_device: cuda
