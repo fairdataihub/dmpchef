@@ -36,43 +36,7 @@ pipeline = DMPPipeline(config_path=CONFIG_PATH, force_rebuild_index=False)
 job_queue = queue.Queue()
 jobs = {}
 
-ELEMENT_WITH_SUBSECTIONS = {"Element 1", "Element 4", "Element 5"}
 
-
-def parse_sections(text: str):
-    """
-    Extract markdown sections:
-    ### Title
-    description
-    """
-    pattern = r"###\s+(.*?)\n(.*?)(?=\n###|\Z)"
-    matches = re.findall(pattern, text, re.S)
-
-    sections = []
-    for title, body in matches:
-        sections.append({
-            "title": title.strip(),
-            "description": body.strip()
-        })
-
-    return sections
-
-
-def markdown_to_json(md_text: str) -> dict:
-    if not md_text:
-        return {}
-
-    result = {}
-
-    elements = re.split(r"\*\*\s*(Element\s+\d+:[^*]+?)\s*\*\*", md_text)
-
-    for i in range(1, len(elements), 2):
-        element_title = elements[i].strip()
-        element_body = elements[i + 1] if i + 1 < len(elements) else ""
-
-        element_key = element_title.split(":")[0]
-
-        element_body = element_body.strip()
 ELEMENTS_WITH_SUBSECTIONS = {"Element 1", "Element 4", "Element 5"}
 
 def parse_subsections(text: str):
@@ -122,7 +86,14 @@ def markdown_to_json(md_text: str) -> dict:
             result[element_title] = structured
         else:
             # Single description elements
-            clean_text = re.sub(r"^#+\s*", "", element_body).strip()
+            # Split body into paragraphs
+            paragraphs = [p.strip() for p in element_body.split("\n\n") if p.strip()]
+
+            # Always remove the first paragraph
+            paragraphs = paragraphs[1:] if len(paragraphs) > 1 else []
+
+            # Rejoin the remaining paragraphs
+            clean_text = "\n\n".join(paragraphs).strip()
             result[element_title] = {"description": clean_text}
 
     return result
