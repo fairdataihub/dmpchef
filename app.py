@@ -36,83 +36,65 @@ pipeline = DMPPipeline(config_path=CONFIG_PATH, force_rebuild_index=False)
 job_queue = queue.Queue()
 jobs = {}
 
-
-def clean_markdown_text(text: str) -> str:
-    """Basic markdown cleanup."""
-    if not text:
-        return ""
-
-    text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
-    text = re.sub(r"\*(.*?)\*", r"\1", text)
-    text = text.strip()
-    text = re.sub(r"\n\s*\n", "\n", text)
-
-    return text
+ELEMENT_WITH_SUBSECTIONS = {"Element 1", "Element 4", "Element 5"}
 
 
-def split_into_sections(text: str):
+def parse_sections(text: str):
     """
-    Split numbered sections like:
-        1. Title
-        Description...
+    Extract markdown sections:
+    ### Title
+    description
     """
-    parts = re.split(r"\n(?=\d+\.)", text)
-    return [p.strip() for p in parts if p.strip()]
+    pattern = r"###\s+(.*?)\n(.*?)(?=\n###|\Z)"
+    matches = re.findall(pattern, text, re.S)
 
+    sections = []
+    for title, body in matches:
+        sections.append({
+            "title": title.strip(),
+            "description": body.strip()
+        })
 
-def extract_title_and_body(section: str):
-    """
-    Extract title if colon exists.
-    Otherwise generate default.
-    """
-    lines = section.split("\n")
-    first_line = lines[0]
-
-    if ":" in first_line:
-        title, rest = first_line.split(":", 1)
-        description = "\n".join([rest.strip()] + lines[1:])
-        return title.strip(), description.strip()
-
-    return "Section", section.strip()
+    return sections
 
 
 def markdown_to_json(md_text: str) -> dict:
-    """
-    Convert pipeline markdown output into your REQUIRED structure:
-      - Elements 1,4,5 → numbered objects with title + description
-      - Elements 2,3,6 → { "description": ... }
-    """
-
     if not md_text:
         return {}
 
     result = {}
-    elements = re.split(r"\*\*(Element\s+\d+:[^\*]+)\*\*", md_text)
+
+    elements = re.split(r"\*\*\s*(Element\s+\d+:[^*]+?)\s*\*\*", md_text)
 
     for i in range(1, len(elements), 2):
         element_title = elements[i].strip()
         element_body = elements[i + 1] if i + 1 < len(elements) else ""
 
-        text = clean_markdown_text(element_body)
+        element_key = element_title.split(":")[0]
 
-        structured = {}
+        element_body = element_body.strip()
 
-        if element_title.startswith(("Element 1", "Element 4", "Element 5")):
-            sections = split_into_sections(text)
+        # Elements with subsections
+        if element_key in ELEMENT_WITH_SUBSECTIONS:
 
-            for idx, section in enumerate(sections, start=1):
-                title, description = extract_title_and_body(section)
+            sections = parse_sections(element_body)
 
+            structured = {}
+
+            for idx, sec in enumerate(sections, start=1):
                 structured[str(idx)] = {
-                    "title": title,
-                    "description": description,
+                    "title": sec["title"],
+                    "description": sec["description"]
                 }
 
             result[element_title] = structured
 
         else:
+            # Single description elements
+            clean_text = re.sub(r"^#+\s*", "", element_body).strip()
+
             result[element_title] = {
-                "description": text
+                "description": clean_text
             }
 
     return result
