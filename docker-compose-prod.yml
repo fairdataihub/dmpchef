@@ -7,7 +7,7 @@ services:
     container_name: dmpchef
     environment:
       - OLLAMA_HOST=http://ollama:11434
-      - OLLAMA_MODEL=llama3.3:70b
+      - OLLAMA_MODEL=llama3.1:8b-instruct-q8_0
     # pin to GPU device 0 only
     gpus:
       - device_ids: ["0"]
