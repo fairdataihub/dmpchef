@@ -73,29 +73,57 @@ def markdown_to_json(md_text: str) -> dict:
         element_key = element_title.split(":")[0]
 
         element_body = element_body.strip()
+ELEMENTS_WITH_SUBSECTIONS = {"Element 1", "Element 4", "Element 5"}
 
-        # Elements with subsections
-        if element_key in ELEMENT_WITH_SUBSECTIONS:
+def parse_subsections(text: str):
+    """
+    Extract subsections from a text block.
+    Handles ### headings or *bolded subsection titles.
+    """
+    # Match ### headings
+    pattern_h3 = r"###\s+(.*?)\n(.*?)(?=\n###|\Z)"
+    matches_h3 = re.findall(pattern_h3, text, re.S)
+    if matches_h3:
+        return [{"title": t.strip(), "description": b.strip()} for t, b in matches_h3]
 
-            sections = parse_sections(element_body)
+    # Fallback: match *Title:* pattern
+    pattern_star = r"\*\s*(.*?)\s*:\*\s*(.*?)(?=\n\*|\Z)"
+    matches_star = re.findall(pattern_star, text, re.S)
+    if matches_star:
+        return [{"title": t.strip(), "description": b.strip()} for t, b in matches_star]
 
+    # If no subsections, return entire text as a single section
+    return [{"title": "Section", "description": text.strip()}]
+
+
+def markdown_to_json(md_text: str) -> dict:
+    if not md_text:
+        return {}
+
+    result = {}
+
+    # Split by Element headings (bold or standard)
+    elements = re.split(r"\*\*\s*(Element\s+\d+:[^*]+?)\s*\*\*", md_text)
+    for i in range(1, len(elements), 2):
+        element_title = elements[i].strip()
+        element_body = elements[i + 1] if i + 1 < len(elements) else ""
+        element_key = element_title.split(":")[0]
+
+        element_body = element_body.strip()
+        # Handle elements with subsections
+        if element_key in ELEMENTS_WITH_SUBSECTIONS:
+            sections = parse_subsections(element_body)
             structured = {}
-
             for idx, sec in enumerate(sections, start=1):
                 structured[str(idx)] = {
                     "title": sec["title"],
                     "description": sec["description"]
                 }
-
             result[element_title] = structured
-
         else:
             # Single description elements
             clean_text = re.sub(r"^#+\s*", "", element_body).strip()
-
-            result[element_title] = {
-                "description": clean_text
-            }
+            result[element_title] = {"description": clean_text}
 
     return result
 
