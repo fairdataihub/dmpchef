@@ -142,13 +142,9 @@ def markdown_to_json(md_text: str):
             result[element] = structured
 
         else:
-            # Clean the body first
-            desc = clean_text(body)
-            # Remove first paragraph for elements 2,3,6 (if you want)
-            paragraphs = [p for p in desc.split("\n\n") if p.strip()]
-            desc = "\n\n".join(paragraphs[1:]) if len(paragraphs) > 1 else ""
+
             result[element] = {
-                "description": desc
+                "description": clean_text(body)
             }
 
     return result
