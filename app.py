@@ -37,64 +37,115 @@ job_queue = queue.Queue()
 jobs = {}
 
 
-ELEMENTS_WITH_SUBSECTIONS = {"Element 1", "Element 4", "Element 5"}
-
-def parse_subsections(text: str):
+def clean_markdown(text: str) -> str:
     """
-    Extract subsections from a text block.
-    Handles ### headings or *bolded subsection titles.
+    Remove markdown formatting symbols.
     """
-    # Match ### headings
-    pattern_h3 = r"###\s+(.*?)\n(.*?)(?=\n###|\Z)"
-    matches_h3 = re.findall(pattern_h3, text, re.S)
-    if matches_h3:
-        return [{"title": t.strip(), "description": b.strip()} for t, b in matches_h3]
+    # remove markdown headers and stars
+    text = re.sub(r"[#*_`]", "", text)
 
-    # Fallback: match *Title:* pattern
-    pattern_star = r"\*\s*(.*?)\s*:\*\s*(.*?)(?=\n\*|\Z)"
-    matches_star = re.findall(pattern_star, text, re.S)
-    if matches_star:
-        return [{"title": t.strip(), "description": b.strip()} for t, b in matches_star]
+    # normalize spacing
+    text = re.sub(r"\n{3,}", "\n\n", text)
 
-    # If no subsections, return entire text as a single section
-    return [{"title": "Section", "description": text.strip()}]
+    return text.strip()
 
 
-def markdown_to_json(md_text: str) -> dict:
-    if not md_text:
-        return {}
+def clean_text(text: str) -> str:
+    """
+    Clean extracted section text.
+    """
+    # remove leading colon
+    text = re.sub(r"^:\s*", "", text)
+
+    # remove trailing subsection numbers like "2." or "3."
+    text = re.sub(r"\n\s*\d+\.\s*$", "", text)
+
+    # normalize whitespace
+    text = re.sub(r"\n\s+", "\n", text)
+
+    return text.strip()
+
+
+ELEMENT_STRUCTURE = {
+    "Element 1: Data Type": [
+        "Types and amount of scientific data expected to be generated in the project",
+        "Scientific data that will be preserved and shared, and the rationale for doing so",
+        "Metadata, other relevant data, and associated documentation",
+    ],
+    "Element 2: Related Tools, Software and/or Code": [],
+    "Element 3: Standards": [],
+    "Element 4: Data Preservation, Access, and Associated Timelines": [
+        "Repository where scientific data and metadata will be archived",
+        "How scientific data will be findable and identifiable",
+        "When and how long the scientific data will be made available",
+    ],
+    "Element 5: Access, Distribution, or Reuse Considerations": [
+        "Factors affecting subsequent access, distribution, or reuse of scientific data",
+        "Whether access to scientific data will be controlled",
+        "Protections for privacy, rights, and confidentiality of human research participants",
+    ],
+    "Element 6: Oversight of Data Management and Sharing": [],
+}
+
+
+def markdown_to_json(md_text: str):
+
+    md_text = clean_markdown(md_text)
 
     result = {}
 
-    # Split by Element headings (bold or standard)
-    elements = re.split(r"\*\*\s*(Element\s+\d+:[^*]+?)\s*\*\*", md_text)
-    for i in range(1, len(elements), 2):
-        element_title = elements[i].strip()
-        element_body = elements[i + 1] if i + 1 < len(elements) else ""
-        element_key = element_title.split(":")[0]
+    for element, subsections in ELEMENT_STRUCTURE.items():
 
-        element_body = element_body.strip()
-        # Handle elements with subsections
-        if element_key in ELEMENTS_WITH_SUBSECTIONS:
-            sections = parse_subsections(element_body)
+        if element not in md_text:
+            continue
+
+        start = md_text.index(element)
+
+        next_positions = [
+            md_text.index(e)
+            for e in ELEMENT_STRUCTURE.keys()
+            if e in md_text and md_text.index(e) > start
+        ]
+
+        end = min(next_positions) if next_positions else len(md_text)
+
+        body = md_text[start + len(element):end].strip()
+
+        if subsections:
+
             structured = {}
-            for idx, sec in enumerate(sections, start=1):
-                structured[str(idx)] = {
-                    "title": sec["title"],
-                    "description": sec["description"]
+            current_text = body
+
+            for i, title in enumerate(subsections):
+
+                if title not in current_text:
+                    continue
+
+                s = current_text.index(title)
+
+                next_titles = [
+                    current_text.index(t)
+                    for t in subsections
+                    if t in current_text and current_text.index(t) > s
+                ]
+
+                e = min(next_titles) if next_titles else len(current_text)
+
+                description = current_text[s + len(title):e]
+                description = clean_text(description)
+
+                structured[str(i + 1)] = {
+                    "title": title.strip().rstrip(":"),
+                    "description": description
                 }
-            result[element_title] = structured
+
+            result[element] = structured
+
         else:
-            # Single description elements
-            # Split body into paragraphs
-            paragraphs = [p.strip() for p in element_body.split("\n\n") if p.strip()]
 
-            # Always remove the first paragraph
-            paragraphs = paragraphs[1:] if len(paragraphs) > 1 else []
-
-            # Rejoin the remaining paragraphs
-            clean_text = "\n\n".join(paragraphs).strip()
-            result[element_title] = {"description": clean_text}
+            result[element] = {
+                "description": clean_text(body)
+            }
 
     return result
 
