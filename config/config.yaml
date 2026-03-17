@@ -23,7 +23,7 @@ models:
   llm_host: http://ollama:11434
   embedding_model: sentence-transformers/all-MiniLM-L6-v2
   pdf_load_workers: 8
-  embedding_device: cuda
+  embedding_device: cuda:0
   embedding_batch_size: 256
   normalize_embeddings: true
   hf_cache_dir: data_prd/cache/hf
